@@ -1,6 +1,4 @@
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import pl.mbrzozowski.entity.User;
-import pl.mbrzozowski.enums.Gender;
 
 @SpringBootApplication
 public class VulcanizerApp {
