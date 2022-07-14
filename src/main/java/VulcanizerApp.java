@@ -7,8 +7,5 @@ public class VulcanizerApp {
 
     public static void main(String[] args) {
 //        SpringApplication.run(VulcanizerApp.class, args);
-        User build = User.builder()
-                .gender(Gender.FEMALE)
-                .build();
     }
 }
