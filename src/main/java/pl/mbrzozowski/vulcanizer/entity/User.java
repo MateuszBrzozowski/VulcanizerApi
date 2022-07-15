@@ -1,9 +1,9 @@
-package pl.mbrzozowski.entity;
+package pl.mbrzozowski.vulcanizer.entity;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.mbrzozowski.enums.Gender;
-import pl.mbrzozowski.enums.StatusUserAccount;
+import pl.mbrzozowski.vulcanizer.enums.Gender;
+import pl.mbrzozowski.vulcanizer.enums.StatusUserAccount;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;

@@ -1,23 +1,24 @@
-package pl.mbrzozowski.service;
+package pl.mbrzozowski.vulcanizer.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.mbrzozowski.entity.User;
-import pl.mbrzozowski.enums.StatusUserAccount;
-import pl.mbrzozowski.repository.UserRepository;
+import pl.mbrzozowski.vulcanizer.entity.User;
+import pl.mbrzozowski.vulcanizer.repository.UserRepository;
+
 
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.mock;
 
 class UserServiceTest {
+
     private final String email = "username@domain.com";
     private final String password = "password";
     private final String firstName = "firstName";
     private final String lastName = "LastName";
     private final LocalDateTime createAccountTime = LocalDateTime.now();
-    private UserService userService;
+    private pl.mbrzozowski.vulcanizer.service.UserService userService;
 
     @BeforeEach
     public void beforeEach() {
@@ -237,8 +238,9 @@ class UserServiceTest {
 
     @Test
     public void newUser_statusAccountCanNotBeNull_addUser() {
-        User user = new User(email, password, firstName, lastName,null,null);
+        User user = new User(email, password, firstName, lastName, null, null);
         Assertions.assertDoesNotThrow(() -> userService.addUser(user));
     }
+
 
 }

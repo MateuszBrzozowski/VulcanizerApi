@@ -1,7 +1,7 @@
-package pl.mbrzozowski.validation;
+package pl.mbrzozowski.vulcanizer.validation;
 
 import org.apache.commons.validator.routines.EmailValidator;
-import pl.mbrzozowski.entity.User;
+import pl.mbrzozowski.vulcanizer.entity.User;
 
 import java.time.LocalDateTime;
 
