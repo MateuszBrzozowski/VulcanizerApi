@@ -1,28 +1,50 @@
 package pl.mbrzozowski.vulcanizer.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
+import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
+import pl.mbrzozowski.vulcanizer.service.mapper.UserMapper;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    public void addUser(User user) {
-        ValidationUser.validUser(user);
+    public void saveUser(User user) {
+        ValidationUser validationUser = new ValidationUser(userRepository);
+        validationUser.validUser(user);
         userRepository.save(user);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserResponse> findAll() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+        .map(UserMapper::map)
+        .collect(Collectors.toList());
+    }
+
+    public UserResponse findByEmail(String email) {
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new UserWasNotFoundException("User by email [" + email + "] was not found");
+                });
+        return UserMapper.map(user);
+    }
+
+    public UserResponse findById(Long id) {
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> {
+                    throw new UserWasNotFoundException("User by id [" + id + "] was not found");
+                });
+        return UserMapper.map(user);
     }
 }

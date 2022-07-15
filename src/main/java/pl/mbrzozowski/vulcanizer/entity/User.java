@@ -2,6 +2,7 @@ package pl.mbrzozowski.vulcanizer.entity;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.StatusUserAccount;
 
@@ -12,25 +13,26 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Data
+@NoArgsConstructor
 @Entity(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Email
-    private final String email;
-    private final String password;
+    private String email;
+    private String password;
     @Column(name = "first_name")
-    private final String firsName;
+    private String firstName;
     @Column(name = "last_name")
-    private final String lastName;
+    private String lastName;
     private Gender gender;
     @Column(name = "birth_date")
     private LocalDate birthDate;
     @Column(name = "create_time")
-    private final LocalDateTime createAccountTime;
+    private LocalDateTime createAccountTime;
     @Column(name = "status")
-    private final String statusAccount;
+    private String statusAccount;
     private Long idAddress;
     private Long idAvatar;
     private Long idPhone;
@@ -50,12 +52,12 @@ public class User {
 
         this.email = email;
         this.password = password;
-        this.firsName = firsName;
+        this.firstName = firsName;
         this.lastName = lastName;
         this.gender = gender;
         this.birthDate = birthDate;
         this.createAccountTime = createAccountTime;
-        this.statusAccount = StatusUserAccount.NOT_ACTIVATED.name();
+        this.statusAccount = statusAccount.name();
         this.idAddress = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
@@ -68,25 +70,10 @@ public class User {
 
         this.email = email;
         this.password = password;
-        this.firsName = firsName;
+        this.firstName = firsName;
         this.lastName = lastName;
         this.statusAccount = StatusUserAccount.NOT_ACTIVATED.name();
         this.createAccountTime = LocalDateTime.now();
-    }
-
-    public User(final String email,
-                final String password,
-                final String firsName,
-                final String lastName,
-                final LocalDateTime createAccountTime,
-                final StatusUserAccount statusAccount) {
-
-        this.email = email;
-        this.password = password;
-        this.firsName = firsName;
-        this.lastName = lastName;
-        this.createAccountTime = Objects.requireNonNullElseGet(createAccountTime, LocalDateTime::now);
-        this.statusAccount = Objects.requireNonNullElse(statusAccount, StatusUserAccount.NOT_ACTIVATED).name();
     }
 
     public static UserBuilder builder() {
