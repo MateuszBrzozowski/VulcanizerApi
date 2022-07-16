@@ -2,6 +2,7 @@ package pl.mbrzozowski.vulcanizer.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import pl.mbrzozowski.vulcanizer.entity.converter.GenderConverter;
 import pl.mbrzozowski.vulcanizer.entity.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
@@ -16,7 +17,7 @@ public class UserResponse {
     private String password;
     private String firstName;
     private String lastName;
-    private Gender gender;
+    private String gender;
     private LocalDate birthDate;
     private LocalDateTime createAccountTime;
     private String statusAccount;
@@ -25,30 +26,40 @@ public class UserResponse {
     private Long idPhone;
 
     @Builder
-    public UserResponse(Long id,
-                        String email,
-                        String password,
-                        String firstName,
-                        String lastName,
-                        Gender gender,
-                        LocalDate birthDate,
-                        LocalDateTime createAccountTime,
-                        UserStatusAccount statusAccount,
-                        Long idAddress,
-                        Long idAvatar,
-                        Long idPhone) {
+    public UserResponse(final Long id,
+                        final String email,
+                        final String password,
+                        final String firstName,
+                        final String lastName,
+                        final Gender gender,
+                        final LocalDate birthDate,
+                        final LocalDateTime createAccountTime,
+                        final UserStatusAccount statusAccount,
+                        final Long idAddress,
+                        final Long idAvatar,
+                        final Long idPhone) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.gender = gender;
+        if (gender != null) {
+            this.gender = gender.name();
+        }
         this.birthDate = birthDate;
         this.createAccountTime = createAccountTime;
         this.statusAccount = statusAccount.name();
         this.idAddress = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
+    }
+
+    public Gender getGender() {
+        return GenderConverter.convert(this.gender);
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = GenderConverter.convert(gender);
     }
 
     public UserStatusAccount getStatusAccount() {

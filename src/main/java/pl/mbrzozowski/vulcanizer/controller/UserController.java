@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
+import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.service.UserService;
 import pl.mbrzozowski.vulcanizer.service.mapper.UserMapper;
 
@@ -44,14 +45,15 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest) {
         User user = UserMapper.getUser(userRequest);
+        user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping
     public ResponseEntity<?> update(@RequestBody UserRequest userRequest) {
-        userService.update(userRequest);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        UserResponse userResponse = userService.update(userRequest);
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
 

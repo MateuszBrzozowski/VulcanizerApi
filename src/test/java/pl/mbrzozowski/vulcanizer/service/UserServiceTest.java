@@ -13,7 +13,8 @@ import pl.mbrzozowski.vulcanizer.service.mapper.UserMapper;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class UserServiceTest {
 
@@ -278,7 +279,7 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(email)
@@ -291,9 +292,10 @@ class UserServiceTest {
 
     @Test
     void saveUser_editParametersNoUserInDatabase_ThrowUserWasNotFoundException() {
+        long id = 1L;
         User user = new User(email, password, firstName, lastName);
-        user.setId(1L);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(null);
+        user.setId(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .email(email)
                 .password(password)
@@ -308,7 +310,7 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(null)
@@ -324,7 +326,7 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email("")
@@ -340,7 +342,7 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(email)
@@ -356,7 +358,7 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(email)
@@ -372,7 +374,7 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(email)
@@ -388,7 +390,7 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(email)
@@ -404,7 +406,7 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(email)
@@ -420,13 +422,14 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(email)
                 .password(password)
                 .firstName(firstName)
                 .lastName("")
+                .statusAccount(UserStatusAccount.NOT_ACTIVATED)
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
     }
@@ -436,8 +439,12 @@ class UserServiceTest {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
-        user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
-        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        long idSecond = 2L;
+        User userSecond = new User("email@p.pl", password, firstName, lastName);
+        userSecond.setId(idSecond);
+        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("email@p.pl")).thenReturn(Optional.of(userSecond));
         UserRequest userRequestbuilder = UserRequest.builder()
                 .id(id)
                 .email(email)
@@ -446,8 +453,29 @@ class UserServiceTest {
                 .lastName(lastName)
                 .statusAccount(UserStatusAccount.ACTIVATED)
                 .build();
-        userService.update(userRequestbuilder);
-        verify(userRepository).save(user);
+        Assertions.assertDoesNotThrow(() -> userService.update(userRequestbuilder));
+    }
+
+    @Test
+    void saveUser_editParameterStatusNoCorrect_changeStatusToNoActivated() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        long idSecond = 2L;
+        User userSecond = new User("email@p.pl", password, firstName, lastName);
+        userSecond.setId(idSecond);
+        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("email@p.pl")).thenReturn(Optional.of(userSecond));
+        UserRequest userRequestBuilder = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .firstName(firstName)
+                .lastName(lastName)
+                .statusAccount(null)
+                .build();
+        Assertions.assertDoesNotThrow(() -> userService.update(userRequestBuilder));
     }
 
 

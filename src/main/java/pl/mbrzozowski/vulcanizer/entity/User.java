@@ -3,6 +3,7 @@ package pl.mbrzozowski.vulcanizer.entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.entity.converter.GenderConverter;
 import pl.mbrzozowski.vulcanizer.entity.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+
 @Entity(name = "user")
 public class User {
     @Id
@@ -26,7 +28,7 @@ public class User {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-    private Gender gender;
+    private String gender;
     @Column(name = "birth_date")
     private LocalDate birthDate;
     @Column(name = "create_time")
@@ -37,8 +39,8 @@ public class User {
     private Long idAvatar;
     private Long idPhone;
 
-    @Builder()
-    public User(Long id,
+    @Builder
+    public User(final Long id,
                 final String email,
                 final String password,
                 final String firstName,
@@ -50,12 +52,13 @@ public class User {
                 final Long idAddress,
                 final Long idAvatar,
                 final Long idPhone) {
-        this.id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.gender = gender;
+        if (gender != null) {
+            this.gender = gender.name();
+        }
         this.birthDate = birthDate;
         this.createAccountTime = createAccountTime;
         this.statusAccount = statusAccount.name();
@@ -75,6 +78,14 @@ public class User {
         this.lastName = lastName;
         this.statusAccount = UserStatusAccount.NOT_ACTIVATED.name();
         this.createAccountTime = LocalDateTime.now();
+    }
+
+    public Gender getGender() {
+        return GenderConverter.convert(this.gender);
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = GenderConverter.convert(gender);
     }
 
     public void setStatusAccount(UserStatusAccount statusAccount) {

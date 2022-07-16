@@ -50,11 +50,12 @@ public class UserService {
     }
 
     public UserResponse update(UserRequest userRequest) {
-//        UserResponse isUser = findById(userRequest.getId());
-//        User userEdit = UserMapper.getUser(userRequest);
-//        ValidationUser validationUser = new ValidationUser(userRepository);
-//        validationUser.validUser(userEdit);
-//        userRepository.save(userEdit);
-        return null;
+        UserResponse isUser = findById(userRequest.getId());
+        User userEdit = UserMapper.getUser(userRequest);
+        userEdit.setId(isUser.getId());
+        ValidationUser validationUser = new ValidationUser(userRepository);
+        validationUser.validUser(userEdit);
+        userRepository.save(userEdit);
+        return UserMapper.getUser(userEdit);
     }
 }

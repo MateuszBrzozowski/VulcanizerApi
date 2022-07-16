@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.entity.converter.GenderConverter;
 import pl.mbrzozowski.vulcanizer.entity.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
@@ -19,7 +20,7 @@ public class UserRequest {
     private String password;
     private String firstName;
     private String lastName;
-    private Gender gender;
+    private String gender;
     private LocalDate birthDate;
     private String statusAccount;
     private Long idAddress;
@@ -43,12 +44,32 @@ public class UserRequest {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.gender = gender;
+        if (gender != null) {
+            this.gender = gender.name();
+        }
         this.birthDate = birthDate;
         this.statusAccount = statusAccount.name();
         this.idAddress = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
+    }
+
+    public Gender getGender() {
+        return GenderConverter.convert(this.gender);
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = GenderConverter.convert(gender);
+    }
+
+    public void setGender(String gender) {
+        if (gender != null) {
+            setGender(GenderConverter.convert(gender));
+        }
+    }
+
+    public void setGender(int gender) {
+        setGender(GenderConverter.convert(gender));
     }
 
     public UserStatusAccount getStatusAccount() {
@@ -59,11 +80,30 @@ public class UserRequest {
         this.statusAccount = UserStatusAccountConverter.convert(statusAccount);
     }
 
+    public void setStatusAccount(String statusAccount) {
+        if (statusAccount !=null) {
+            setStatusAccount(UserStatusAccountConverter.convert(statusAccount));
+        }
+    }
+
+    public void setStatusAccount(int statusAccount) {
+        setStatusAccount(UserStatusAccountConverter.convert(statusAccount));
+    }
+
     public static CustomUserRequestBuilder builder() {
         return new CustomUserRequestBuilder();
     }
 
     public static class CustomUserRequestBuilder extends UserRequestBuilder {
+
+        @Override
+        public UserRequestBuilder gender(Gender gender) {
+            if (gender == null) {
+                this.gender(null);
+            }
+            return this;
+        }
+
         @Override
         public UserRequest build() {
             if (super.statusAccount == null) {
