@@ -3,6 +3,7 @@ package pl.mbrzozowski.vulcanizer.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.entity.State;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationState;
@@ -47,6 +48,9 @@ public class StateService {
     public State update(State state) {
         ValidationState<State> validator = new ValidationState<>(stateRepository);
         validator.accept(state);
+        if (state.getId() == null) {
+            throw new IllegalArgumentException("Id can not be null");
+        }
         State refState = findById(state.getId());
         refState.setName(state.getName());
         stateRepository.save(refState);

@@ -1,9 +1,17 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import javax.persistence.*;
 
-import javax.persistence.Entity;
-
+@Entity
 public class Address {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "address_line_one")
+    private String addressLineTwo;
+    @Column(name = "address_line_two")
+    private String addressLineOne;
+    private String city;
+    @Column(name = "postal_code")
+    private String code;
 }
