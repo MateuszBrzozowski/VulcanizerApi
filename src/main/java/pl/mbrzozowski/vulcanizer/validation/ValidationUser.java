@@ -7,10 +7,12 @@ import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullPointerException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 public class ValidationUser {
+    private static final long MIN_USER_AGE = 6;
     private final UserRepository userRepository;
 
     public void validUser(User user) {
@@ -19,6 +21,18 @@ public class ValidationUser {
         validFirstName(user.getFirstName());
         validLastName(user.getLastName());
         validAccountCreateTime(user.getCreateAccountTime());
+        validBirthDay(user.getBirthDate());
+    }
+
+    private void validBirthDay(LocalDate birthDate) {
+        if (birthDate != null) {
+            if (birthDate.isAfter(LocalDate.now())) {
+                throw new IllegalArgumentException("Birth day is after today!");
+            }
+            if (birthDate.isAfter(LocalDate.now().minusYears(MIN_USER_AGE))) {
+                throw new IllegalArgumentException("No minimum user age");
+            }
+        }
     }
 
     public void validEmail(String email, Long id) {

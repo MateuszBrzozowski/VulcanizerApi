@@ -10,6 +10,7 @@ import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.service.mapper.UserMapper;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ class UserServiceTest {
     private final LocalDateTime createAccountTime = LocalDateTime.now();
     private UserService userService;
     private UserRepository userRepository;
+    private final int USER_AGE = 6;
 
     @BeforeEach
     public void beforeEach() {
@@ -34,13 +36,13 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUser_ReqFieldByConstructor_addUser() {
+    public void saveUser_ReqFieldByConstructor_addUser() {
         User user = new User(email, password, firstName, lastName);
         Assertions.assertDoesNotThrow(() -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByBuilder_addUser() {
+    public void saveUser_ReqFieldByBuilder_addUser() {
         User user = User.builder()
                 .email(email)
                 .password(password)
@@ -52,19 +54,19 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorNoEmail_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByConstructorNoEmail_ThrowNullPointerException() {
         User user = new User(null, password, firstName, lastName);
         Assertions.assertThrows(NullPointerException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorEmptyEmail_ThrowIllegalArgumentException() {
+    public void saveUser_ReqFieldByConstructorEmptyEmail_ThrowIllegalArgumentException() {
         User user = new User("", password, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByBuilderNoEmail_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByBuilderNoEmail_ThrowNullPointerException() {
         User user = User.builder()
                 .password(password)
                 .firstName(firstName)
@@ -75,19 +77,19 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorNoPass_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByConstructorNoPass_ThrowNullPointerException() {
         User user = new User(email, null, firstName, lastName);
         Assertions.assertThrows(NullPointerException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorEmptyPass_ThrowIllegalArgumentException() {
+    public void saveUser_ReqFieldByConstructorEmptyPass_ThrowIllegalArgumentException() {
         User user = new User(email, "", firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByBuilderNoPass_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByBuilderNoPass_ThrowNullPointerException() {
         User user = User.builder()
                 .email(email)
                 .firstName(firstName)
@@ -98,19 +100,19 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorNoFirstName_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByConstructorNoFirstName_ThrowNullPointerException() {
         User user = new User(email, password, null, lastName);
         Assertions.assertThrows(NullPointerException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorEmptyFirstName_ThrowIllegalArgumentException() {
+    public void saveUser_ReqFieldByConstructorEmptyFirstName_ThrowIllegalArgumentException() {
         User user = new User(email, password, "", lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByBuilderNoFirstName_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByBuilderNoFirstName_ThrowNullPointerException() {
         User user = User.builder()
                 .email(email)
                 .password(password)
@@ -121,19 +123,19 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorNoLastName_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByConstructorNoLastName_ThrowNullPointerException() {
         User user = new User(email, password, firstName, null);
         Assertions.assertThrows(NullPointerException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorEmptyLastName_ThrowIllegalArgumentException() {
+    public void saveUser_ReqFieldByConstructorEmptyLastName_ThrowIllegalArgumentException() {
         User user = new User(email, password, firstName, "");
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByBuilderNoLastName_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByBuilderNoLastName_ThrowNullPointerException() {
         User user = User.builder()
                 .email(email)
                 .password(password)
@@ -144,13 +146,13 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorNoCreateTime_createUser() {
+    public void saveUser_ReqFieldByConstructorNoCreateTime_createUser() {
         User user = new User(email, password, firstName, lastName);
         Assertions.assertDoesNotThrow(() -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByBuilderNoCreateTime_createUser() {
+    public void saveUser_ReqFieldByBuilderNoCreateTime_createUser() {
         User user = User.builder()
                 .email(email)
                 .password(password)
@@ -161,41 +163,41 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUser_ReqFieldByConstructorAllNull_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByConstructorAllNull_ThrowNullPointerException() {
         User user = new User(null, null, null, null);
         Assertions.assertThrows(NullPointerException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ReqFieldByBuilderAllNull_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByBuilderAllNull_ThrowNullPointerException() {
         User user = User.builder()
                 .build();
         Assertions.assertThrows(NullPointerException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ValidateEmailNoMonkey_ThrowIllegalArgumentException() {
+    public void saveUser_ValidateEmailNoMonkey_ThrowIllegalArgumentException() {
         String emailAddress = "usernamedomain.com";
         User user = new User(emailAddress, password, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ValidateEmailUnicode_ThrowIllegalArgumentException() {
+    public void saveUser_ValidateEmailUnicode_ThrowIllegalArgumentException() {
         String emailAddress = "用户名@领域.电脑";
         User user = new User(emailAddress, password, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ValidateGmail_Valid() {
+    public void saveUser_ValidateGmail_Valid() {
         String emailAddress = "username+something@domain.com";
         User user = new User(emailAddress, password, firstName, lastName);
         Assertions.assertDoesNotThrow(() -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ValidateToLongEmailUserNameMax64_ThrowIllegalArgumentException() {
+    public void saveUser_ValidateToLongEmailUserNameMax64_ThrowIllegalArgumentException() {
         String emailAddress = "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv" +
                 "vvvvvvvvvvvvvvv@domain.com";
         User user = new User(emailAddress, password, firstName, lastName);
@@ -203,63 +205,63 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUser_ValidateEmptyUsernameEmail_ThrowIllegalArgumentException() {
+    public void saveUser_ValidateEmptyUsernameEmail_ThrowIllegalArgumentException() {
         String emailAddress = "@domain.com";
         User user = new User(emailAddress, password, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ValidateDomainEndingByPointer_ThrowIllegalArgumentException() {
+    public void saveUser_ValidateDomainEndingByPointer_ThrowIllegalArgumentException() {
         String emailAddress = "username@domain.";
         User user = new User(emailAddress, password, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ValidateDomainStartingByPointer_ThrowIllegalArgumentException() {
+    public void saveUser_ValidateDomainStartingByPointer_ThrowIllegalArgumentException() {
         String emailAddress = "username@.com";
         User user = new User(emailAddress, password, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ValidateEmptyDomainEmail_ThrowIllegalArgumentException() {
+    public void saveUser_ValidateEmptyDomainEmail_ThrowIllegalArgumentException() {
         String emailAddress = "username@";
         User user = new User(emailAddress, password, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    public void newUser_ValidateDomainStartingByPointerr_ThrowIllegalArgumentException() {
+    public void saveUser_ValidateDomainStartingByPointerr_ThrowIllegalArgumentException() {
         String emailAddress = "mateusz_brzozowski93@wp.pl";
         User user = new User(emailAddress, password, firstName, lastName);
         Assertions.assertDoesNotThrow(() -> userService.saveUser(user));
     }
 
     @Test
-    void newUser_ToLongPass_ThrowIllegalArgumentException() {
+    void saveUser_ToLongPass_ThrowIllegalArgumentException() {
         String password_fake = "ZbytDlugieHasloMaksymalnie30znakowMozeBycTylko";
         User user = new User(email, password_fake, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    void newUser_ToLongFirstName_ThrowIllegalArgumentException() {
+    void saveUser_ToLongFirstName_ThrowIllegalArgumentException() {
         String firstName_fake = "ZbytDlugieHasloMaksymalnie100znakowMozeBycTylkoTylkoTylkoTylko";
         User user = new User(email, password, firstName_fake, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    void newUser_ToLongLastName_ThrowIllegalArgumentException() {
+    void saveUser_ToLongLastName_ThrowIllegalArgumentException() {
         String lastName_fake = "ZbytDlugieHasloMaksymalnie100znakowMozeBycTylkoTylkoTylkoTylko";
         User user = new User(email, password, firstName, lastName_fake);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
     }
 
     @Test
-    void newUser_emailMustBeUnique_ThrowIllegalArgumentException() {
+    void saveUser_emailMustBeUnique_ThrowIllegalArgumentException() {
         User user = new User(email, password, firstName, lastName);
         User userSecond = new User(email, password, firstName, lastName);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
@@ -267,7 +269,7 @@ class UserServiceTest {
     }
 
     @Test
-    void newUser_emailUnique_addUser() {
+    void saveUser_emailUnique_addUser() {
         User user = new User(email, password, firstName, lastName);
         User user_actual = new User("email@wp.pl", password, firstName, lastName);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
@@ -275,7 +277,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParameters_editCorrect() {
+    void update_editParameters_editCorrect() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -291,7 +293,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersNoUserInDatabase_ThrowUserWasNotFoundException() {
+    void update_editParametersNoUserInDatabase_ThrowUserWasNotFoundException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -306,7 +308,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersNullEmail_ThrowNullPointerException() {
+    void update_editParametersNullEmail_ThrowNullPointerException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -322,7 +324,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersEmptyEmail_ThrowIllegalArgumentException() {
+    void update_editParametersEmptyEmail_ThrowIllegalArgumentException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -338,7 +340,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersNullPass_ThrowNullPointerException() {
+    void update_editParametersNullPass_ThrowNullPointerException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -354,7 +356,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersEmptyPass_ThrowIllegalArgumentException() {
+    void update_editParametersEmptyPass_ThrowIllegalArgumentException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -370,7 +372,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersNullFirstName_ThrowNullPointerException() {
+    void update_editParametersNullFirstName_ThrowNullPointerException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -386,7 +388,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersEmptyFirstName_ThrowIllegalArgumentException() {
+    void update_editParametersEmptyFirstName_ThrowIllegalArgumentException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -402,7 +404,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersNullLastName_ThrowNullPointerException() {
+    void update_editParametersNullLastName_ThrowNullPointerException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -418,7 +420,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParametersEmptyLastName_ThrowIllegalArgumentException() {
+    void update_editParametersEmptyLastName_ThrowIllegalArgumentException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -435,7 +437,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParameterStatus_editCorrect() {
+    void update_editParameterStatus_editCorrect() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -457,7 +459,7 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser_editParameterStatusNoCorrect_changeStatusToNoActivated() {
+    void update_editParameterStatusNoCorrect_changeStatusToNoActivated() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -478,5 +480,100 @@ class UserServiceTest {
         Assertions.assertDoesNotThrow(() -> userService.update(userRequestBuilder));
     }
 
+    @Test
+    void saveUser_UserWithBirthDateAfterToday_ThrowsIllegalArgumentException() {
+        User user = User.builder()
+                .email(email)
+                .password(password)
+                .lastName(lastName)
+                .firstName(firstName)
+                .birthDate(LocalDate.now().plusDays(1))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveUser(user));
+    }
 
+    @Test
+    void update_UserWithBirthDateAfterToday_ThrowsIllegalArgumentException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .lastName(lastName)
+                .firstName(firstName)
+                .birthDate(LocalDate.now().plusDays(1))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void update_UserWithBirthDateBeforeMinUserAge_DoesNotThrow() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .lastName(lastName)
+                .firstName(firstName)
+                .birthDate(LocalDate.now().minusYears(USER_AGE))
+                .build();
+        Assertions.assertDoesNotThrow(() -> userService.update(userRequest));
+    }
+
+    @Test
+    void update_UserWithBirthDateBeforeMinUserAgeAndOneDay_DoesNotThrow() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .lastName(lastName)
+                .firstName(firstName)
+                .birthDate(LocalDate.now().minusYears(USER_AGE).minusDays(1))
+                .build();
+        Assertions.assertDoesNotThrow(() -> userService.update(userRequest));
+    }
+
+    @Test
+    void update_UserWithBirthDateBeforeMinUserAgeAndPlusOneDay_ThrowsIllegalArgumentException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .lastName(lastName)
+                .firstName(firstName)
+                .birthDate(LocalDate.now().minusYears(USER_AGE).plusDays(1))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void update_UserWithNormalBirthDate_DoesNotThrow() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .lastName(lastName)
+                .firstName(firstName)
+                .birthDate(LocalDate.now().minusYears(25))
+                .build();
+        Assertions.assertDoesNotThrow(() -> userService.update(userRequest));
+    }
 }
