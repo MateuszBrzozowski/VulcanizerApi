@@ -41,10 +41,6 @@ public class StateService {
         return stateRepository.findAll();
     }
 
-    public void deleteById(final Long id) {
-        stateRepository.deleteById(id);
-    }
-
     public State update(State state) {
         ValidationState<State> validator = new ValidationState<>(stateRepository);
         validator.accept(state);

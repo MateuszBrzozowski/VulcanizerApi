@@ -49,10 +49,4 @@ public class StateController {
         State update = stateService.update(state);
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteById(@Param("id") Long id) {
-        stateService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }
