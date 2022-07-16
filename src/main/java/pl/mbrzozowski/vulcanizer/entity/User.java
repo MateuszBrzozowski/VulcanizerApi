@@ -3,14 +3,14 @@ package pl.mbrzozowski.vulcanizer.entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.entity.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
-import pl.mbrzozowski.vulcanizer.enums.StatusUserAccount;
+import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -38,21 +38,22 @@ public class User {
     private Long idPhone;
 
     @Builder()
-    public User(final String email,
+    public User(Long id,
+                final String email,
                 final String password,
-                final String firsName,
+                final String firstName,
                 final String lastName,
                 final Gender gender,
                 final LocalDate birthDate,
                 final LocalDateTime createAccountTime,
-                final StatusUserAccount statusAccount,
+                final UserStatusAccount statusAccount,
                 final Long idAddress,
                 final Long idAvatar,
                 final Long idPhone) {
-
+        this.id = id;
         this.email = email;
         this.password = password;
-        this.firstName = firsName;
+        this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.birthDate = birthDate;
@@ -72,8 +73,16 @@ public class User {
         this.password = password;
         this.firstName = firsName;
         this.lastName = lastName;
-        this.statusAccount = StatusUserAccount.NOT_ACTIVATED.name();
+        this.statusAccount = UserStatusAccount.NOT_ACTIVATED.name();
         this.createAccountTime = LocalDateTime.now();
+    }
+
+    public void setStatusAccount(UserStatusAccount statusAccount) {
+        this.statusAccount = UserStatusAccountConverter.convert(statusAccount);
+    }
+
+    public UserStatusAccount getStatusAccount() {
+        return UserStatusAccountConverter.convert(this.statusAccount);
     }
 
     public static UserBuilder builder() {
@@ -88,7 +97,7 @@ public class User {
                 super.createAccountTime = LocalDateTime.now();
             }
             if (super.statusAccount == null) {
-                super.statusAccount = StatusUserAccount.NOT_ACTIVATED;
+                super.statusAccount = UserStatusAccount.NOT_ACTIVATED;
             }
             return super.build();
         }

@@ -43,9 +43,15 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest) {
-        User user = UserMapper.map(userRequest);
+        User user = UserMapper.getUser(userRequest);
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody UserRequest userRequest) {
+        userService.update(userRequest);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

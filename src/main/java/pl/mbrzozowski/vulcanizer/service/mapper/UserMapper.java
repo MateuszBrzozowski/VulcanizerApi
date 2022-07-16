@@ -1,24 +1,31 @@
 package pl.mbrzozowski.vulcanizer.service.mapper;
 
+import lombok.Data;
 import org.springframework.stereotype.Component;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
 
 @Component
+@Data
 public class UserMapper {
-    public static User map(UserRequest requestUser) {
+    public static User getUser(UserRequest requestUser) {
         return User.builder()
+                .id(requestUser.getId())
                 .email(requestUser.getEmail())
                 .password(requestUser.getPassword())
-                .firsName(requestUser.getFirstName())
+                .firstName(requestUser.getFirstName())
                 .lastName(requestUser.getLastName())
                 .gender(requestUser.getGender())
                 .birthDate(requestUser.getBirthDate())
+                .statusAccount(requestUser.getStatusAccount())
+                .idAddress(requestUser.getIdAddress())
+                .idAvatar(requestUser.getIdAvatar())
+                .idPhone(requestUser.getIdPhone())
                 .build();
     }
 
-    public static UserResponse map(User user) {
+    public static UserResponse getUser(User user) {
         if (user == null) {
             return null;
         }
@@ -38,4 +45,19 @@ public class UserMapper {
                 .build();
     }
 
+    public static User getUser(UserResponse userResponse) {
+        return User.builder()
+                .id(userResponse.getId())
+                .email(userResponse.getEmail())
+                .password(userResponse.getPassword())
+                .firstName(userResponse.getFirstName())
+                .lastName(userResponse.getLastName())
+                .gender(userResponse.getGender())
+                .birthDate(userResponse.getBirthDate())
+                .statusAccount(userResponse.getStatusAccount())
+                .idAddress(userResponse.getIdAddress())
+                .idAvatar(userResponse.getIdAvatar())
+                .idPhone(userResponse.getIdPhone())
+                .build();
+    }
 }

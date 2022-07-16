@@ -3,6 +3,7 @@ package pl.mbrzozowski.vulcanizer.validation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
 import pl.mbrzozowski.vulcanizer.entity.User;
+import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -12,14 +13,21 @@ public class ValidationUser {
     private final UserRepository userRepository;
 
     public void validUser(User user) {
-        validEmail(user.getEmail());
+        validEmail(user.getEmail(), user.getId());
         validPassword(user.getPassword());
         validFirstName(user.getFirstName());
         validLastName(user.getLastName());
         validAccountCreateTime(user.getCreateAccountTime());
+        validUserStatusAccount(user.getStatusAccount());
     }
 
-    public void validEmail(String email) {
+    private void validUserStatusAccount(UserStatusAccount statusAccount) {
+        if (statusAccount == null) {
+            throw new NullPointerException("Status account can not be null");
+        }
+    }
+
+    public void validEmail(String email, Long id) {
         if (email == null) {
             throw new NullPointerException("Email can not be null");
         }
@@ -30,7 +38,14 @@ public class ValidationUser {
         }
         if (userRepository.findByEmail(email).isPresent()) {
             User user = userRepository.findByEmail(email).get();
-            if (user.getEmail().equalsIgnoreCase(email)) {
+            if (userRepository.findById(id).isPresent()) { // is edit
+                User userTwo = userRepository.findById(id).get();
+                if (!userTwo.getId().equals(user.getId())) {
+                    if (user.getEmail().equalsIgnoreCase(email)) {
+                        throw new IllegalArgumentException("Email is ready exist.");
+                    }
+                }
+            } else if (user.getEmail().equalsIgnoreCase(email)) {
                 throw new IllegalArgumentException("Email is ready exist.");
             }
         }
@@ -77,4 +92,6 @@ public class ValidationUser {
             throw new NullPointerException("Create Account time can not be null");
         }
     }
+
+
 }

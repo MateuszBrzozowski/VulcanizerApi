@@ -3,12 +3,14 @@ package pl.mbrzozowski.vulcanizer.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
+import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
+import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.service.mapper.UserMapper;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -41,7 +43,7 @@ class UserServiceTest {
         User user = User.builder()
                 .email(email)
                 .password(password)
-                .firsName(firstName)
+                .firstName(firstName)
                 .lastName(lastName)
                 .createAccountTime(createAccountTime)
                 .build();
@@ -64,7 +66,7 @@ class UserServiceTest {
     public void newUser_ReqFieldByBuilderNoEmail_ThrowNullPointerException() {
         User user = User.builder()
                 .password(password)
-                .firsName(firstName)
+                .firstName(firstName)
                 .lastName(lastName)
                 .createAccountTime(createAccountTime)
                 .build();
@@ -87,7 +89,7 @@ class UserServiceTest {
     public void newUser_ReqFieldByBuilderNoPass_ThrowNullPointerException() {
         User user = User.builder()
                 .email(email)
-                .firsName(firstName)
+                .firstName(firstName)
                 .lastName(lastName)
                 .createAccountTime(createAccountTime)
                 .build();
@@ -134,7 +136,7 @@ class UserServiceTest {
         User user = User.builder()
                 .email(email)
                 .password(password)
-                .firsName(firstName)
+                .firstName(firstName)
                 .createAccountTime(createAccountTime)
                 .build();
         Assertions.assertThrows(NullPointerException.class, () -> userService.saveUser(user));
@@ -151,7 +153,7 @@ class UserServiceTest {
         User user = User.builder()
                 .email(email)
                 .password(password)
-                .firsName(firstName)
+                .firstName(firstName)
                 .lastName(lastName)
                 .build();
         Assertions.assertDoesNotThrow(() -> userService.saveUser(user));
@@ -270,5 +272,183 @@ class UserServiceTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         Assertions.assertDoesNotThrow(() -> userService.saveUser(user_actual));
     }
+
+    @Test
+    void saveUser_editParameters_editCorrect() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .firstName(firstName)
+                .lastName("newLastName")
+                .build();
+        Assertions.assertDoesNotThrow(() -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersNoUserInDatabase_ThrowUserWasNotFoundException() {
+        User user = new User(email, password, firstName, lastName);
+        user.setId(1L);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(null);
+        UserRequest userRequest = UserRequest.builder()
+                .email(email)
+                .password(password)
+                .firstName(firstName)
+                .lastName("newLastName")
+                .build();
+        Assertions.assertThrows(UserWasNotFoundException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersNullEmail_ThrowNullPointerException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(null)
+                .password(password)
+                .firstName(firstName)
+                .lastName(lastName)
+                .build();
+        Assertions.assertThrows(NullPointerException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersEmptyEmail_ThrowIllegalArgumentException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email("")
+                .password(password)
+                .firstName(firstName)
+                .lastName(lastName)
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersNullPass_ThrowNullPointerException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(null)
+                .firstName(firstName)
+                .lastName(lastName)
+                .build();
+        Assertions.assertThrows(NullPointerException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersEmptyPass_ThrowIllegalArgumentException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password("")
+                .firstName(firstName)
+                .lastName(lastName)
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersNullFirstName_ThrowNullPointerException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .firstName(null)
+                .lastName(lastName)
+                .build();
+        Assertions.assertThrows(NullPointerException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersEmptyFirstName_ThrowIllegalArgumentException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .firstName("")
+                .lastName(lastName)
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersNullLastName_ThrowNullPointerException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .firstName(firstName)
+                .lastName(null)
+                .build();
+        Assertions.assertThrows(NullPointerException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParametersEmptyLastName_ThrowIllegalArgumentException() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequest = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .firstName(firstName)
+                .lastName("")
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveUser_editParameterStatus_editCorrect() {
+        long id = 1L;
+        User user = new User(email, password, firstName, lastName);
+        user.setId(id);
+        user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
+        when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        UserRequest userRequestbuilder = UserRequest.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .firstName(firstName)
+                .lastName(lastName)
+                .statusAccount(UserStatusAccount.ACTIVATED)
+                .build();
+        userService.update(userRequestbuilder);
+        verify(userRepository).save(user);
+    }
+
 
 }
