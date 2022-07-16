@@ -10,12 +10,15 @@ import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@SuppressWarnings("rawtypes")
 @RequiredArgsConstructor
-public class ValidationUser {
+public class ValidationUser<T> implements Validator {
     private static final long MIN_USER_AGE = 6;
     private final UserRepository userRepository;
 
-    public void validUser(User user) {
+    @Override
+    public void accept(Object o) {
+        User user = (User) o;
         validEmail(user.getEmail(), user.getId());
         validPassword(user.getPassword());
         validFirstName(user.getFirstName());
@@ -105,6 +108,4 @@ public class ValidationUser {
             throw new NullPointerException("Create Account time can not be null");
         }
     }
-
-
 }

@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Data
+@Builder
 @Entity
 public class State {
     @Id

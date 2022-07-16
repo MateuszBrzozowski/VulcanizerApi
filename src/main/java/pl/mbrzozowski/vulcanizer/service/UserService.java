@@ -19,8 +19,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     public void saveUser(User user) {
-        ValidationUser validationUser = new ValidationUser(userRepository);
-        validationUser.validUser(user);
+        ValidationUser<User> validationUser = new ValidationUser<>(userRepository);
+        validationUser.accept(user);
         userRepository.save(user);
     }
 
@@ -54,8 +54,8 @@ public class UserService {
         User userEdit = UserMapper.getUser(userRequest);
         userEdit.setId(isUser.getId());
         userEdit.setCreateAccountTime(isUser.getCreateAccountTime());
-        ValidationUser validationUser = new ValidationUser(userRepository);
-        validationUser.validUser(userEdit);
+        ValidationUser<User> validationUser = new ValidationUser(userRepository);
+        validationUser.accept(userEdit);
         userRepository.save(userEdit);
         return UserMapper.getUser(userEdit);
     }

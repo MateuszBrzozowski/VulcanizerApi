@@ -3,8 +3,11 @@ package pl.mbrzozowski.vulcanizer.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.entity.State;
-import pl.mbrzozowski.vulcanizer.exceptions.StateWasNotFoundException;
+import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
+import pl.mbrzozowski.vulcanizer.validation.ValidationState;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -12,18 +15,16 @@ public class StateService {
     private final StateRepository stateRepository;
 
     public void save(State state) {
+        ValidationState<State> validator = new ValidationState<>(stateRepository);
+        validator.accept(state);
         stateRepository.save(state);
-    }
-
-    public void deleteById(State state) {
-        stateRepository.deleteById(state.getId());
     }
 
     public State findById(Long id) {
         return stateRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new StateWasNotFoundException(String.format("State by id [%s] was not found", id));
+                    throw new NoSuchElementException(String.format("State by id [%s] was not found", id));
                 });
     }
 
@@ -31,11 +32,21 @@ public class StateService {
         return stateRepository
                 .findByName(name)
                 .orElseThrow(() -> {
-                    throw new StateWasNotFoundException(String.format("State by name [%s] was not found", name));
+                    throw new NoSuchElementException(String.format("State by name [%s] was not found", name));
                 });
     }
 
+    public List<State> findAll() {
+        return stateRepository.findAll();
+    }
+
+    public void deleteById(final Long id) {
+        stateRepository.deleteById(id);
+    }
+
     public State update(State state) {
+        ValidationState<State> validator = new ValidationState<>(stateRepository);
+        validator.accept(state);
         State refState = findById(state.getId());
         refState.setName(state.getName());
         stateRepository.save(refState);
