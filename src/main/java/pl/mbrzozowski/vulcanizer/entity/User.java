@@ -80,6 +80,10 @@ public class User {
         this.createAccountTime = LocalDateTime.now();
     }
 
+    public void setCreateAccountTime(LocalDateTime createAccountTime) {
+        this.createAccountTime = createAccountTime;
+    }
+
     public Gender getGender() {
         return GenderConverter.convert(this.gender);
     }

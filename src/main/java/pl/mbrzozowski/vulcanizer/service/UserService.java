@@ -53,6 +53,7 @@ public class UserService {
         UserResponse isUser = findById(userRequest.getId());
         User userEdit = UserMapper.getUser(userRequest);
         userEdit.setId(isUser.getId());
+        userEdit.setCreateAccountTime(isUser.getCreateAccountTime());
         ValidationUser validationUser = new ValidationUser(userRepository);
         validationUser.validUser(userEdit);
         userRepository.save(userEdit);
