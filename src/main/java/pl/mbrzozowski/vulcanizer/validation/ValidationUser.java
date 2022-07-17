@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullPointerException;
+import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
-@SuppressWarnings("rawtypes")
 @RequiredArgsConstructor
 public class ValidationUser implements Consumer<User> {
     private static final long MIN_USER_AGE = 6;
@@ -40,7 +39,7 @@ public class ValidationUser implements Consumer<User> {
 
     public void validEmail(String email, Long id) {
         if (email == null) {
-            throw new NullPointerException("Email can not be null");
+            throw new NullParameterException("Email can not be null");
         }
         EmailValidator emailValidator = EmailValidator.getInstance();
         boolean valid = emailValidator.isValid(email);
@@ -69,7 +68,7 @@ public class ValidationUser implements Consumer<User> {
 
     private void validPassword(String password) {
         if (password == null) {
-            throw new NullPointerException("Password can not be null");
+            throw new NullParameterException("Password can not be null");
         }
         if (password.isEmpty()) {
             throw new IllegalArgumentException("Password can not be empty");
@@ -81,7 +80,7 @@ public class ValidationUser implements Consumer<User> {
 
     private void validFirstName(String firsName) {
         if (firsName == null) {
-            throw new NullPointerException("First name can not be null");
+            throw new NullParameterException("First name can not be null");
         }
         if (firsName.isEmpty()) {
             throw new IllegalArgumentException("First name can not be empty");
@@ -93,7 +92,7 @@ public class ValidationUser implements Consumer<User> {
 
     private void validLastName(String lastName) {
         if (lastName == null) {
-            throw new NullPointerException("Last name can not be null");
+            throw new NullParameterException("Last name can not be null");
         }
         if (lastName.isEmpty()) {
             throw new IllegalArgumentException("Last name can not be empty");
@@ -105,7 +104,7 @@ public class ValidationUser implements Consumer<User> {
 
     private void validAccountCreateTime(LocalDateTime createAccountTime) {
         if (createAccountTime == null) {
-            throw new NullPointerException("Create Account time can not be null");
+            throw new NullParameterException("Create Account time can not be null");
         }
     }
 }

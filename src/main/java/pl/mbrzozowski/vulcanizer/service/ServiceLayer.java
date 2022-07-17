@@ -16,5 +16,5 @@ public interface ServiceLayer<T, R> {
 
     R findById(Long id);
 
-    void delete(T t);
+    void deleteById(Long t);
 }

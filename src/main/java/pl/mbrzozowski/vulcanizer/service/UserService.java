@@ -60,7 +60,7 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse> {
     }
 
     @Override
-    public void delete(UserRequest userRequest) {
+    public void deleteById(Long id) {
         //TODO
     }
 

@@ -2,12 +2,11 @@ package pl.mbrzozowski.vulcanizer.validation;
 
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullPointerException;
+import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
 import java.util.function.Consumer;
 
-@SuppressWarnings("rawtypes")
 public class ValidationState implements Consumer<State> {
     private final StateRepository stateRepository;
 
@@ -23,7 +22,7 @@ public class ValidationState implements Consumer<State> {
     private void validName(String name) {
         boolean isState = stateRepository.findByName(name).isPresent();
         if (name == null) {
-            throw new NullPointerException("State name can not be null");
+            throw new NullParameterException("State name can not be null");
         }
         if (name.equalsIgnoreCase("")) {
             throw new IllegalArgumentException("State name can not be empty");

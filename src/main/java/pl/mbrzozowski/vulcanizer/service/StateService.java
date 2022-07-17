@@ -59,7 +59,7 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse> {
     }
 
     @Override
-    public void delete(StateRequest stateRequest) {
+    public void deleteById(Long id) {
     }
 
     public StateResponse findByName(String name) {

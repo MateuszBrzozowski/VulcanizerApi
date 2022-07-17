@@ -9,8 +9,9 @@ import pl.mbrzozowski.vulcanizer.dto.StateRequest;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullPointerException;
+import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
+import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 
 import java.util.Optional;
 
@@ -27,24 +28,6 @@ class StateServiceTest {
         stateService = new StateService(stateRepository);
     }
 
-    /**
-     * Generator of String of specific length
-     *
-     * @param length MAX_LENGTH = 1000, MIN_LENGTH = 0
-     * @return Sequence of chars like string
-     */
-    private String generateString(int length) {
-        StringBuilder result = new StringBuilder();
-        final int MAX_LENGTH = 1000;
-        if (length <= 0) {
-            return result.toString();
-        }
-        if (length > MAX_LENGTH) {
-            length = MAX_LENGTH;
-        }
-        result.append("a".repeat(length));
-        return String.valueOf(result);
-    }
 
     @Test
     void save_addNewState_Success() {
@@ -100,13 +83,13 @@ class StateServiceTest {
         StateRequest state = StateRequest.builder()
                 .name(null)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> stateService.save(state));
+        Assertions.assertThrows(NullParameterException.class, () -> stateService.save(state));
     }
 
     @Test
     void save_StateNameToLong_ThrowIllegalArgumentException() {
         StateRequest state = StateRequest.builder()
-                .name(generateString(51))
+                .name(new StringGenerator().apply(51))
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> stateService.save(state));
     }
@@ -114,7 +97,7 @@ class StateServiceTest {
     @Test
     void save_StateName50Chars_ThrowIllegalArgumentException() {
         StateRequest state = StateRequest.builder()
-                .name(generateString(50))
+                .name(new StringGenerator().apply(50))
                 .build();
         Assertions.assertDoesNotThrow(() -> stateService.save(state));
     }
@@ -202,7 +185,7 @@ class StateServiceTest {
                 .build();
         when(stateRepository.findById(id)).thenReturn(Optional.ofNullable(state));
         stateService.update(stateRequest);
-        verify(stateRepository).save(state);
+        verify(stateRepository).save(null);
     }
 
     @Test

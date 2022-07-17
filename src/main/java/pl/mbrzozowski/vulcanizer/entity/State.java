@@ -24,4 +24,9 @@ public class State {
     public State(String name) {
         this.name = name;
     }
+
+    public State(long id, String stateName) {
+        this.id = id;
+        this.name = stateName;
+    }
 }
