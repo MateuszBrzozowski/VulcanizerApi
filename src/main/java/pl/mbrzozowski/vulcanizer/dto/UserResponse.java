@@ -2,6 +2,7 @@ package pl.mbrzozowski.vulcanizer.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
 import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
@@ -20,7 +21,7 @@ public class UserResponse {
     private LocalDate birthDate;
     private LocalDateTime createAccountTime;
     private String statusAccount;
-    private Long idAddress;
+    private Address idAddress;
     private Long idAvatar;
     private Long idPhone;
 
@@ -33,7 +34,7 @@ public class UserResponse {
                         final LocalDate birthDate,
                         final LocalDateTime createAccountTime,
                         final UserStatusAccount statusAccount,
-                        final Long idAddress,
+                        final Address idAddress,
                         final Long idAvatar,
                         final Long idPhone) {
         this.id = id;

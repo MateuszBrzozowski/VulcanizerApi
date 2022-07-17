@@ -3,10 +3,10 @@ package pl.mbrzozowski.vulcanizer.entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
-import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
+import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
+import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -35,7 +35,9 @@ public class User {
     private LocalDateTime createAccountTime;
     @Column(name = "status")
     private String statusAccount;
-    private Long idAddress;
+    @OneToOne
+    @JoinColumn(name = "id_address")
+    private Address idAddress;
     private Long idAvatar;
     private Long idPhone;
 
@@ -49,7 +51,7 @@ public class User {
                 final LocalDate birthDate,
                 final LocalDateTime createAccountTime,
                 final UserStatusAccount statusAccount,
-                final Long idAddress,
+                final Address idAddress,
                 final Long idAvatar,
                 final Long idPhone) {
         this.email = email;

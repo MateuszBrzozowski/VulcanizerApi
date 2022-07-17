@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
 import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
@@ -23,7 +24,7 @@ public class UserRequest {
     private String gender;
     private LocalDate birthDate;
     private String statusAccount;
-    private Long idAddress;
+    private Address idAddress;
     private Long idAvatar;
     private Long idPhone;
 
@@ -36,7 +37,7 @@ public class UserRequest {
                        final Gender gender,
                        final LocalDate birthDate,
                        final UserStatusAccount statusAccount,
-                       final Long idAddress,
+                       final Address idAddress,
                        final Long idAvatar,
                        final Long idPhone) {
         this.id = id;
