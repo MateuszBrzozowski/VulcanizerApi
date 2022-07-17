@@ -18,8 +18,10 @@ public class AddressRequestToAddress implements Function<AddressRequest, Address
         String stateName = addressRequest.getStateName();
         State state = null;
         if (stateName != null) {
-            StateResponse stateResponse = stateService.findByName(stateName);
-            state = new StateResponseToState().apply(stateResponse);
+            if (!stateName.equalsIgnoreCase("")) {
+                StateResponse stateResponse = stateService.findByName(stateName);
+                state = new StateResponseToState().apply(stateResponse);
+            }
         }
         return Address.builder()
                 .id(addressRequest.getId())

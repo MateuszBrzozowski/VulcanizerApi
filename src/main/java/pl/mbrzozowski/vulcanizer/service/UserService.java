@@ -61,7 +61,8 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse> {
 
     @Override
     public void deleteById(Long id) {
-        //TODO
+        findById(id);
+        userRepository.deleteById(id);
     }
 
     public UserResponse findByEmail(String email) {

@@ -326,4 +326,34 @@ class AddressServiceTest {
     void delete_DoesNotFoundAddress_ThrowNoSuchElementException() {
         Assertions.assertThrows(NoSuchElementException.class, () -> addressService.deleteById(1L));
     }
+
+    @Test
+    void update_NullStateName_DoesNotThrowException() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .id(1L)
+                .city(CITY)
+                .stateName(null)
+                .build();
+        Address address = Address.builder()
+                .id(1L)
+                .state(new State(1L, STATE_NAME))
+                .build();
+        when(addressRepository.findById(1L)).thenReturn(Optional.of(address));
+        Assertions.assertDoesNotThrow(() -> addressService.update(addressRequest));
+    }
+
+    @Test
+    void update_EmptyStateName_DoesNotThrowException() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .id(1L)
+                .city(CITY)
+                .stateName("")
+                .build();
+        Address address = Address.builder()
+                .id(1L)
+                .state(new State(1L, STATE_NAME))
+                .build();
+        when(addressRepository.findById(1L)).thenReturn(Optional.of(address));
+        Assertions.assertDoesNotThrow(() -> addressService.update(addressRequest));
+    }
 }
