@@ -5,8 +5,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.mbrzozowski.vulcanizer.dto.StateRequest;
 import pl.mbrzozowski.vulcanizer.dto.StateResponse;
-import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.service.StateService;
 
 import java.util.List;
@@ -28,26 +28,26 @@ public class StateController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<State> findById(@PathVariable("id") Long id) {
-        State state = stateService.findById(id);
-        return new ResponseEntity<>(state, HttpStatus.OK);
+    public ResponseEntity<StateResponse> findById(@PathVariable("id") Long id) {
+        StateResponse stateResponse = stateService.findById(id);
+        return new ResponseEntity<>(stateResponse, HttpStatus.OK);
     }
 
     @GetMapping("/find")
-    public ResponseEntity<State> findByName(@Param("name") String name) {
-        State state = stateService.findByName(name);
-        return new ResponseEntity<>(state, HttpStatus.OK);
+    public ResponseEntity<StateResponse> findByName(@Param("name") String name) {
+        StateResponse stateResponse = stateService.findByName(name);
+        return new ResponseEntity<>(stateResponse, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody State state) {
+    public ResponseEntity<?> save(@RequestBody StateRequest state) {
         stateService.save(state);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<State> update(@RequestBody State state) {
-        State update = stateService.update(state);
+    public ResponseEntity<StateResponse> update(@RequestBody StateRequest state) {
+        StateResponse update = stateService.update(state);
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 }

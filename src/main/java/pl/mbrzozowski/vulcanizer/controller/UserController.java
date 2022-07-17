@@ -7,9 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
-import pl.mbrzozowski.vulcanizer.entity.User;
-import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.service.UserService;
 
 import java.util.List;
@@ -43,10 +40,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest) {
-        User user = new UserRequestToUser().apply(userRequest);
-        user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
-        userService.saveUser(user);
+    public ResponseEntity<?> save(@RequestBody UserRequest userRequest) {
+        userService.save(userRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

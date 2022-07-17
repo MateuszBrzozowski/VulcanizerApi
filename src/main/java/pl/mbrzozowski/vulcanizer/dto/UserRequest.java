@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.entity.converter.GenderConverter;
-import pl.mbrzozowski.vulcanizer.entity.converter.UserStatusAccountConverter;
+import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
+import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 
@@ -52,6 +52,13 @@ public class UserRequest {
         this.idAddress = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
+    }
+
+    public UserRequest(String email, String password, String firstName, String lastName) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public Gender getGender() {

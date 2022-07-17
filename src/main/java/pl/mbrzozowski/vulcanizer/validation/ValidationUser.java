@@ -9,16 +9,16 @@ import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 
 @SuppressWarnings("rawtypes")
 @RequiredArgsConstructor
-public class ValidationUser<T> implements Validator {
+public class ValidationUser implements Consumer<User> {
     private static final long MIN_USER_AGE = 6;
     private final UserRepository userRepository;
 
     @Override
-    public void accept(Object o) {
-        User user = (User) o;
+    public void accept(User user) {
         validEmail(user.getEmail(), user.getId());
         validPassword(user.getPassword());
         validFirstName(user.getFirstName());

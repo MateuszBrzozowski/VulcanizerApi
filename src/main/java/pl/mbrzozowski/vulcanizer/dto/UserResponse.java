@@ -2,8 +2,8 @@ package pl.mbrzozowski.vulcanizer.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.mbrzozowski.vulcanizer.entity.converter.GenderConverter;
-import pl.mbrzozowski.vulcanizer.entity.converter.UserStatusAccountConverter;
+import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
+import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 

@@ -1,4 +1,4 @@
-package pl.mbrzozowski.vulcanizer.entity.converter;
+package pl.mbrzozowski.vulcanizer.enums.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;

@@ -1,4 +1,4 @@
-package pl.mbrzozowski.vulcanizer.entity.converter;
+package pl.mbrzozowski.vulcanizer.enums.converter;
 
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 

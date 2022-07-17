@@ -5,8 +5,10 @@ import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullPointerException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
+import java.util.function.Consumer;
+
 @SuppressWarnings("rawtypes")
-public class ValidationState<T> implements Validator {
+public class ValidationState implements Consumer<State> {
     private final StateRepository stateRepository;
 
     public ValidationState(StateRepository stateRepository) {
@@ -14,8 +16,7 @@ public class ValidationState<T> implements Validator {
     }
 
     @Override
-    public void accept(Object o) {
-        State state = (State) o;
+    public void accept(State state) {
         validName(state.getName());
     }
 

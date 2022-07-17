@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.mbrzozowski.vulcanizer.dto.StateRequest;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
@@ -16,16 +17,6 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 class StateServiceTest {
-    //TODO
-    //Usuwanie
-    //Nie znajduje ID
-    //Wyszukiwanie
-    //Nie znajduje po id
-    //nie znajduje nazwy
-    //znajduje nazwe i zwraca
-    //znajduje id i zwraca
-    //Aktualizowanie
-    //Aktualizowanie jednego wojewodzta a istnieje juz taka nazwa
     private StateService stateService;
     private StateRepository stateRepository;
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -57,10 +48,13 @@ class StateServiceTest {
 
     @Test
     void save_addNewState_Success() {
+        StateRequest stateRequest = StateRequest.builder()
+                .name("Łódzkie")
+                .build();
         State state = State.builder()
                 .name("Łódzkie")
                 .build();
-        stateService.save(state);
+        stateService.save(stateRequest);
         verify(stateRepository).save(state);
     }
 
@@ -70,7 +64,7 @@ class StateServiceTest {
                 .id(1L)
                 .name("Łódzkie")
                 .build();
-        State stateSecond = State.builder()
+        StateRequest stateSecond = StateRequest.builder()
                 .id(2L)
                 .name("Łódzkie")
                 .build();
@@ -84,7 +78,7 @@ class StateServiceTest {
                 .id(1L)
                 .name("Łódzkie")
                 .build();
-        State stateSecond = State.builder()
+        StateRequest stateSecond = StateRequest.builder()
                 .id(2L)
                 .name("Mazowieckie")
                 .build();
@@ -94,7 +88,7 @@ class StateServiceTest {
 
     @Test
     void save_EmptyStateNameCanNotAdd_ThrowIllegalArgumentException() {
-        State state = State.builder()
+        StateRequest state = StateRequest.builder()
                 .id(1L)
                 .name("")
                 .build();
@@ -103,7 +97,7 @@ class StateServiceTest {
 
     @Test
     void save_NullStateNameCanNotAdd_ThrowIllegalArgumentException() {
-        State state = State.builder()
+        StateRequest state = StateRequest.builder()
                 .name(null)
                 .build();
         Assertions.assertThrows(NullPointerException.class, () -> stateService.save(state));
@@ -111,7 +105,7 @@ class StateServiceTest {
 
     @Test
     void save_StateNameToLong_ThrowIllegalArgumentException() {
-        State state = State.builder()
+        StateRequest state = StateRequest.builder()
                 .name(generateString(51))
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> stateService.save(state));
@@ -119,7 +113,7 @@ class StateServiceTest {
 
     @Test
     void save_StateName50Chars_ThrowIllegalArgumentException() {
-        State state = State.builder()
+        StateRequest state = StateRequest.builder()
                 .name(generateString(50))
                 .build();
         Assertions.assertDoesNotThrow(() -> stateService.save(state));
@@ -202,8 +196,12 @@ class StateServiceTest {
                 .id(id)
                 .name(name)
                 .build();
+        StateRequest stateRequest = StateRequest.builder()
+                .id(id)
+                .name(name)
+                .build();
         when(stateRepository.findById(id)).thenReturn(Optional.ofNullable(state));
-        stateService.update(state);
+        stateService.update(stateRequest);
         verify(stateRepository).save(state);
     }
 
@@ -215,13 +213,13 @@ class StateServiceTest {
                 .id(id)
                 .name(name)
                 .build();
-        State stateSecond = State.builder()
+        StateRequest stateRequest = StateRequest.builder()
                 .id(2L)
                 .name(name)
                 .build();
         when(stateRepository.findById(2L)).thenReturn(Optional.ofNullable(state));
         when(stateRepository.findByName(name)).thenReturn(Optional.ofNullable(state));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> stateService.update(stateSecond));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> stateService.update(stateRequest));
     }
 
 }
