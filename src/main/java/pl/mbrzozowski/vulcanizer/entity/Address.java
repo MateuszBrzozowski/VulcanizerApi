@@ -1,8 +1,17 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
-@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity(name = "address")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,4 +23,8 @@ public class Address {
     private String city;
     @Column(name = "postal_code")
     private String code;
+    @ManyToOne
+    @JoinColumn(name = "id_state")
+    private State state;
+
 }

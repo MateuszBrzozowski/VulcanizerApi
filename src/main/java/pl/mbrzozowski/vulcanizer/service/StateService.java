@@ -2,6 +2,8 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.mbrzozowski.vulcanizer.dto.StateResponse;
+import pl.mbrzozowski.vulcanizer.dto.mapper.StateToStateResponse;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
@@ -9,6 +11,7 @@ import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationState;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +40,11 @@ public class StateService {
                 });
     }
 
-    public List<State> findAll() {
-        return stateRepository.findAll();
+    public List<StateResponse> findAll() {
+        return stateRepository.findAll()
+                .stream()
+                .map(state -> new StateToStateResponse().apply(state))
+                .collect(Collectors.toList());
     }
 
     public State update(State state) {

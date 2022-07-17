@@ -5,6 +5,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.mbrzozowski.vulcanizer.dto.StateResponse;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.service.StateService;
 
@@ -21,8 +22,8 @@ public class StateController {
     }
 
     @GetMapping
-    public ResponseEntity<List<State>> findAll() {
-        List<State> states = stateService.findAll();
+    public ResponseEntity<List<StateResponse>> findAll() {
+        List<StateResponse> states = stateService.findAll();
         return new ResponseEntity<>(states, HttpStatus.OK);
     }
 

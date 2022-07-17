@@ -8,7 +8,6 @@ import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
-import pl.mbrzozowski.vulcanizer.service.mapper.UserMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,7 +30,6 @@ class UserServiceTest {
     @BeforeEach
     public void beforeEach() {
         userRepository = mock(UserRepository.class);
-        UserMapper mapper = mock(UserMapper.class);
         userService = new UserService(userRepository);
     }
 

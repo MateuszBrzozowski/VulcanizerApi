@@ -195,17 +195,6 @@ class StateServiceTest {
     }
 
     @Test
-    void deleteById_OK() {
-        long id = 1L;
-        State state = State.builder()
-                .id(id)
-                .name("Łódzkie")
-                .build();
-        stateService.deleteById(id);
-        verify(stateRepository).deleteById(id);
-    }
-
-    @Test
     void update_UpdateNameOfState_OK() {
         String name = "Łódzkie";
         long id = 1L;

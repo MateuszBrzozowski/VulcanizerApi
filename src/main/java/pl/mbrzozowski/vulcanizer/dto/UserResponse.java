@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 public class UserResponse {
     private Long id;
     private String email;
-    private String password;
     private String firstName;
     private String lastName;
     private String gender;
@@ -28,7 +27,6 @@ public class UserResponse {
     @Builder
     public UserResponse(final Long id,
                         final String email,
-                        final String password,
                         final String firstName,
                         final String lastName,
                         final Gender gender,
@@ -40,7 +38,6 @@ public class UserResponse {
                         final Long idPhone) {
         this.id = id;
         this.email = email;
-        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         if (gender != null) {
