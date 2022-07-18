@@ -9,6 +9,9 @@ public class AddressToAddressResponse implements Function<Address, AddressRespon
 
     @Override
     public AddressResponse apply(Address address) {
+        if (address == null) {
+            return null;
+        }
         AddressResponse addressResponse = AddressResponse.builder()
                 .id(address.getId())
                 .addressLineOne(address.getAddressLineOne())

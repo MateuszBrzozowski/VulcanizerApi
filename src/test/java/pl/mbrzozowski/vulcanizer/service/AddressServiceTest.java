@@ -6,10 +6,12 @@ import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.AddressRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
+import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 
 import java.util.List;
 import java.util.Optional;
@@ -207,6 +209,62 @@ class AddressServiceTest {
                 .code("")
                 .build();
         Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+    }
+
+    @Test
+    void save_ToLongLineOne_ThrowIllegalArgumentException() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLineOne(new StringGenerator().apply(101))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
+    }
+
+    @Test
+    void save_ToLongLineTwo_ThrowIllegalArgumentException() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLineTwo(new StringGenerator().apply(101))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
+    }
+
+    @Test
+    void save_MaxLengthLineTwo_DoesNotThrow() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLineTwo(new StringGenerator().apply(100))
+                .build();
+        Assertions.assertDoesNotThrow(() -> addressService.save(addressRequest));
+    }
+
+    @Test
+    void save_ToLongCityName_ThrowIllegalArgumentException() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .city(new StringGenerator().apply(41))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
+    }
+
+    @Test
+    void save_MaxLengthCityName_DoesNotThrow() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .city(new StringGenerator().apply(40))
+                .build();
+        Assertions.assertDoesNotThrow(() -> addressService.save(addressRequest));
+    }
+
+    @Test
+    void save_ToLongCode_ThrowIllegalArgumentException() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .code(new StringGenerator().apply(7))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
+    }
+
+    @Test
+    void save_MaxLengthCode_DoesNotThrow() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .code(new StringGenerator().apply(6))
+                .build();
+        Assertions.assertDoesNotThrow(() -> addressService.save(addressRequest));
     }
 
     @Test

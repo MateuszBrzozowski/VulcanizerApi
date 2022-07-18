@@ -26,16 +26,4 @@ public class Address {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_state")
     private State state;
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", addressLineTwo='" + addressLineTwo + '\'' +
-                ", addressLineOne='" + addressLineOne + '\'' +
-                ", city='" + city + '\'' +
-                ", code='" + code + '\'' +
-                ", state=" + state +
-                '}';
-    }
 }

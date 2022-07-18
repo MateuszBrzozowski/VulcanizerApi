@@ -3,8 +3,6 @@ package pl.mbrzozowski.vulcanizer.dto;
 import lombok.Builder;
 import lombok.Data;
 import pl.mbrzozowski.vulcanizer.entity.Address;
-import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
-import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +17,7 @@ public class UserResponse {
     private LocalDate birthDate;
     private LocalDateTime createAccountTime;
     private String statusAccount;
-    private Address address;
+    private AddressResponse address;
     private Long idAvatar;
     private Long idPhone;
 
@@ -32,7 +30,7 @@ public class UserResponse {
                         final LocalDate birthDate,
                         final LocalDateTime createAccountTime,
                         final String statusAccount,
-                        final Address idAddress,
+                        final AddressResponse address,
                         final Long idAvatar,
                         final Long idPhone) {
         this.id = id;
@@ -43,16 +41,10 @@ public class UserResponse {
         this.birthDate = birthDate;
         this.createAccountTime = createAccountTime;
         this.statusAccount = statusAccount;
-        this.address = idAddress;
+        this.address = address;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
     }
 
-    public UserStatusAccount getStatusAccount() {
-        return UserStatusAccountConverter.convert(this.statusAccount);
-    }
 
-    public void setStatusAccount(UserStatusAccount statusAccount) {
-        this.statusAccount = UserStatusAccountConverter.convert(statusAccount);
-    }
 }

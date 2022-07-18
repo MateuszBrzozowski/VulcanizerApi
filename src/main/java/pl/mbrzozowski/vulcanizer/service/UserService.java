@@ -47,7 +47,7 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
         User userEdit = new UserRequestToUser(stateService).apply(userRequest);
         ValidationUser validationUser = new ValidationUser(userRepository);
         validationUser.accept(userEdit);
-        if (isUser.getAddress() == null) {
+        if (isUser.getAddress() == null && userEdit.getAddress() != null) {
             Address address = addressService.save(userRequest.getAddress());
             userEdit.setAddress(address);
         } else {

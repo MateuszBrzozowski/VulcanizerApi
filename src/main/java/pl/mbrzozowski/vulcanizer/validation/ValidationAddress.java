@@ -53,49 +53,65 @@ public class ValidationAddress implements Consumer<Address> {
     }
 
     private void isValidCode(Address address) {
-        if ((address.getCode() != null) &&
-                (address.getAddressLineOne() == null
-                        && address.getAddressLineTwo() == null
-                        && address.getCity() == null
-                        && address.getState() == null)) {
-            if (address.getCode().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("Address: All parameters can not be null or empty");
+        if (address.getCode() != null) {
+            if (address.getAddressLineOne() == null
+                    && address.getAddressLineTwo() == null
+                    && address.getCity() == null
+                    && address.getState() == null) {
+                if (address.getCode().equalsIgnoreCase("")) {
+                    throw new IllegalArgumentException("Address: All parameters can not be null or empty");
+                }
+            }
+            if (address.getCode().length() > 6) {
+                throw new IllegalArgumentException("Address: Postal code to long");
             }
         }
     }
 
     private void isValidCity(Address address) {
-        if ((address.getCity() != null) &&
-                (address.getAddressLineOne() == null
-                        && address.getAddressLineTwo() == null
-                        && address.getCode() == null
-                        && address.getState() == null)) {
-            if (address.getCity().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("Address: All parameters can not be null or empty");
+        if (address.getCity() != null) {
+            if (address.getAddressLineOne() == null
+                    && address.getAddressLineTwo() == null
+                    && address.getCode() == null
+                    && address.getState() == null) {
+                if (address.getCity().equalsIgnoreCase("")) {
+                    throw new IllegalArgumentException("Address: All parameters can not be null or empty");
+                }
+            }
+            if (address.getCity().length() > 40) {
+                throw new IllegalArgumentException("Address: City name to Long");
             }
         }
     }
 
     private void isValidLineTwo(Address address) {
-        if ((address.getAddressLineTwo() != null) &&
-                (address.getAddressLineOne() == null
-                        && address.getCity() == null
-                        && address.getCode() == null
-                        && address.getState() == null)) {
-            if (address.getAddressLineTwo().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("Address: All parameters can not be null or empty");
+        if (address.getAddressLineTwo() != null) {
+            if (address.getAddressLineOne() == null
+                    && address.getCity() == null
+                    && address.getCode() == null
+                    && address.getState() == null) {
+                if (address.getAddressLineTwo().equalsIgnoreCase("")) {
+                    throw new IllegalArgumentException("Address: All parameters can not be null or empty");
+                }
+            }
+            if (address.getAddressLineTwo().length() > 100) {
+                throw new IllegalArgumentException("Address: Line two to Long");
             }
         }
     }
 
     private void isValidLineOne(Address address) {
-        if ((address.getAddressLineOne() != null) &&
-                (address.getAddressLineTwo() == null
-                        && address.getCity() == null
-                        && address.getCode() == null
-                        && address.getState() == null)) {
-            if (address.getAddressLineOne().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("Address: All parameters can not be null or empty");
+        if (address.getAddressLineOne() != null) {
+            if (address.getAddressLineTwo() == null
+                    && address.getCity() == null
+                    && address.getCode() == null
+                    && address.getState() == null) {
+                if (address.getAddressLineOne().equalsIgnoreCase("")) {
+                    throw new IllegalArgumentException("Address: All parameters can not be null or empty");
+                }
+            }
+            if (address.getAddressLineOne().length() > 100) {
+                throw new IllegalArgumentException("Address: Line one to Long");
             }
         }
     }

@@ -4,7 +4,7 @@ import org.springframework.core.convert.converter.Converter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
-public class GenderConverterToStringFromInt implements Converter<Integer, String> {
+class GenderConverterToStringFromInt implements Converter<Integer, String> {
     @Override
     public String convert(Integer source) {
         switch (source) {

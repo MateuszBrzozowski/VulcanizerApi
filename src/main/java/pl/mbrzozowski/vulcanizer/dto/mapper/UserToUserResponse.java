@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.dto.mapper;
 
+import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
 
@@ -20,7 +21,7 @@ public class UserToUserResponse implements Function<User, UserResponse> {
                 .birthDate(user.getBirthDate())
                 .createAccountTime(user.getCreateAccountTime())
                 .statusAccount(user.getStatusAccount())
-                .idAddress(user.getAddress())
+                .address(new AddressToAddressResponse().apply(user.getAddress()))
                 .idAvatar(user.getIdAvatar())
                 .idPhone(user.getIdPhone())
                 .build();

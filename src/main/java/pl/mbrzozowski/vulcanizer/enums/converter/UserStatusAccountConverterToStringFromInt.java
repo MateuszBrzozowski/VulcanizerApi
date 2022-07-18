@@ -4,7 +4,7 @@ import org.springframework.core.convert.converter.Converter;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
-public class UserStatusAccountConverterToStringFromInt implements Converter<Integer, String> {
+class UserStatusAccountConverterToStringFromInt implements Converter<Integer, String> {
     @Override
     public String convert(Integer source) {
         switch (source) {

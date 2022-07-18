@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
-import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverterToStringFromInt;
+import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 
 import java.time.LocalDate;
 
@@ -39,7 +39,7 @@ public class UserRequest {
     }
 
     public void setStatusAccount(int statusAccount) {
-        this.statusAccount = new UserStatusAccountConverterToStringFromInt().convert(statusAccount);
+        this.statusAccount = UserStatusAccountConverter.convert(statusAccount);
     }
 
     public static CustomUserRequestBuilder builder() {
