@@ -17,7 +17,7 @@ public class AddressToAddressResponse implements Function<Address, AddressRespon
                 .city(address.getCity())
                 .build();
         if (address.getState() != null) {
-            addressResponse.setStateName(address.getState().getName());
+            addressResponse.setState(address.getState().getName());
         }
         return addressResponse;
     }

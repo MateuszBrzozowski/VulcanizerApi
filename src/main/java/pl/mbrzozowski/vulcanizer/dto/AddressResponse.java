@@ -15,5 +15,5 @@ public class AddressResponse {
     private String addressLineOne;
     private String city;
     private String code;
-    private String stateName;
+    private String state;
 }

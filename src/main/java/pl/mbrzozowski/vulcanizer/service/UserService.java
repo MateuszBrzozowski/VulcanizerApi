@@ -2,10 +2,12 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
+import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
@@ -18,15 +20,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements ServiceLayer<UserRequest, UserResponse> {
+public class UserService implements ServiceLayer<UserRequest, UserResponse, User> {
     private final UserRepository userRepository;
     private final StateService stateService;
     private final AddressService addressService;
 
     @Override
-    public void save(UserRequest userRequest) {
+    public User save(UserRequest userRequest) {
         User user = new UserRequestToUser(stateService).apply(userRequest);
-        user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
+        user.setId(null);
+        user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED.name());
         ValidationUser validationUser = new ValidationUser(userRepository);
         validationUser.accept(user);
         try {
@@ -35,16 +38,29 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse> {
             user.setAddress(null);
         }
         userRepository.save(user);
+        return user;
     }
 
     @Override
     public UserResponse update(UserRequest userRequest) {
-        UserResponse isUser = findById(userRequest.getId());
+        User isUser = findById(userRequest.getId());
         User userEdit = new UserRequestToUser(stateService).apply(userRequest);
-        userEdit.setId(isUser.getId());
-        userEdit.setCreateAccountTime(isUser.getCreateAccountTime());
         ValidationUser validationUser = new ValidationUser(userRepository);
         validationUser.accept(userEdit);
+        if (isUser.getAddress() == null) {
+            Address address = addressService.save(userRequest.getAddress());
+            userEdit.setAddress(address);
+        } else {
+            AddressRequest addressRequest = userRequest.getAddress();
+            if (addressRequest != null) {
+                addressRequest.setId(isUser.getAddress().getId());
+                userRequest.setAddress(addressRequest);
+                userEdit = new UserRequestToUser(stateService).apply(userRequest);
+            }
+        }
+        userEdit.setId(isUser.getId());
+        userEdit.setPassword(isUser.getPassword());
+        userEdit.setCreateAccountTime(isUser.getCreateAccountTime());
         userRepository.save(userEdit);
         return new UserToUserResponse().apply(userEdit);
     }
@@ -58,13 +74,13 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse> {
     }
 
     @Override
-    public UserResponse findById(Long id) {
-        User user = userRepository
+    public User findById(Long id) {
+        return userRepository
                 .findById(id)
                 .orElseThrow(() -> {
                     throw new UserWasNotFoundException("User by id [" + id + "] was not found");
                 });
-        return new UserToUserResponse().apply(user);
+//        return new UserToUserResponse().apply(user);
     }
 
     @Override

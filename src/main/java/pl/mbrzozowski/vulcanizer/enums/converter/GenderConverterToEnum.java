@@ -13,8 +13,9 @@ class GenderConverterToEnum implements Converter<String, Gender> {
             return Gender.FEMALE;
         } else if (source.equalsIgnoreCase(Gender.MALE.name())) {
             return Gender.MALE;
-        } else {
+        } else if (source.equalsIgnoreCase(Gender.UNDEFINED.name())) {
             return Gender.UNDEFINED;
         }
+        return Gender.UNDEFINED;
     }
 }

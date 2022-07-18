@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
+import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.service.UserService;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findById(@PathVariable("id") Long id) {
-        UserResponse userResponse = userService.findById(id);
+        UserResponse userResponse = new UserToUserResponse().apply(userService.findById(id));
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 

@@ -18,11 +18,11 @@ public class AddressRequestToAddress implements Function<AddressRequest, Address
         if (addressRequest == null) {
             return null;
         }
-        String stateName = addressRequest.getStateName();
+        String stateName = addressRequest.getState();
         State state = null;
         if (stateName != null) {
             if (!stateName.equalsIgnoreCase("")) {
-                StateResponse stateResponse = stateService.findByName(stateName);
+                StateResponse stateResponse = new StateToStateResponse().apply(stateService.findByName(stateName));
                 state = new StateResponseToState().apply(stateResponse);
             }
         }

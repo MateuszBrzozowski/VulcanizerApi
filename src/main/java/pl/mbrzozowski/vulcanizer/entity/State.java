@@ -29,4 +29,12 @@ public class State {
         this.id = id;
         this.name = stateName;
     }
+
+    @Override
+    public String toString() {
+        return "State{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

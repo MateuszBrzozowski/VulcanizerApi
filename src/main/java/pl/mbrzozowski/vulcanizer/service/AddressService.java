@@ -16,29 +16,34 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AddressService implements ServiceLayer<AddressRequest, AddressResponse> {
+public class AddressService implements ServiceLayer<AddressRequest, AddressResponse, Address> {
     private final AddressRepository addressRepository;
     private final StateService stateService;
     private final ValidationAddress validationAddress = new ValidationAddress();
 
     @Override
-    public void save(AddressRequest addressRequest) {
+    public Address save(AddressRequest addressRequest) {
         addressRequest.setId(null);
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
         if (address != null) {
             validationAddress.accept(address);
             addressRepository.save(address);
         }
+        return address;
     }
 
     @Override
     public AddressResponse update(AddressRequest addressRequest) {
-        findById(addressRequest.getId());
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
-        validationAddress.accept(address);
-        addressRepository.save(address);
-        return new AddressToAddressResponse().apply(address);
+        if (addressRequest != null) {
+            findById(address.getId());
+            validationAddress.accept(address);
+            addressRepository.save(address);
+            return new AddressToAddressResponse().apply(address);
+        }
+        return null;
     }
+
 
     @Override
     public List<AddressResponse> findAll() {
@@ -50,13 +55,12 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
     }
 
     @Override
-    public AddressResponse findById(Long id) {
-        Address address = addressRepository
+    public Address findById(Long id) {
+        return addressRepository
                 .findById(id)
                 .orElseThrow(() -> {
                     throw new NoSuchElementException(String.format("Address by id [%s] was not found", id));
                 });
-        return new AddressToAddressResponse().apply(address);
     }
 
     @Override

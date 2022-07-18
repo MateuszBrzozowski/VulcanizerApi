@@ -6,15 +6,15 @@ import java.util.List;
  * @param <T> The Request Body
  * @param <R> The Response Body
  */
-public interface ServiceLayer<T, R> {
+public interface ServiceLayer<T, R, E> {
 
-    void save(T t);
+    E save(T t);
 
     R update(T t);
 
     List<R> findAll();
 
-    R findById(Long id);
+    E findById(Long id);
 
     void deleteById(Long t);
 }

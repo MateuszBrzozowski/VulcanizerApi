@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
+import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
@@ -258,11 +259,11 @@ class UserServiceTest {
     }
 
     @Test
-    void save_emailMustBeUnique_ThrowIllegalArgumentException() {
+    void save_emailMustBeUnique_ThrowEmailExistException() {
         User user = new User(email, password, firstName, lastName);
         UserRequest userSecond = new UserRequest(email, password, firstName, lastName);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(userSecond));
+        Assertions.assertThrows(EmailExistException.class, () -> userService.save(userSecond));
     }
 
     @Test
@@ -337,23 +338,7 @@ class UserServiceTest {
     }
 
     @Test
-    void update_editParametersNullPass_ThrowNullParameterException() {
-        long id = 1L;
-        User user = new User(email, password, firstName, lastName);
-        user.setId(id);
-        when(userRepository.findById(id)).thenReturn(Optional.of(user));
-        UserRequest userRequest = UserRequest.builder()
-                .id(id)
-                .email(email)
-                .password(null)
-                .firstName(firstName)
-                .lastName(lastName)
-                .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
-    }
-
-    @Test
-    void update_editParametersEmptyPass_ThrowIllegalArgumentException() {
+    void update_editParametersEmptyPass_ThrowNullParameterException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -365,7 +350,7 @@ class UserServiceTest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -428,7 +413,7 @@ class UserServiceTest {
                 .password(password)
                 .firstName(firstName)
                 .lastName("")
-                .statusAccount(UserStatusAccount.NOT_ACTIVATED)
+                .statusAccount(UserStatusAccount.NOT_ACTIVATED.name())
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
     }
@@ -441,7 +426,7 @@ class UserServiceTest {
         long idSecond = 2L;
         User userSecond = new User("email@p.pl", password, firstName, lastName);
         userSecond.setId(idSecond);
-        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
+        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED.name());
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.findByEmail("email@p.pl")).thenReturn(Optional.of(userSecond));
         UserRequest userRequestbuilder = UserRequest.builder()
@@ -450,7 +435,7 @@ class UserServiceTest {
                 .password(password)
                 .firstName(firstName)
                 .lastName(lastName)
-                .statusAccount(UserStatusAccount.ACTIVATED)
+                .statusAccount(UserStatusAccount.ACTIVATED.name())
                 .build();
         Assertions.assertDoesNotThrow(() -> userService.update(userRequestbuilder));
     }
@@ -463,7 +448,7 @@ class UserServiceTest {
         long idSecond = 2L;
         User userSecond = new User("email@p.pl", password, firstName, lastName);
         userSecond.setId(idSecond);
-        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
+        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED.name());
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.findByEmail("email@p.pl")).thenReturn(Optional.of(userSecond));
         UserRequest userRequestBuilder = UserRequest.builder()
@@ -572,5 +557,46 @@ class UserServiceTest {
                 .birthDate(LocalDate.now().minusYears(25))
                 .build();
         Assertions.assertDoesNotThrow(() -> userService.update(userRequest));
+    }
+
+    @Test
+    void update_NullPasswordOldInDB_DoesNotThrow() {
+        final String NOT_NULL = "Not Null";
+        UserRequest userRequest = UserRequest.builder()
+                .id(17L)
+                .firstName(NOT_NULL)
+                .lastName(NOT_NULL)
+                .email("mail@domain.pl")
+                .build();
+        User user = User.builder()
+                .id(17L)
+                .firstName(NOT_NULL)
+                .lastName(NOT_NULL)
+                .email("mail@domain.pl")
+                .password(NOT_NULL)
+                .build();
+        when(userRepository.findById(17L)).thenReturn(Optional.of(user));
+        Assertions.assertDoesNotThrow(() -> userService.update(userRequest));
+    }
+
+    @Test
+    void update_EmptyPassword_ThrowNullParamterException() {
+        final String NOT_NULL = "Not Null";
+        UserRequest userRequest = UserRequest.builder()
+                .id(17L)
+                .firstName(NOT_NULL)
+                .lastName(NOT_NULL)
+                .password("")
+                .email("mail@domain.pl")
+                .build();
+        User user = User.builder()
+                .id(17L)
+                .firstName(NOT_NULL)
+                .lastName(NOT_NULL)
+                .email("mail@domain.pl")
+                .password(NOT_NULL)
+                .build();
+        when(userRepository.findById(17L)).thenReturn(Optional.of(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
     }
 }

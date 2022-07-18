@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
+import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.service.AddressService;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class AddressController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AddressResponse> findById(@PathVariable("id") Long id) {
-        AddressResponse addressResponse = addressService.findById(id);
+        AddressResponse addressResponse = new AddressToAddressResponse().apply(addressService.findById(id));
         return new ResponseEntity<>(addressResponse, HttpStatus.OK);
     }
 

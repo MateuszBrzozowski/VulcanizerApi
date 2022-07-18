@@ -16,15 +16,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StateService implements ServiceLayer<StateRequest, StateResponse> {
+public class StateService implements ServiceLayer<StateRequest, StateResponse, State> {
     private final StateRepository stateRepository;
 
     @Override
-    public void save(StateRequest stateRequest) {
+    public State save(StateRequest stateRequest) {
         State state = new StateRequestToState().apply(stateRequest);
         ValidationState validator = new ValidationState(stateRepository);
         validator.accept(state);
         stateRepository.save(state);
+        return state;
     }
 
     @Override
@@ -49,26 +50,24 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse> {
     }
 
     @Override
-    public StateResponse findById(Long id) {
-        State state = stateRepository
+    public State findById(Long id) {
+        return stateRepository
                 .findById(id)
                 .orElseThrow(() -> {
                     throw new NoSuchElementException(String.format("State by id [%s] was not found", id));
                 });
-        return new StateToStateResponse().apply(state);
     }
 
     @Override
     public void deleteById(Long id) {
     }
 
-    public StateResponse findByName(String name) {
-        State state = stateRepository
+    public State findByName(String name) {
+        return stateRepository
                 .findByName(name)
                 .orElseThrow(() -> {
                     throw new NoSuchElementException(String.format("State by name [%s] was not found", name));
                 });
-        return new StateToStateResponse().apply(state);
     }
 
 }

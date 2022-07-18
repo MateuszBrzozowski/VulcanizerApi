@@ -3,10 +3,7 @@ package pl.mbrzozowski.vulcanizer.entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
-import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
-import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -15,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-
 @Entity(name = "user")
 public class User {
     @Id
@@ -35,7 +31,7 @@ public class User {
     private LocalDateTime createAccountTime;
     @Column(name = "status")
     private String statusAccount;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_address")
     private Address address;
     private Long idAvatar;
@@ -47,23 +43,22 @@ public class User {
                 final String password,
                 final String firstName,
                 final String lastName,
-                final Gender gender,
+                final String gender,
                 final LocalDate birthDate,
                 final LocalDateTime createAccountTime,
-                final UserStatusAccount statusAccount,
+                final String statusAccount,
                 final Address idAddress,
                 final Long idAvatar,
                 final Long idPhone) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        if (gender != null) {
-            this.gender = gender.name();
-        }
+        this.gender = gender;
         this.birthDate = birthDate;
         this.createAccountTime = createAccountTime;
-        this.statusAccount = statusAccount.name();
+        this.statusAccount = statusAccount;
         this.address = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
@@ -86,22 +81,6 @@ public class User {
         this.createAccountTime = createAccountTime;
     }
 
-    public Gender getGender() {
-        return GenderConverter.convert(this.gender);
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = GenderConverter.convert(gender);
-    }
-
-    public void setStatusAccount(UserStatusAccount statusAccount) {
-        this.statusAccount = UserStatusAccountConverter.convert(statusAccount);
-    }
-
-    public UserStatusAccount getStatusAccount() {
-        return UserStatusAccountConverter.convert(this.statusAccount);
-    }
-
     public static UserBuilder builder() {
         return new CustomUserBuilder();
     }
@@ -114,7 +93,7 @@ public class User {
                 super.createAccountTime = LocalDateTime.now();
             }
             if (super.statusAccount == null) {
-                super.statusAccount = UserStatusAccount.NOT_ACTIVATED;
+                super.statusAccount = UserStatusAccount.NOT_ACTIVATED.name();
             }
             return super.build();
         }

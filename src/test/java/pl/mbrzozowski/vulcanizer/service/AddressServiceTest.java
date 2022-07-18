@@ -55,7 +55,7 @@ class AddressServiceTest {
     @Test
     void save_OnlyState_Correct() {
         AddressRequest addressRequest = AddressRequest.builder()
-                .stateName(state.getName())
+                .state(state.getName())
                 .build();
         Address address = Address.builder()
                 .state(state)
@@ -148,7 +148,7 @@ class AddressServiceTest {
     @Test
     void save_EmptyStateNameAndRestNull_ThrowNoSuchElementException() {
         AddressRequest addressRequest = AddressRequest.builder()
-                .stateName("")
+                .state("")
                 .build();
         Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
     }
@@ -156,7 +156,7 @@ class AddressServiceTest {
     @Test
     void save_NoSuchStateNameAndRestNull_ThrowNoSuchElementException() {
         AddressRequest addressRequest = AddressRequest.builder()
-                .stateName("NotCorrect")
+                .state("NotCorrect")
                 .build();
         Assertions.assertThrows(NoSuchElementException.class, () -> addressService.save(addressRequest));
     }
@@ -165,7 +165,7 @@ class AddressServiceTest {
     void save_StateIsCorrecteAndRestNull_DoesNotThrow() {
         String stateName = "Mazowieckie";
         AddressRequest addressRequest = AddressRequest.builder()
-                .stateName(stateName)
+                .state(stateName)
                 .build();
         State state = State.builder()
                 .id(1L)
@@ -182,7 +182,7 @@ class AddressServiceTest {
                 .addressLineTwo("")
                 .city("")
                 .code("")
-                .stateName("")
+                .state("")
                 .build();
         Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
     }
@@ -272,7 +272,7 @@ class AddressServiceTest {
                 .addressLineTwo("")
                 .city("")
                 .code("")
-                .stateName("")
+                .state("")
                 .build();
         when(stateRepository.findByName("")).thenReturn(Optional.empty());
         Assertions.assertThrows(NoSuchElementException.class, () -> addressService.update(addressRequest));
@@ -331,7 +331,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .id(1L)
                 .city(CITY)
-                .stateName(null)
+                .state(null)
                 .build();
         Address address = Address.builder()
                 .id(1L)
@@ -346,7 +346,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .id(1L)
                 .city(CITY)
-                .stateName("")
+                .state("")
                 .build();
         Address address = Address.builder()
                 .id(1L)

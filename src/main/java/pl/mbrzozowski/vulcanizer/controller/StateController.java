@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.StateRequest;
 import pl.mbrzozowski.vulcanizer.dto.StateResponse;
+import pl.mbrzozowski.vulcanizer.dto.mapper.StateToStateResponse;
 import pl.mbrzozowski.vulcanizer.service.StateService;
 
 import java.util.List;
@@ -29,13 +30,13 @@ public class StateController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StateResponse> findById(@PathVariable("id") Long id) {
-        StateResponse stateResponse = stateService.findById(id);
+        StateResponse stateResponse = new StateToStateResponse().apply(stateService.findById(id));
         return new ResponseEntity<>(stateResponse, HttpStatus.OK);
     }
 
     @GetMapping("/find")
     public ResponseEntity<StateResponse> findByName(@Param("name") String name) {
-        StateResponse stateResponse = stateService.findByName(name);
+        StateResponse stateResponse = new StateToStateResponse().apply(stateService.findByName(name));
         return new ResponseEntity<>(stateResponse, HttpStatus.OK);
     }
 

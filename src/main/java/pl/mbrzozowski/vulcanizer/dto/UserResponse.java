@@ -3,10 +3,8 @@ package pl.mbrzozowski.vulcanizer.dto;
 import lombok.Builder;
 import lombok.Data;
 import pl.mbrzozowski.vulcanizer.entity.Address;
-import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
-import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
-import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
+import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,10 +28,10 @@ public class UserResponse {
                         final String email,
                         final String firstName,
                         final String lastName,
-                        final Gender gender,
+                        final String gender,
                         final LocalDate birthDate,
                         final LocalDateTime createAccountTime,
-                        final UserStatusAccount statusAccount,
+                        final String statusAccount,
                         final Address idAddress,
                         final Long idAvatar,
                         final Long idPhone) {
@@ -41,23 +39,13 @@ public class UserResponse {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        if (gender != null) {
-            this.gender = gender.name();
-        }
+        this.gender = gender;
         this.birthDate = birthDate;
         this.createAccountTime = createAccountTime;
-        this.statusAccount = statusAccount.name();
+        this.statusAccount = statusAccount;
         this.address = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
-    }
-
-    public Gender getGender() {
-        return GenderConverter.convert(this.gender);
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = GenderConverter.convert(gender);
     }
 
     public UserStatusAccount getStatusAccount() {

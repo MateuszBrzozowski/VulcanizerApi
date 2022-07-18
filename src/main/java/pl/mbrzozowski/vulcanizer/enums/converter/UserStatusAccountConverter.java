@@ -12,7 +12,7 @@ public class UserStatusAccountConverter {
         return new UserStatusAccountConverterToString().convert(status);
     }
 
-    public static UserStatusAccount convert(Integer status) {
-        return new UserStatusAccountConverterToEnumFromInt().convert(status);
+    public static String convert(Integer status) {
+        return new UserStatusAccountConverterToStringFromInt().convert(status);
     }
 }
