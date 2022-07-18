@@ -15,6 +15,9 @@ public class AddressRequestToAddress implements Function<AddressRequest, Address
 
     @Override
     public Address apply(AddressRequest addressRequest) {
+        if (addressRequest == null) {
+            return null;
+        }
         String stateName = addressRequest.getStateName();
         State state = null;
         if (stateName != null) {

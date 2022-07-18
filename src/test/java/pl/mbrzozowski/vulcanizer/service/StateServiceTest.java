@@ -185,7 +185,7 @@ class StateServiceTest {
                 .build();
         when(stateRepository.findById(id)).thenReturn(Optional.ofNullable(state));
         stateService.update(stateRequest);
-        verify(stateRepository).save(null);
+        verify(stateRepository).save(state);
     }
 
     @Test

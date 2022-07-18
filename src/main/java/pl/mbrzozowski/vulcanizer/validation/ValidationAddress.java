@@ -12,10 +12,10 @@ public class ValidationAddress implements Consumer<Address> {
     public void accept(Address address) {
         ifArgsEmptySetNull(address);
         if (isAllParametersNull(address)) {
-            throw new NullParameterException("All parameters can not be null");
+            throw new NullParameterException("Address: All parameters can not be null");
         } else {
             if (isAllParametersEmpty(address)) {
-                throw new IllegalArgumentException("All parameters can not be empty");
+                throw new IllegalArgumentException("Address: All parameters can not be empty");
             }
             isValidLineOne(address);
             isValidLineTwo(address);
@@ -59,7 +59,7 @@ public class ValidationAddress implements Consumer<Address> {
                         && address.getCity() == null
                         && address.getState() == null)) {
             if (address.getCode().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("All parameters can not be null or empty");
+                throw new IllegalArgumentException("Address: All parameters can not be null or empty");
             }
         }
     }
@@ -71,7 +71,7 @@ public class ValidationAddress implements Consumer<Address> {
                         && address.getCode() == null
                         && address.getState() == null)) {
             if (address.getCity().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("All parameters can not be null or empty");
+                throw new IllegalArgumentException("Address: All parameters can not be null or empty");
             }
         }
     }
@@ -83,7 +83,7 @@ public class ValidationAddress implements Consumer<Address> {
                         && address.getCode() == null
                         && address.getState() == null)) {
             if (address.getAddressLineTwo().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("All parameters can not be null or empty");
+                throw new IllegalArgumentException("Address: All parameters can not be null or empty");
             }
         }
     }
@@ -95,7 +95,7 @@ public class ValidationAddress implements Consumer<Address> {
                         && address.getCode() == null
                         && address.getState() == null)) {
             if (address.getAddressLineOne().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("All parameters can not be null or empty");
+                throw new IllegalArgumentException("Address: All parameters can not be null or empty");
             }
         }
     }

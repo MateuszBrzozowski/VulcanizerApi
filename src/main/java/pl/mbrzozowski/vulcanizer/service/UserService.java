@@ -8,6 +8,7 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
+import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
@@ -19,20 +20,27 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService implements ServiceLayer<UserRequest, UserResponse> {
     private final UserRepository userRepository;
+    private final StateService stateService;
+    private final AddressService addressService;
 
     @Override
     public void save(UserRequest userRequest) {
-        User user = new UserRequestToUser().apply(userRequest);
+        User user = new UserRequestToUser(stateService).apply(userRequest);
         user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
         ValidationUser validationUser = new ValidationUser(userRepository);
         validationUser.accept(user);
+        try {
+            addressService.save(userRequest.getAddress());
+        } catch (NullParameterException exception) {
+            user.setAddress(null);
+        }
         userRepository.save(user);
     }
 
     @Override
     public UserResponse update(UserRequest userRequest) {
         UserResponse isUser = findById(userRequest.getId());
-        User userEdit = new UserRequestToUser().apply(userRequest);
+        User userEdit = new UserRequestToUser(stateService).apply(userRequest);
         userEdit.setId(isUser.getId());
         userEdit.setCreateAccountTime(isUser.getCreateAccountTime());
         ValidationUser validationUser = new ValidationUser(userRepository);

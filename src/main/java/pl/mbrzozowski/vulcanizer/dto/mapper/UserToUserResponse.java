@@ -20,7 +20,7 @@ public class UserToUserResponse implements Function<User, UserResponse> {
                 .birthDate(user.getBirthDate())
                 .createAccountTime(user.getCreateAccountTime())
                 .statusAccount(user.getStatusAccount())
-                .idAddress(user.getIdAddress())
+                .idAddress(user.getAddress())
                 .idAvatar(user.getIdAvatar())
                 .idPhone(user.getIdPhone())
                 .build();

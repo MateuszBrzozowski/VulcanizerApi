@@ -24,7 +24,7 @@ public class UserRequest {
     private String gender;
     private LocalDate birthDate;
     private String statusAccount;
-    private Address idAddress;
+    private AddressRequest address;
     private Long idAvatar;
     private Long idPhone;
 
@@ -37,7 +37,7 @@ public class UserRequest {
                        final Gender gender,
                        final LocalDate birthDate,
                        final UserStatusAccount statusAccount,
-                       final Address idAddress,
+                       final AddressRequest idAddress,
                        final Long idAvatar,
                        final Long idPhone) {
         this.id = id;
@@ -50,7 +50,7 @@ public class UserRequest {
         }
         this.birthDate = birthDate;
         this.statusAccount = statusAccount.name();
-        this.idAddress = idAddress;
+        this.address = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
     }

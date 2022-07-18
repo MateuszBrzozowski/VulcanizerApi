@@ -37,7 +37,7 @@ public class User {
     private String statusAccount;
     @OneToOne
     @JoinColumn(name = "id_address")
-    private Address idAddress;
+    private Address address;
     private Long idAvatar;
     private Long idPhone;
 
@@ -64,7 +64,7 @@ public class User {
         this.birthDate = birthDate;
         this.createAccountTime = createAccountTime;
         this.statusAccount = statusAccount.name();
-        this.idAddress = idAddress;
+        this.address = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
     }

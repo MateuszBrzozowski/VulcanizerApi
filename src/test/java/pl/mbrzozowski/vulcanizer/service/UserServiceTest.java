@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
+import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
@@ -30,7 +31,10 @@ class UserServiceTest {
     @BeforeEach
     public void beforeEach() {
         userRepository = mock(UserRepository.class);
-        userService = new UserService(userRepository);
+        userRepository = mock(UserRepository.class);
+        StateService stateService = mock(StateService.class);
+        AddressService addressService = mock(AddressService.class);
+        userService = new UserService(userRepository, stateService, addressService);
     }
 
     @Test
@@ -51,9 +55,9 @@ class UserServiceTest {
     }
 
     @Test
-    public void saveUser_ReqFieldByConstructorNoEmail_ThrowNullPointerException() {
+    public void saveUser_ReqFieldByConstructorNoEmail_ThrowNullParameterException() {
         UserRequest user = new UserRequest(null, password, firstName, lastName);
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
@@ -63,19 +67,19 @@ class UserServiceTest {
     }
 
     @Test
-    public void save_ReqFieldByBuilderNoEmail_ThrowNullPointerException() {
+    public void save_ReqFieldByBuilderNoEmail_ThrowNullParameterException() {
         UserRequest user = UserRequest.builder()
                 .password(password)
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
-    public void save_ReqFieldByConstructorNoPass_ThrowNullPointerException() {
+    public void save_ReqFieldByConstructorNoPass_ThrowNullParameterException() {
         UserRequest user = new UserRequest(email, null, firstName, lastName);
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
@@ -85,19 +89,19 @@ class UserServiceTest {
     }
 
     @Test
-    public void save_ReqFieldByBuilderNoPass_ThrowNullPointerException() {
+    public void save_ReqFieldByBuilderNoPass_ThrowNullParameterException() {
         UserRequest user = UserRequest.builder()
                 .email(email)
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
-    public void save_ReqFieldByConstructorNoFirstName_ThrowNullPointerException() {
+    public void save_ReqFieldByConstructorNoFirstName_ThrowNullParameterException() {
         UserRequest user = new UserRequest(email, password, null, lastName);
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
@@ -107,19 +111,19 @@ class UserServiceTest {
     }
 
     @Test
-    public void save_ReqFieldByBuilderNoFirstName_ThrowNullPointerException() {
+    public void save_ReqFieldByBuilderNoFirstName_ThrowNullParameterException() {
         UserRequest user = UserRequest.builder()
                 .email(email)
                 .password(password)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
-    public void save_ReqFieldByConstructorNoLastName_ThrowNullPointerException() {
+    public void save_ReqFieldByConstructorNoLastName_ThrowNullParameterException() {
         UserRequest user = new UserRequest(email, password, firstName, null);
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
@@ -129,13 +133,13 @@ class UserServiceTest {
     }
 
     @Test
-    public void save_ReqFieldByBuilderNoLastName_ThrowNullPointerException() {
+    public void save_ReqFieldByBuilderNoLastName_ThrowNullParameterException() {
         UserRequest user = UserRequest.builder()
                 .email(email)
                 .password(password)
                 .firstName(firstName)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
@@ -156,16 +160,16 @@ class UserServiceTest {
     }
 
     @Test
-    public void save_ReqFieldByConstructorAllNull_ThrowNullPointerException() {
+    public void save_ReqFieldByConstructorAllNull_ThrowNullParameterException() {
         UserRequest user = new UserRequest(null, null, null, null);
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
-    public void save_ReqFieldByBuilderAllNull_ThrowNullPointerException() {
+    public void save_ReqFieldByBuilderAllNull_ThrowNullParameterException() {
         UserRequest user = UserRequest.builder()
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.save(user));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
     }
 
     @Test
@@ -301,7 +305,7 @@ class UserServiceTest {
     }
 
     @Test
-    void update_editParametersNullEmail_ThrowNullPointerException() {
+    void update_editParametersNullEmail_ThrowNullParameterException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -313,7 +317,7 @@ class UserServiceTest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -333,7 +337,7 @@ class UserServiceTest {
     }
 
     @Test
-    void update_editParametersNullPass_ThrowNullPointerException() {
+    void update_editParametersNullPass_ThrowNullParameterException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -345,7 +349,7 @@ class UserServiceTest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -365,7 +369,7 @@ class UserServiceTest {
     }
 
     @Test
-    void update_editParametersNullFirstName_ThrowNullPointerException() {
+    void update_editParametersNullFirstName_ThrowNullParameterException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -377,7 +381,7 @@ class UserServiceTest {
                 .firstName(null)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -397,7 +401,7 @@ class UserServiceTest {
     }
 
     @Test
-    void update_editParametersNullLastName_ThrowNullPointerException() {
+    void update_editParametersNullLastName_ThrowNullParameterException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -409,7 +413,7 @@ class UserServiceTest {
                 .firstName(firstName)
                 .lastName(null)
                 .build();
-        Assertions.assertThrows(NullPointerException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
     }
 
     @Test

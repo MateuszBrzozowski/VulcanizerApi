@@ -21,7 +21,7 @@ public class UserResponse {
     private LocalDate birthDate;
     private LocalDateTime createAccountTime;
     private String statusAccount;
-    private Address idAddress;
+    private Address address;
     private Long idAvatar;
     private Long idPhone;
 
@@ -47,7 +47,7 @@ public class UserResponse {
         this.birthDate = birthDate;
         this.createAccountTime = createAccountTime;
         this.statusAccount = statusAccount.name();
-        this.idAddress = idAddress;
+        this.address = idAddress;
         this.idAvatar = idAvatar;
         this.idPhone = idPhone;
     }

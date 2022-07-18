@@ -23,9 +23,12 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
 
     @Override
     public void save(AddressRequest addressRequest) {
+        addressRequest.setId(null);
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
-        validationAddress.accept(address);
-        addressRepository.save(address);
+        if (address != null) {
+            validationAddress.accept(address);
+            addressRepository.save(address);
+        }
     }
 
     @Override
