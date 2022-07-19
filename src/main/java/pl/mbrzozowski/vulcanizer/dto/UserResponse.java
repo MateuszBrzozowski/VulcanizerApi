@@ -19,7 +19,7 @@ public class UserResponse {
     private String statusAccount;
     private AddressResponse address;
     private Long idAvatar;
-    private Phone idPhone;
+    private String phone;
 
     @Builder
     public UserResponse(final Long id,
@@ -32,7 +32,7 @@ public class UserResponse {
                         final String statusAccount,
                         final AddressResponse address,
                         final Long idAvatar,
-                        final Phone idPhone) {
+                        final String idPhone) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
@@ -43,7 +43,7 @@ public class UserResponse {
         this.statusAccount = statusAccount;
         this.address = address;
         this.idAvatar = idAvatar;
-        this.idPhone = idPhone;
+        this.phone = idPhone;
     }
 
 

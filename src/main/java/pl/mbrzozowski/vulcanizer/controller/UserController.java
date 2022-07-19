@@ -5,8 +5,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
+import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.service.UserService;
 
@@ -41,8 +43,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody UserRequest userRequest) {
-        userService.save(userRequest);
+    public ResponseEntity<?> save(@RequestBody UserRegisterBody userRequest) {
+        userService.save(new UserRegisterBodyToUserRequest().apply(userRequest));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

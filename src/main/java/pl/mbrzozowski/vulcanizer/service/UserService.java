@@ -13,11 +13,11 @@ import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
-import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,16 +33,9 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
     public User save(UserRequest userRequest) {
         User user = new UserRequestToUser(stateService, phoneService).apply(userRequest);
         ValidationUser validationUser = new ValidationUser(userRepository);
-        validationUser.accept(user);
-        //TODO napisać poprawnie kod
-        //if addres not null
-        try {
-            addressService.save(userRequest.getAddress());
-        } catch (NullParameterException exception) {
-            user.setAddress(null);
-        }
-        user.setId(null);
         user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED.name());
+        user.setCreateAccountTime(LocalDateTime.now());
+        validationUser.accept(user);
         userRepository.save(user);
         return user;
     }

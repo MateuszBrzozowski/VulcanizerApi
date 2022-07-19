@@ -22,7 +22,7 @@ public class UserToUserResponse implements Function<User, UserResponse> {
                 .statusAccount(user.getStatusAccount())
                 .address(new AddressToAddressResponse().apply(user.getAddress()))
                 .idAvatar(user.getIdAvatar())
-                .idPhone(user.getPhone())
+                .idPhone(user.getPhone().getNumber())
                 .build();
     }
 }
