@@ -78,6 +78,12 @@ class PhoneServiceTest {
     }
 
     @Test
+    void save_NoLetters_ThrowIllegalArgumentException() {
+        Phone phone = new Phone("66-66A-66-66");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> phoneService.save(phone));
+    }
+
+    @Test
     void update_Correct_DoesNotThrowAndVerfiryRepositorySave() {
         Phone phone = new Phone(1L, "+48666666666");
         when(phoneRepository.findById(1L)).thenReturn(Optional.of(phone));

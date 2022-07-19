@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
+import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.service.StateService;
 
 import java.util.function.Function;
@@ -14,7 +15,11 @@ public class AddressResponseToAddress implements Function<AddressResponse, Addre
 
     @Override
     public Address apply(AddressResponse addressResponse) {
-        State state = stateService.findByName(addressResponse.getState());
+        State state = null;
+        try {
+            state = stateService.findByName(addressResponse.getState());
+        } catch (NoSuchElementException exception) {
+        }
         return Address.builder()
                 .id(addressResponse.getId())
                 .addressLineOne(addressResponse.getAddressLineOne())

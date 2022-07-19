@@ -38,10 +38,17 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
         if (addressRequest != null) {
             findById(address.getId());
             validationAddress.accept(address);
+            if (address.getState() == null) {
+                deleteStateFromAddress(address.getId());
+            }
             addressRepository.save(address);
             return new AddressToAddressResponse().apply(address);
         }
         return null;
+    }
+
+    private void deleteStateFromAddress(Long addressId) {
+        addressRepository.deleteStateByAddressId(addressId);
     }
 
 

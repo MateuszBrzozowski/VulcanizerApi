@@ -18,6 +18,9 @@ public class ValidationPhone implements Consumer<Phone> {
             phone.setNumber(phone.getNumber().replace(" ", ""));
             phone.setNumber(phone.getNumber().replace("-", ""));
             phone.setNumber(phone.getNumber().replace("+", "00"));
+            if (!phone.getNumber().matches("\\d+")) {
+                throw new IllegalArgumentException("Wrong input phone number");
+            }
             if (phone.getNumber().length() > 13) {
                 throw new IllegalArgumentException("Phone number to long");
             }
