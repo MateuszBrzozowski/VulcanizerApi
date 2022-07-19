@@ -5,14 +5,19 @@ import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.BusinessCreateRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
+import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessCreateRequestToBusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessRequestToBusiness;
+import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
+import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,12 +26,21 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     private final BusinessRepository businessRepository;
     private final PhotoService photoService;
     private final StateRepository stateRepository;
+    private final StateService stateService;
+    private final AddressService addressService;
 
     @Override
     public Business save(BusinessRequest businessRequest) {
         Business business =
                 new BusinessRequestToBusiness()
                         .apply(businessRequest);
+        Address address = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
+        Address savedAddress = addressService.save(businessRequest.getAddress());
+
+        business.setAddress(savedAddress);
+
+        business.setStatus(BusinessStatus.NOT_ACTIVATED);
+        business.setCreatedDate(LocalDateTime.now());
 
         if (businessRequest.getPhoto() != null) {
             Photo photo = new Photo(businessRequest.getPhoto());
@@ -37,6 +51,7 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
 
         //TODO Stworzyć record adresu i dodać do business
 
+
         return businessRepository.save(business);
     }
 
@@ -44,7 +59,7 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         BusinessRequest apply =
                 new BusinessCreateRequestToBusinessRequest()
                         .apply(businessCreateRequest);
-        ValidationBusiness.validCreateRequest(apply, stateRepository);
+        ValidationBusiness.validCreateRequest(apply, stateRepository, stateService);
         return save(apply);
     }
 

@@ -3,8 +3,8 @@ package pl.mbrzozowski.vulcanizer.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessCreateRequest;
-import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
@@ -36,18 +36,24 @@ class BusinessServiceTest {
     public void beforeEach() {
         BusinessRepository businessRepository = mock(BusinessRepository.class);
         stateRepository = mock(StateRepository.class);
+        StateService stateService = mock(StateService.class);
         PhotoService photoService = mock(PhotoService.class);
-        businessService = new BusinessService(businessRepository, photoService, stateRepository);
+        AddressService addressService = mock(AddressService.class);
+        businessService = new BusinessService(businessRepository,
+                photoService,
+                stateRepository,
+                stateService,
+                addressService);
     }
 
     @Test
     void create_AllParamReq_Success() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -68,11 +74,11 @@ class BusinessServiceTest {
     @Test
     void create_NoIdUser_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -92,11 +98,11 @@ class BusinessServiceTest {
     @Test
     void create_NoName_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -116,11 +122,11 @@ class BusinessServiceTest {
     @Test
     void create_NoNip_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -140,11 +146,11 @@ class BusinessServiceTest {
     @Test
     void create_NoDescription_DoesNotThrow() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -177,11 +183,11 @@ class BusinessServiceTest {
     @Test
     void create_NoPhoto_DoesNotThrow() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -201,10 +207,10 @@ class BusinessServiceTest {
     @Test
     void create_NoAddressLineOne_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -225,10 +231,10 @@ class BusinessServiceTest {
     @Test
     void create_NoAddressCity_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -249,10 +255,10 @@ class BusinessServiceTest {
     @Test
     void create_NoAddressCode_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -273,7 +279,7 @@ class BusinessServiceTest {
     @Test
     void create_NoAddressState_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
@@ -297,11 +303,11 @@ class BusinessServiceTest {
     @Test
     void create_NoAddressCountry_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .build();
 
         BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
@@ -321,7 +327,7 @@ class BusinessServiceTest {
     @Test
     void create_NoAddressNoState_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
@@ -345,11 +351,11 @@ class BusinessServiceTest {
     @Test
     void create_IllegalNip_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -370,11 +376,11 @@ class BusinessServiceTest {
     @Test
     void create_IllegalNipToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -395,11 +401,11 @@ class BusinessServiceTest {
     @Test
     void create_NameToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -420,11 +426,11 @@ class BusinessServiceTest {
     @Test
     void create_NameMaxLength_ThrowDoesNotThrow() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -445,11 +451,11 @@ class BusinessServiceTest {
     @Test
     void create_DescriptionToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -470,11 +476,11 @@ class BusinessServiceTest {
     @Test
     void create_MaxLengthDescription_DoesNotThrow() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -495,11 +501,11 @@ class BusinessServiceTest {
     @Test
     void create_MaxLCityNameLength_DoesNotThrow() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city(new StringGenerator().apply(40))
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -520,11 +526,11 @@ class BusinessServiceTest {
     @Test
     void create_CityNameToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city(new StringGenerator().apply(41))
                 .code("99-999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -545,11 +551,11 @@ class BusinessServiceTest {
     @Test
     void create_NotValidPostalCodeLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-9999")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -570,11 +576,11 @@ class BusinessServiceTest {
     @Test
     void create_NotValidPostalCodeShort_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-99")
-                .state(state)
+                .state("state")
                 .country("Country")
                 .build();
 
@@ -595,11 +601,11 @@ class BusinessServiceTest {
     @Test
     void create_CountryToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
-        Address address = Address.builder()
+        AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
                 .code("99-99")
-                .state(state)
+                .state("state")
                 .country(new StringGenerator().apply(51))
                 .build();
 

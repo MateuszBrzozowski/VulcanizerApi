@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
+import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
@@ -25,12 +26,11 @@ public class ValidationAddress {
 
     public static void allParamRequired(Address address, StateRepository stateRepository) {
         ifArgsEmptySetNull(address);
-        if (isNullLineOne(address.getAddressLineOne())
-                || isNullCity(address.getCity())
-                || isNullPostalCode(address.getCode())
-                || isNullState(address.getState())
-                || isNulllCountry(address.getCountry())) {
-            throw new IllegalArgumentException("Line one, city, postal code, state, country is required");
+        if ((address.getAddressLineOne() == null)
+                || (address.getCity() == null)
+                || (address.getCode() == null)
+                || (address.getCountry() == null)) {
+            throw new IllegalArgumentException("addressLineOne, city, code, state, country is required");
         } else {
             lineOneToLong(address);
             lineTwoToLong(address);

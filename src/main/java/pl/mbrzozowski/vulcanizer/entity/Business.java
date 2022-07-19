@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +21,7 @@ public class Business {
     private String name;
     private String nip;
     @Column(name = "created_date")
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
     private String description;
     private String status;
     @OneToOne(fetch = FetchType.EAGER)
@@ -29,4 +30,8 @@ public class Business {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_photo")
     private Photo photo;
+
+    public void setStatus(BusinessStatus status) {
+        this.status = status.name();
+    }
 }

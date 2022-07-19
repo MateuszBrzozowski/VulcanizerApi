@@ -1,18 +1,23 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
+import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
+import pl.mbrzozowski.vulcanizer.service.StateService;
 
 public class ValidationBusiness {
 
-    public static void validCreateRequest(BusinessRequest businessRequest, StateRepository stateRepository) {
+    public static void validCreateRequest(BusinessRequest businessRequest,
+                                          StateRepository stateRepository,
+                                          StateService stateService) {
+        Address address = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
         validIdUser(businessRequest.getUserId());
         validName(businessRequest.getName());
         validNip(businessRequest.getNip());
         validDescription(businessRequest.getDescription());
-        validAddress(businessRequest.getAddress(), stateRepository);
+        validAddress(address, stateRepository);
     }
 
     private static void validIdUser(Long idUser) {

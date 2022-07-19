@@ -33,6 +33,7 @@ public class AddressRequestToAddress implements Function<AddressRequest, Address
                 .city(addressRequest.getCity())
                 .code(addressRequest.getCode())
                 .state(state)
+                .country(addressRequest.getCountry())
                 .build();
     }
 }

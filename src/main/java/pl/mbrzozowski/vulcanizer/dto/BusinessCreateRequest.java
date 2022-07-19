@@ -15,6 +15,6 @@ public class BusinessCreateRequest {
     private String name;
     private String nip;
     private String description;
-    private Address address;
+    private AddressRequest address;
     private String photo;
 }

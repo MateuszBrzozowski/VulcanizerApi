@@ -20,6 +20,6 @@ public class BusinessRequest {
     private LocalDate createdDate;
     private String description;
     private String status;
-    private Address address;
+    private AddressRequest address;
     private String photo;
 }
