@@ -35,7 +35,9 @@ public class User {
     @JoinColumn(name = "id_address")
     private Address address;
     private Long idAvatar;
-    private Long idPhone;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_phone")
+    private Phone phone;
 
     @Builder
     public User(final Long id,
@@ -49,7 +51,7 @@ public class User {
                 final String statusAccount,
                 final Address idAddress,
                 final Long idAvatar,
-                final Long idPhone) {
+                final Phone phone) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -61,7 +63,7 @@ public class User {
         this.statusAccount = statusAccount;
         this.address = idAddress;
         this.idAvatar = idAvatar;
-        this.idPhone = idPhone;
+        this.phone = phone;
     }
 
     public User(final String email,

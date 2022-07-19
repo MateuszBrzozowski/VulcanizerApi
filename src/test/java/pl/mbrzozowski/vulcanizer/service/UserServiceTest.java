@@ -33,9 +33,10 @@ class UserServiceTest {
     public void beforeEach() {
         userRepository = mock(UserRepository.class);
         userRepository = mock(UserRepository.class);
+        PhoneService phoneService = mock(PhoneService.class);
         StateService stateService = mock(StateService.class);
         AddressService addressService = mock(AddressService.class);
-        userService = new UserService(userRepository, stateService, addressService);
+        userService = new UserService(userRepository, stateService, addressService, phoneService);
     }
 
     @Test
