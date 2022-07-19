@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
 import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
@@ -25,7 +24,7 @@ public class UserRequest {
     private LocalDate birthDate;
     private String statusAccount;
     private AddressRequest address;
-    private Long idAvatar;
+    private String avatar;
     private String phone;
 
     public UserRequest(String email, String password, String firstName, String lastName) {

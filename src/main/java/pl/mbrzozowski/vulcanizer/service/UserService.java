@@ -11,6 +11,7 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Phone;
+import pl.mbrzozowski.vulcanizer.entity.Photo;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
@@ -28,10 +29,11 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
     private final StateService stateService;
     private final AddressService addressService;
     private final PhoneService phoneService;
+    private final PhotoService photoService;
 
     @Override
     public User save(UserRequest userRequest) {
-        User user = new UserRequestToUser(stateService, phoneService).apply(userRequest);
+        User user = new UserRequestToUser(stateService, phoneService, photoService).apply(userRequest);
         ValidationUser validationUser = new ValidationUser(userRepository);
         user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED.name());
         user.setCreateAccountTime(LocalDateTime.now());
@@ -43,7 +45,7 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
     @Override
     public UserResponse update(UserRequest userRequest) {
         User isUser = findById(userRequest.getId());
-        User userEdit = new UserRequestToUser(stateService, phoneService).apply(userRequest);
+        User userEdit = new UserRequestToUser(stateService, phoneService, photoService).apply(userRequest);
         ValidationUser validationUser = new ValidationUser(userRepository);
         validationUser.accept(userEdit);
         //TODO REFACTOR CODE BELOW - Extract Method
@@ -68,6 +70,7 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
             userEdit.setPhone(phone);
         } else if (isUser.getPhone() != null && userEdit.getPhone() != null) { //DB has a phone, edit phone from req
             Long id = isUser.getPhone().getId();
+            userEdit.getPhone().setNumber(userRequest.getPhone());
             userEdit.getPhone().setId(id);
             Phone phone = phoneService.update(userEdit.getPhone());
             userEdit.setPhone(phone);
@@ -77,11 +80,31 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
             phoneService.deleteById(id);
         }
 
+        //Photo
+        if (isUser.getAvatar() == null && userEdit.getAvatar() != null) { //DB no photo, add photo from req
+            Photo avatar = photoService.save(userEdit.getAvatar());
+            userEdit.setAvatar(avatar);
+        } else if (isUser.getAvatar() != null && userEdit.getAvatar() != null) { //DB has a photo, edit photo from req
+            Long id = isUser.getAvatar().getId();
+            userEdit.getAvatar().setUrl(userRequest.getAvatar());
+            userEdit.getAvatar().setId(id);
+            Photo avatar = photoService.update(userEdit.getAvatar());
+            userEdit.setAvatar(avatar);
+        } else if (isUser.getAvatar() != null && userEdit.getAvatar() == null) { //DB has a photo, delete from DB.
+            Long id = isUser.getAvatar().getId();
+            deletePhotoFromUser(isUser.getId());
+            photoService.deleteById(id);
+        }
+
         userEdit.setId(isUser.getId());
         userEdit.setPassword(isUser.getPassword());
         userEdit.setCreateAccountTime(isUser.getCreateAccountTime());
         userRepository.save(userEdit);
         return new UserToUserResponse().apply(userEdit);
+    }
+
+    private void deletePhotoFromUser(Long userId) {
+        userRepository.deletePhotoByUserId(userId);
     }
 
     private void deleteAddressFromUser(Long userId) {

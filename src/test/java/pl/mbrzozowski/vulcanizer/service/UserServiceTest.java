@@ -7,6 +7,7 @@ import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
@@ -34,9 +35,10 @@ class UserServiceTest {
         userRepository = mock(UserRepository.class);
         userRepository = mock(UserRepository.class);
         PhoneService phoneService = mock(PhoneService.class);
+        PhotoService photoService = mock(PhotoService.class);
         StateService stateService = mock(StateService.class);
         AddressService addressService = mock(AddressService.class);
-        userService = new UserService(userRepository, stateService, addressService, phoneService);
+        userService = new UserService(userRepository, stateService, addressService, phoneService, photoService);
     }
 
     @Test

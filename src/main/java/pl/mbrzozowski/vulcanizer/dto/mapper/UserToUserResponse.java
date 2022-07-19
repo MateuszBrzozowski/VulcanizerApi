@@ -11,7 +11,7 @@ public class UserToUserResponse implements Function<User, UserResponse> {
         if (user == null) {
             return null;
         }
-        return UserResponse.builder()
+        UserResponse userResponse = UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
@@ -21,8 +21,13 @@ public class UserToUserResponse implements Function<User, UserResponse> {
                 .createAccountTime(user.getCreateAccountTime())
                 .statusAccount(user.getStatusAccount())
                 .address(new AddressToAddressResponse().apply(user.getAddress()))
-                .idAvatar(user.getIdAvatar())
-                .idPhone(user.getPhone().getNumber())
                 .build();
+        if (user.getPhone() != null) {
+            userResponse.setPhone(user.getPhone().getNumber());
+        }
+        if (user.getAvatar() != null) {
+            userResponse.setAvatar(user.getAvatar().getUrl());
+        }
+        return userResponse;
     }
 }

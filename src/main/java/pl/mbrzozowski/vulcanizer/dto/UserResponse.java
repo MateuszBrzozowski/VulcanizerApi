@@ -2,7 +2,7 @@ package pl.mbrzozowski.vulcanizer.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.mbrzozowski.vulcanizer.entity.Phone;
+import pl.mbrzozowski.vulcanizer.entity.Photo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ public class UserResponse {
     private LocalDateTime createAccountTime;
     private String statusAccount;
     private AddressResponse address;
-    private Long idAvatar;
+    private String avatar;
     private String phone;
 
     @Builder
@@ -31,7 +31,7 @@ public class UserResponse {
                         final LocalDateTime createAccountTime,
                         final String statusAccount,
                         final AddressResponse address,
-                        final Long idAvatar,
+                        final String avatar,
                         final String idPhone) {
         this.id = id;
         this.email = email;
@@ -42,7 +42,7 @@ public class UserResponse {
         this.createAccountTime = createAccountTime;
         this.statusAccount = statusAccount;
         this.address = address;
-        this.idAvatar = idAvatar;
+        this.avatar = avatar;
         this.phone = idPhone;
     }
 

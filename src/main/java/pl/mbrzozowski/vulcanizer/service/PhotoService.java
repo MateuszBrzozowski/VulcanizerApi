@@ -26,9 +26,10 @@ public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
     @Override
     public Photo update(Photo photo) {
         validationPhoto.accept(photo);
-        findById(photo.getId());
-        photoRepository.save(photo);
-        return photo;
+        Photo photoUpdate = findById(photo.getId());
+        photoUpdate.setUrl(photo.getUrl());
+        photoRepository.save(photoUpdate);
+        return photoUpdate;
     }
 
     @Override
@@ -48,5 +49,13 @@ public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
     @Override
     public void deleteById(Long id) {
         photoRepository.deleteById(id);
+    }
+
+    public Photo findByUserId(Long userId) {
+        return photoRepository
+                .findByUserId(userId)
+                .orElseThrow(() -> {
+                    throw new NoSuchElementException(String.format("Not found photo for User id [%s]", userId));
+                });
     }
 }

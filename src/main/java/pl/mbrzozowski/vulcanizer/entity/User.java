@@ -34,7 +34,9 @@ public class User {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_address")
     private Address address;
-    private Long idAvatar;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_avatar")
+    private Photo avatar;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_phone")
     private Phone phone;
@@ -50,7 +52,7 @@ public class User {
                 final LocalDateTime createAccountTime,
                 final String statusAccount,
                 final Address idAddress,
-                final Long idAvatar,
+                final Photo avatar,
                 final Phone phone) {
         this.id = id;
         this.email = email;
@@ -62,7 +64,7 @@ public class User {
         this.createAccountTime = createAccountTime;
         this.statusAccount = statusAccount;
         this.address = idAddress;
-        this.idAvatar = idAvatar;
+        this.avatar = avatar;
         this.phone = phone;
     }
 
