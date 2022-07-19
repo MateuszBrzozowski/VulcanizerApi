@@ -1,25 +1,21 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
-import java.util.function.Consumer;
+@Component
+public class ValidationState {
 
-public class ValidationState implements Consumer<State> {
-    private final StateRepository stateRepository;
-
-    public ValidationState(StateRepository stateRepository) {
-        this.stateRepository = stateRepository;
+    @Autowired
+    public static void valid(State state, StateRepository stateRepository) {
+        validName(state.getName(), stateRepository);
     }
 
-    @Override
-    public void accept(State state) {
-        validName(state.getName());
-    }
-
-    private void validName(String name) {
+    private static void validName(String name, StateRepository stateRepository) {
         boolean isState = stateRepository.findByName(name).isPresent();
         if (name == null) {
             throw new NullParameterException("State name can not be null");
@@ -33,6 +29,17 @@ public class ValidationState implements Consumer<State> {
         if (isState) {
             throw new IllegalArgumentException(
                     String.format("State %s is exist", name.toUpperCase()));
+        }
+    }
+
+    @Autowired
+    public static void isNameExist(State state, StateRepository stateRepository) {
+        boolean isState = stateRepository.findByName(state.getName()).isPresent();
+        if (state.getName() == null) {
+            throw new NullParameterException("State name can not be null");
+        }
+        if (!isState) {
+            throw new IllegalArgumentException("State is not exist");
         }
     }
 }

@@ -20,7 +20,7 @@ public class StringGenerator implements Function<Integer, String> {
     @Override
     public String apply(Integer length) {
         StringBuilder result = new StringBuilder();
-        final int MAX_LENGTH = 1000;
+        final int MAX_LENGTH = 1100;
         if (length <= 0) {
             return result.toString();
         }

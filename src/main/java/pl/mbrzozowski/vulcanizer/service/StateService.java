@@ -22,8 +22,7 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
     @Override
     public State save(StateRequest stateRequest) {
         State state = new StateRequestToState().apply(stateRequest);
-        ValidationState validator = new ValidationState(stateRepository);
-        validator.accept(state);
+        ValidationState.valid(state,stateRepository);
         stateRepository.save(state);
         return state;
     }
@@ -35,8 +34,7 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
             throw new IllegalArgumentException("Id can not be null");
         }
         findById(state.getId());
-        ValidationState validator = new ValidationState(stateRepository);
-        validator.accept(state);
+        ValidationState.valid(state,stateRepository);
         stateRepository.save(state);
         return new StateToStateResponse().apply(state);
     }

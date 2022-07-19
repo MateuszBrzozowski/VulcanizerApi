@@ -3,6 +3,7 @@ package pl.mbrzozowski.vulcanizer.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
@@ -11,6 +12,7 @@ import pl.mbrzozowski.vulcanizer.service.AddressService;
 
 import java.util.List;
 
+@Controller
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/address")

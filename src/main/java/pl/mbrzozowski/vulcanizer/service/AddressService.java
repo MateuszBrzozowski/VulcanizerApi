@@ -19,14 +19,13 @@ import java.util.stream.Collectors;
 public class AddressService implements ServiceLayer<AddressRequest, AddressResponse, Address> {
     private final AddressRepository addressRepository;
     private final StateService stateService;
-    private final ValidationAddress validationAddress = new ValidationAddress();
 
     @Override
     public Address save(AddressRequest addressRequest) {
         addressRequest.setId(null);
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
         if (address != null) {
-            validationAddress.accept(address);
+            ValidationAddress.valid(address);
             addressRepository.save(address);
         }
         return address;
@@ -37,7 +36,7 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
         if (addressRequest != null) {
             findById(address.getId());
-            validationAddress.accept(address);
+            ValidationAddress.valid(address);
             if (address.getState() == null) {
                 deleteStateFromAddress(address.getId());
             }

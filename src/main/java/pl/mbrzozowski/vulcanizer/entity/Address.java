@@ -26,4 +26,5 @@ public class Address {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_state")
     private State state;
+    private String country;
 }
