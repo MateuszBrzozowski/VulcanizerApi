@@ -7,8 +7,10 @@ import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessCreateRequest;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
+import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
+import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 
 import java.util.Optional;
@@ -19,6 +21,9 @@ import static org.mockito.Mockito.when;
 class BusinessServiceTest {
     private BusinessService businessService;
     private StateRepository stateRepository;
+    private StateService stateService;
+    private UserRepository userRepository;
+    private UserService userService;
 
 
 //    Business business = Business.builder()
@@ -34,16 +39,19 @@ class BusinessServiceTest {
 
     @BeforeEach
     public void beforeEach() {
+        userRepository = mock(UserRepository.class);
         BusinessRepository businessRepository = mock(BusinessRepository.class);
         stateRepository = mock(StateRepository.class);
-        StateService stateService = mock(StateService.class);
+        stateService = mock(StateService.class);
+        userService = mock(UserService.class);
         PhotoService photoService = mock(PhotoService.class);
         AddressService addressService = mock(AddressService.class);
         businessService = new BusinessService(businessRepository,
                 photoService,
                 stateRepository,
                 stateService,
-                addressService);
+                addressService,
+                userService);
     }
 
     @Test
@@ -621,6 +629,32 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+    }
+
+    @Test
+    void create_UserIsNotExist_ThrowNoSuchElementException() {
+        State state = new State(10L, "state");
+        AddressRequest address = AddressRequest.builder()
+                .addressLineOne("Line One")
+                .city("City")
+                .code("99-999")
+                .state("state")
+                .country("Country")
+                .build();
+
+        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+                .userId(20L)
+                .name("Name")
+                .nip("0123456789")
+                .description("Description")
+                .address(address)
+                .photo("urlurl")
+                .build();
+        when(stateService.findByName("state")).thenReturn(state);
+        when(userService.findById(20L)).thenThrow(NoSuchElementException.class);
+        when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+
+        Assertions.assertThrows(NoSuchElementException.class, () -> businessService.create(businessCreateRequest));
     }
 
 }

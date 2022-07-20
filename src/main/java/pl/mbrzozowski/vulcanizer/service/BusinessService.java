@@ -10,6 +10,7 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessRequestToBusiness;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
+import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
@@ -26,6 +27,7 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     private final StateRepository stateRepository;
     private final StateService stateService;
     private final AddressService addressService;
+    private final UserService userService;
 
     @Override
     public Business save(BusinessRequest businessRequest) {
@@ -48,6 +50,7 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     }
 
     public Business create(BusinessCreateRequest businessCreateRequest) {
+        User user = userService.findById(businessCreateRequest.getUserId());
         BusinessRequest apply =
                 new BusinessCreateRequestToBusinessRequest()
                         .apply(businessCreateRequest);

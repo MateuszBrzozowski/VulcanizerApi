@@ -22,7 +22,8 @@ public class AddressRequestToAddress implements Function<AddressRequest, Address
         State state = null;
         if (stateName != null) {
             if (!stateName.equalsIgnoreCase("")) {
-                StateResponse stateResponse = new StateToStateResponse().apply(stateService.findByName(stateName));
+                State stateServiceByName = stateService.findByName(stateName);
+                StateResponse stateResponse = new StateToStateResponse().apply(stateServiceByName);
                 state = new StateResponseToState().apply(stateResponse);
             }
         }

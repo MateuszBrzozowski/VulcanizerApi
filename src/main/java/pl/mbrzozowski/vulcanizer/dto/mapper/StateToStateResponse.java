@@ -9,6 +9,9 @@ public class StateToStateResponse implements Function<State, StateResponse> {
 
     @Override
     public StateResponse apply(State state) {
+//        if (state == null) {
+//            return null;
+//        }
         return new StateResponse().builder()
                 .id(state.getId())
                 .name(state.getName())
