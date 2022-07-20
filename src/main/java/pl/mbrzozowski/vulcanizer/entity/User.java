@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -40,6 +41,9 @@ public class User {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_phone")
     private Phone phone;
+
+    @OneToMany
+    private List<Employee> employees;
 
     @Builder
     public User(final Long id,

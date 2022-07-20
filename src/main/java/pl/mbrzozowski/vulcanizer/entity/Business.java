@@ -8,6 +8,7 @@ import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,6 +31,11 @@ public class Business {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_photo")
     private Photo photo;
+
+    @OneToMany
+    private List<Employee> employees;
+
+
 
     public void setStatus(BusinessStatus status) {
         this.status = status.name();
