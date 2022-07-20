@@ -42,7 +42,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         Address address = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
         ValidationBusiness.validCreateRequest(businessRequest, stateRepository, address);
         userService.findById(businessRequest.getUserId());
-
         Business business =
                 new BusinessRequestToBusiness()
                         .apply(businessRequest);
@@ -52,11 +51,8 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
             Photo photoReady = photoService.save(photo);
             business.setPhoto(photoReady);
         }
-
         Address savedAddress = addressService.save(businessRequest.getAddress());
-
         EmployeeRole owner = employeeRoleService.save(new EmployeeRoleRequest("Owner"));
-
         business.setAddress(savedAddress);
         business.setStatus(BusinessStatus.NOT_ACTIVATED);
         business.setCreatedDate(LocalDateTime.now());
@@ -76,23 +72,15 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     public BusinessResponse update(BusinessRequest businessRequest) {
         Address addressNewData = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
         ValidationBusiness.validBeforeEdit(businessRequest, stateRepository, addressNewData);
-
         Business business = findById(businessRequest.getId());
-
         Address address = business.getAddress();
-
         addressToAddressTransferNewData(address, addressNewData);
-
         Business businessNewData =
                 new BusinessRequestToBusiness()
                         .apply(businessRequest);
-
         businessNewData.setPhoto(business.getPhoto());
-
         businessToBusinessTransferNewData(business, businessNewData);
-
         updatePhoto(businessRequest, business);
-
         businessRepository.save(business);
         return new BusinessToBusinessResponse().apply(business);
     }

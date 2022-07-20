@@ -44,6 +44,10 @@ public class User {
 
     @OneToMany
     private List<Employee> employees;
+    @OneToMany
+    private List<Favorites> favorites;
+    @OneToMany
+    private List<Visit> visits;
 
     @Builder
     public User(final Long id,
