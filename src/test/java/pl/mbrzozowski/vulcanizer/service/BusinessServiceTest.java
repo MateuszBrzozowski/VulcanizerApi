@@ -75,6 +75,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
     }
@@ -99,6 +100,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -123,6 +125,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -147,6 +150,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -171,6 +175,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
     }
@@ -208,6 +213,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
     }
@@ -232,6 +238,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -256,6 +263,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -280,6 +288,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -328,6 +337,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -377,6 +387,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -402,6 +413,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -427,6 +439,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -452,6 +465,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
     }
@@ -478,6 +492,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
 
@@ -502,6 +517,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
     }
@@ -527,6 +543,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
     }
@@ -552,6 +569,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -577,6 +595,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -602,6 +621,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
@@ -627,6 +647,7 @@ class BusinessServiceTest {
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
     }
