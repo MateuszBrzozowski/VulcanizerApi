@@ -12,6 +12,7 @@ import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
+import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
@@ -75,7 +76,11 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
 
     @Override
     public Business findById(Long id) {
-        return null;
+        return businessRepository
+                .findById(id)
+                .orElseThrow(() -> {
+                    throw new NoSuchElementException(String.format("Business not found by id [%s]", id));
+                });
     }
 
     @Override
