@@ -1,16 +1,13 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pl.mbrzozowski.vulcanizer.dto.BusinessCreateRequest;
-import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
-import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
+import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessCreateRequestToBusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessRequestToBusiness;
-import pl.mbrzozowski.vulcanizer.entity.Address;
-import pl.mbrzozowski.vulcanizer.entity.Business;
-import pl.mbrzozowski.vulcanizer.entity.Photo;
-import pl.mbrzozowski.vulcanizer.entity.User;
+import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
@@ -29,6 +26,9 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     private final StateService stateService;
     private final AddressService addressService;
     private final UserService userService;
+    private final EmployeeRoleService employeeRoleService;
+    private final EmployeeService employeeService;
+    protected Logger logger = LoggerFactory.getLogger(BusinessService.class);
 
     @Override
     public Business save(BusinessRequest businessRequest) {
@@ -47,7 +47,21 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         }
         //TODO stworzenie Domyślej roli dla pracownika, wpisanie usera tworzacego jako wlasciciela tego businessu
 
-        return businessRepository.save(business);
+        EmployeeRole owner = employeeRoleService.save(new EmployeeRoleRequest("Owner"));
+        logger.info(String.valueOf(owner));
+
+        Business businessSaved = businessRepository.save(business);
+
+        EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                .business(businessSaved)
+                .userId(businessRequest.getUserId())
+                .role(owner)
+                .build();
+
+
+        employeeService.save(employeeRequest);
+
+        return business;
     }
 
     public Business create(BusinessCreateRequest businessCreateRequest) {

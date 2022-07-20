@@ -46,12 +46,16 @@ class BusinessServiceTest {
         userService = mock(UserService.class);
         PhotoService photoService = mock(PhotoService.class);
         AddressService addressService = mock(AddressService.class);
+        EmployeeRoleService employeeRoleService = mock(EmployeeRoleService.class);
+        EmployeeService employeeService = mock(EmployeeService.class);
         businessService = new BusinessService(businessRepository,
                 photoService,
                 stateRepository,
                 stateService,
                 addressService,
-                userService);
+                userService,
+                employeeRoleService,
+                employeeService);
     }
 
     @Test

@@ -18,18 +18,15 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeService implements ServiceLayer<EmployeeRequest, EmployeeResponse, Employee> {
     private final EmployeeRepository employeeRepository;
-    private final BusinessService businessService;
     private final UserService userService;
-    private final EmployeeRoleService employeeRoleService;
 
     @Override
     public Employee save(EmployeeRequest employeeRequest) {
         employeeRequest.setId(null);
         ValidationEmployee.valid(employeeRequest);
         Employee employee =
-                new EmployeeRequestToEmployee(businessService,
-                        userService,
-                        employeeRoleService).convert(employeeRequest);
+                new EmployeeRequestToEmployee(userService)
+                        .convert(employeeRequest);
         return employeeRepository.save(employee);
     }
 

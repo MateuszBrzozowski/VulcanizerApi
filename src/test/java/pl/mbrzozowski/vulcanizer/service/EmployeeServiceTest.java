@@ -37,7 +37,7 @@ class EmployeeServiceTest {
         userRepository = mock(UserRepository.class);
         employeeRoleService = mock(EmployeeRoleService.class);
         employeeRoleRepository = mock(EmployeeRoleRepository.class);
-        employeeService = new EmployeeService(employeeRepository, businessService, userService, employeeRoleService);
+        employeeService = new EmployeeService(employeeRepository, userService);
     }
 
     //
@@ -46,16 +46,16 @@ class EmployeeServiceTest {
 
     @Test
     void save_Success() {
+        User user = new User();
+        Business business = new Business();
+        EmployeeRole role = new EmployeeRole(1L, "Role");
         EmployeeRequest employeeRequest = EmployeeRequest.builder()
                 .id(1L)
                 .userId(1L)
-                .businessId(1L)
-                .roleId(1L)
+                .business(business)
+                .role(role)
                 .build();
 
-        User user = new User();
-        Business business = new Business();
-        EmployeeRole role = new EmployeeRole();
         Employee employee = Employee.builder()
                 .userId(user)
                 .businessId(business)
@@ -73,8 +73,8 @@ class EmployeeServiceTest {
         EmployeeRequest employeeRequest = EmployeeRequest.builder()
                 .id(1L)
 //                .userId(1L)
-                .businessId(1L)
-                .roleId(1L)
+                .business(new Business())
+                .role(new EmployeeRole())
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> employeeService.save(employeeRequest));
     }
@@ -85,7 +85,7 @@ class EmployeeServiceTest {
                 .id(1L)
                 .userId(1L)
 //                .businessId(1L)
-                .roleId(1L)
+                .role(new EmployeeRole())
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> employeeService.save(employeeRequest));
     }
@@ -95,7 +95,7 @@ class EmployeeServiceTest {
         EmployeeRequest employeeRequest = EmployeeRequest.builder()
                 .id(1L)
                 .userId(1L)
-                .businessId(1L)
+                .business(new Business())
 //                .roleId(1L)
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> employeeService.save(employeeRequest));
@@ -106,24 +106,24 @@ class EmployeeServiceTest {
         EmployeeRequest employeeRequest = EmployeeRequest.builder()
 //                .id(1L)
                 .userId(1L)
-                .businessId(1L)
-                .roleId(1L)
+                .business(new Business())
+                .role(new EmployeeRole(1L,"Role"))
                 .build();
         Assertions.assertDoesNotThrow(() -> employeeService.save(employeeRequest));
     }
 
     @Test
     void save_UserIsNotExist_ThrowIllegalArgumentException() {
-        EmployeeRequest employeeRequest = EmployeeRequest.builder()
-                .id(1L)
-                .userId(1L)
-                .businessId(1L)
-                .roleId(1L)
-                .build();
-
         User user = new User();
         Business business = new Business();
         EmployeeRole role = new EmployeeRole();
+        EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                .id(1L)
+                .userId(1L)
+                .business(business)
+                .role(role)
+                .build();
+
         Employee employee = Employee.builder()
                 .userId(user)
                 .businessId(business)
@@ -139,16 +139,16 @@ class EmployeeServiceTest {
 
     @Test
     void save_BusinessIsNotExist_ThrowIllegalArgumentException() {
-        EmployeeRequest employeeRequest = EmployeeRequest.builder()
-                .id(1L)
-                .userId(1L)
-                .businessId(1L)
-                .roleId(1L)
-                .build();
-
         User user = new User();
         Business business = new Business();
         EmployeeRole role = new EmployeeRole();
+        EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                .id(1L)
+                .userId(1L)
+                .business(business)
+                .role(role)
+                .build();
+
         Employee employee = Employee.builder()
                 .userId(user)
                 .businessId(business)
@@ -164,16 +164,16 @@ class EmployeeServiceTest {
 
     @Test
     void save_RoleIsNotExist_ThrowIllegalArgumentException() {
-        EmployeeRequest employeeRequest = EmployeeRequest.builder()
-                .id(1L)
-                .userId(1L)
-                .businessId(1L)
-                .roleId(1L)
-                .build();
-
         User user = new User();
         Business business = new Business();
         EmployeeRole role = new EmployeeRole();
+        EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                .id(1L)
+                .userId(1L)
+                .business(business)
+                .role(role)
+                .build();
+
         when(employeeRoleService.findById(1L)).thenThrow(NoSuchElementException.class);
         when(businessService.findById(1L)).thenReturn(business);
         when(userService.findById(1L)).thenReturn(user);

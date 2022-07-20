@@ -18,14 +18,18 @@ public class ValidationEmployee {
     }
 
     private static void isBusinessNull(EmployeeRequest employeeRequest) {
-        if (employeeRequest.getBusinessId() == null) {
+        if (employeeRequest.getBusiness() == null) {
             throw new IllegalArgumentException("User Id can not be null");
         }
     }
 
     private static void isRoleNull(EmployeeRequest employeeRequest) {
-        if (employeeRequest.getRoleId() == null) {
+        if (employeeRequest.getRole() == null) {
             throw new IllegalArgumentException("User Id can not be null");
+        } else {
+            if (employeeRequest.getRole().getId() == null) {
+                throw new IllegalArgumentException("Role id can not be null");
+            }
         }
     }
 }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.EmployeeRole;
 
 @Data
 @NoArgsConstructor
@@ -12,6 +14,12 @@ import lombok.NoArgsConstructor;
 public class EmployeeRequest {
     private Long id;
     private Long userId;
-    private Long businessId;
-    private Long roleId;
+    private Business business;
+    private EmployeeRole role;
+
+    public EmployeeRequest(Long userId, Business business, EmployeeRole role) {
+        this.userId = userId;
+        this.business = business;
+        this.role = role;
+    }
 }
