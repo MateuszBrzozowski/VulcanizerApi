@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessCreateRequest;
+import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
@@ -59,7 +60,7 @@ class BusinessServiceTest {
     }
 
     @Test
-    void create_AllParamReq_Success() {
+    void save_AllParamReq_Success() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -69,7 +70,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -81,11 +82,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
+        Assertions.assertDoesNotThrow(() -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoIdUser_ThrowIllegalArgumentException() {
+    void save_NoIdUser_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -95,7 +96,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .name("Name")
                 .nip("0123456789")
                 .description("description")
@@ -106,11 +107,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoName_ThrowIllegalArgumentException() {
+    void save_NoName_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -120,7 +121,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .nip("0123456789")
                 .description("description")
@@ -131,11 +132,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoNip_ThrowIllegalArgumentException() {
+    void save_NoNip_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -145,7 +146,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .description("description")
@@ -156,11 +157,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoDescription_DoesNotThrow() {
+    void save_NoDescription_DoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -170,7 +171,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -181,12 +182,12 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
+        Assertions.assertDoesNotThrow(() -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoAddress_ThrowIllegalArgumentException() {
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+    void save_NoAddress_ThrowIllegalArgumentException() {
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -194,11 +195,11 @@ class BusinessServiceTest {
                 .photo("urlurl")
                 .build();
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoPhoto_DoesNotThrow() {
+    void save_NoPhoto_DoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -208,7 +209,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -219,11 +220,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
+        Assertions.assertDoesNotThrow(() -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoAddressLineOne_ThrowIllegalArgumentException() {
+    void save_NoAddressLineOne_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .city("City")
@@ -232,32 +233,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
-                .userId(20L)
-                .name("Name")
-                .nip("0123456789")
-                .description("description")
-                .address(address)
-                .photo("urlurl")
-                .build();
-
-        when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
-        when(stateService.findByName("state")).thenReturn(state);
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
-    }
-
-    @Test
-    void create_NoAddressCity_ThrowIllegalArgumentException() {
-        State state = new State(10L, "state");
-        AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
-                .code("99-999")
-                .state("state")
-                .country("Country")
-                .build();
-
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -269,20 +245,20 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoAddressCode_ThrowIllegalArgumentException() {
+    void save_NoAddressCity_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
-                .city("City")
+                .code("99-999")
                 .state("state")
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -294,44 +270,20 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoAddressState_ThrowIllegalArgumentException() {
+    void save_NoAddressCode_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
                 .city("City")
-                .code("99-999")
+                .state("state")
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
-                .userId(20L)
-                .name("Name")
-                .nip("0123456789")
-                .description("description")
-                .address(address)
-                .photo("urlurl")
-                .build();
-
-        when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
-    }
-
-    @Test
-    void create_NoAddressCountry_ThrowIllegalArgumentException() {
-        State state = new State(10L, "state");
-        AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
-                .city("City")
-                .code("99-999")
-                .state("state")
-                .build();
-
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -343,11 +295,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NoAddressNoState_ThrowIllegalArgumentException() {
+    void save_NoAddressState_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -356,7 +308,56 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
+                .userId(20L)
+                .name("Name")
+                .nip("0123456789")
+                .description("description")
+                .address(address)
+                .photo("urlurl")
+                .build();
+
+        when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
+    }
+
+    @Test
+    void save_NoAddressCountry_ThrowIllegalArgumentException() {
+        State state = new State(10L, "state");
+        AddressRequest address = AddressRequest.builder()
+                .addressLineOne("Line One")
+                .city("City")
+                .code("99-999")
+                .state("state")
+                .build();
+
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
+                .userId(20L)
+                .name("Name")
+                .nip("0123456789")
+                .description("description")
+                .address(address)
+                .photo("urlurl")
+                .build();
+
+        when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
+        when(stateService.findByName("state")).thenReturn(state);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
+    }
+
+    @Test
+    void save_NoAddressNoState_ThrowIllegalArgumentException() {
+        State state = new State(10L, "state");
+        AddressRequest address = AddressRequest.builder()
+                .addressLineOne("Line One")
+                .city("City")
+                .code("99-999")
+                .country("Country")
+                .build();
+
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -367,11 +368,11 @@ class BusinessServiceTest {
 
         when(stateRepository.findByName("state")).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_IllegalNip_ThrowIllegalArgumentException() {
+    void save_IllegalNip_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -381,7 +382,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("012345678")
@@ -393,11 +394,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_IllegalNipToLong_ThrowIllegalArgumentException() {
+    void save_IllegalNipToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -407,7 +408,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("01234567899")
@@ -419,11 +420,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NameToLong_ThrowIllegalArgumentException() {
+    void save_NameToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -433,7 +434,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name(new StringGenerator().apply(256))
                 .nip("01234567899")
@@ -445,11 +446,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NameMaxLength_ThrowDoesNotThrow() {
+    void save_NameMaxLength_ThrowDoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -459,7 +460,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name(new StringGenerator().apply(255))
                 .nip("0123456789")
@@ -471,11 +472,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
+        Assertions.assertDoesNotThrow(() -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_DescriptionToLong_ThrowIllegalArgumentException() {
+    void save_DescriptionToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -486,7 +487,7 @@ class BusinessServiceTest {
                 .build();
 
         String description = new StringGenerator().apply(1001);
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -497,11 +498,11 @@ class BusinessServiceTest {
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_MaxLengthDescription_DoesNotThrow() {
+    void save_MaxLengthDescription_DoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -511,7 +512,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -523,11 +524,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
+        Assertions.assertDoesNotThrow(() -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_MaxLCityNameLength_DoesNotThrow() {
+    void save_MaxLCityNameLength_DoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -537,7 +538,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -549,11 +550,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertDoesNotThrow(() -> businessService.create(businessCreateRequest));
+        Assertions.assertDoesNotThrow(() -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_CityNameToLong_ThrowIllegalArgumentException() {
+    void save_CityNameToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -563,7 +564,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -575,11 +576,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NotValidPostalCodeLong_ThrowIllegalArgumentException() {
+    void save_NotValidPostalCodeLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -589,7 +590,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -601,11 +602,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_NotValidPostalCodeShort_ThrowIllegalArgumentException() {
+    void save_NotValidPostalCodeShort_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -615,7 +616,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -627,11 +628,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_CountryToLong_ThrowIllegalArgumentException() {
+    void save_CountryToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -641,7 +642,7 @@ class BusinessServiceTest {
                 .country(new StringGenerator().apply(51))
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -653,11 +654,11 @@ class BusinessServiceTest {
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
         when(stateService.findByName("state")).thenReturn(state);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
     @Test
-    void create_UserIsNotExist_ThrowNoSuchElementException() {
+    void save_UserIsNotExist_ThrowNoSuchElementException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
                 .addressLineOne("Line One")
@@ -667,7 +668,7 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
-        BusinessCreateRequest businessCreateRequest = BusinessCreateRequest.builder()
+        BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
@@ -679,7 +680,7 @@ class BusinessServiceTest {
         when(userService.findById(20L)).thenThrow(NoSuchElementException.class);
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> businessService.create(businessCreateRequest));
+        Assertions.assertThrows(NoSuchElementException.class, () -> businessService.save(businessCreateRequest));
     }
 
 }

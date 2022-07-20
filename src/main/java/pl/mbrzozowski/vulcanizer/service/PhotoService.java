@@ -19,8 +19,8 @@ public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
     public Photo save(Photo photo) {
         photo.setId(null);
         validationPhoto.accept(photo);
-        photoRepository.save(photo);
-        return photo;
+        Photo save = photoRepository.save(photo);
+        return save;
     }
 
     @Override

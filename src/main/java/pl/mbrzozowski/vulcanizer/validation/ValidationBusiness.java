@@ -1,24 +1,40 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
-import lombok.RequiredArgsConstructor;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
-import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
-import pl.mbrzozowski.vulcanizer.service.StateService;
 
 public class ValidationBusiness {
 
     public static void validCreateRequest(BusinessRequest businessRequest,
                                           StateRepository stateRepository,
-                                          StateService stateService) {
-        Address address = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
+                                          Address address) {
         validIdUser(businessRequest.getUserId());
+        validParam(businessRequest, stateRepository, address);
+    }
+
+    public static void validBeforeEdit(BusinessRequest businessRequest,
+                                       StateRepository stateRepository,
+                                       Address address) {
+        validID(businessRequest);
+        validParam(businessRequest, stateRepository, address);
+    }
+
+    private static void validParam(BusinessRequest businessRequest,
+                                   StateRepository stateRepository,
+                                   Address address) {
+
         validName(businessRequest.getName());
         validNip(businessRequest.getNip());
         validDescription(businessRequest.getDescription());
         validAddress(address, stateRepository);
+    }
+
+    private static void validID(BusinessRequest businessRequest) {
+        if (businessRequest.getId() == null) {
+            throw new IllegalArgumentException("Business id can not be null");
+        }
     }
 
     private static void validIdUser(Long idUser) {

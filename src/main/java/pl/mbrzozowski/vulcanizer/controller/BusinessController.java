@@ -4,11 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pl.mbrzozowski.vulcanizer.dto.BusinessCreateRequest;
+import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
 import pl.mbrzozowski.vulcanizer.service.BusinessService;
@@ -20,14 +16,16 @@ import pl.mbrzozowski.vulcanizer.service.BusinessService;
 public class BusinessController {
     private final BusinessService businessService;
 
-    @PostMapping()
-    public ResponseEntity<?> create(@RequestBody BusinessCreateRequest businessCreateRequest) {
-        businessService.create(businessCreateRequest);
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody BusinessRequest businessRequest) {
+        businessService.save(businessRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PutMapping
     public ResponseEntity<BusinessResponse> update(@RequestBody BusinessRequest businessRequest) {
-        return null;
+        BusinessResponse businessResponse = businessService.update(businessRequest);
+        return new ResponseEntity<>(businessResponse,HttpStatus.OK);
     }
 
 

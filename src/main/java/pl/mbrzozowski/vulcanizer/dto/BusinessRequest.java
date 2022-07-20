@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.entity.Address;
-
-import java.time.LocalDate;
 
 @Data
 @Builder
@@ -17,9 +14,7 @@ public class BusinessRequest {
     private Long userId;
     private String name;
     private String nip;
-    private LocalDate createdDate;
     private String description;
-    private String status;
     private AddressRequest address;
     private String photo;
 }

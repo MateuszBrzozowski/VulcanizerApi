@@ -32,9 +32,9 @@ public class Business {
     @JoinColumn(name = "id_photo")
     private Photo photo;
 
-    @OneToMany
+    @Transient
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Employee> employees;
-
 
 
     public void setStatus(BusinessStatus status) {
