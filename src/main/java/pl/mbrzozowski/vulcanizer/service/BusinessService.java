@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.BusinessCreateRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessCreateRequestToBusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessRequestToBusiness;
 import pl.mbrzozowski.vulcanizer.entity.Address;
@@ -16,7 +15,6 @@ import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,11 +32,8 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         Business business =
                 new BusinessRequestToBusiness()
                         .apply(businessRequest);
-        Address address = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
         Address savedAddress = addressService.save(businessRequest.getAddress());
-
         business.setAddress(savedAddress);
-
         business.setStatus(BusinessStatus.NOT_ACTIVATED);
         business.setCreatedDate(LocalDateTime.now());
 
@@ -48,9 +43,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
             business.setPhoto(photoReady);
         }
         //TODO stworzenie Domyślej roli dla pracownika, wpisanie usera tworzacego jako wlasciciela tego businessu
-
-        //TODO Stworzyć record adresu i dodać do business
-
 
         return businessRepository.save(business);
     }
@@ -70,7 +62,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     }
 
     public BusinessResponse updateStatus(BusinessRequest businessRequest) {
-        //TODO możliwość zmiany tylko statusu biznesu - aktywacja - zablkoowanie itd.
         return null;
     }
 

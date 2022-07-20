@@ -18,6 +18,7 @@ public class AddressToAddressResponse implements Function<Address, AddressRespon
                 .addressLineTwo(address.getAddressLineTwo())
                 .code(address.getCode())
                 .city(address.getCity())
+                .country(address.getCountry())
                 .build();
         if (address.getState() != null) {
             addressResponse.setState(address.getState().getName());

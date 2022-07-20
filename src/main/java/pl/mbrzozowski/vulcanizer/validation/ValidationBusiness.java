@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
+import lombok.RequiredArgsConstructor;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.entity.Address;

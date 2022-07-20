@@ -1,6 +1,5 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
-import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
@@ -29,7 +28,8 @@ public class ValidationAddress {
         if ((address.getAddressLineOne() == null)
                 || (address.getCity() == null)
                 || (address.getCode() == null)
-                || (address.getCountry() == null)) {
+                || (address.getCountry() == null)
+                || address.getState() == null) {
             throw new IllegalArgumentException("addressLineOne, city, code, state, country is required");
         } else {
             lineOneToLong(address);
@@ -66,6 +66,11 @@ public class ValidationAddress {
         if (address.getState() != null) {
             if (address.getState().getName().equalsIgnoreCase("")) {
                 address.setState(null);
+            }
+        }
+        if (address.getCountry() != null) {
+            if (address.getCountry().equalsIgnoreCase("")) {
+                address.setCountry(null);
             }
         }
     }
@@ -168,7 +173,7 @@ public class ValidationAddress {
 
     private static void countryToLong(Address address) {
         if (address.getCountry().length() > 50) {
-            throw new IllegalArgumentException("Address: Line one to Long");
+            throw new IllegalArgumentException("Address: Country to Long");
         }
     }
 
@@ -177,14 +182,17 @@ public class ValidationAddress {
                 && isNullLineTwo(address.getAddressLineTwo())
                 && isNullCity(address.getCity())
                 && isNullPostalCode(address.getCode())
-                && isNullState(address.getState());
+                && isNullState(address.getState())
+                && isNullCountry(address.getCountry());
     }
 
     private static boolean isAllParametersEmpty(Address address) {
         return isEmptyLineOne(address.getAddressLineOne())
                 && isEmptyLineTwo(address.getAddressLineTwo())
                 && isEmptyCity(address.getCity())
-                && isEmptyPostalCode(address.getCode());
+                && isEmptyPostalCode(address.getCode())
+                && isNullCountry(address.getCountry())
+                ;
     }
 
     private static boolean isEmptyLineOne(String addressLineOne) {
@@ -235,7 +243,7 @@ public class ValidationAddress {
         return state == null;
     }
 
-    private static boolean isNulllCountry(String country) {
+    private static boolean isNullCountry(String country) {
         return country == null;
     }
 }

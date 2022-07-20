@@ -34,6 +34,9 @@ public class ValidationState {
 
     @Autowired
     public static void isNameExist(State state, StateRepository stateRepository) {
+        if (state == null) {
+            throw new IllegalArgumentException("State can not be null");
+        }
         boolean isState = stateRepository.findByName(state.getName()).isPresent();
         if (state.getName() == null) {
             throw new NullParameterException("State name can not be null");
