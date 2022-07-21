@@ -3,31 +3,29 @@ package pl.mbrzozowski.vulcanizer.validation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
 import pl.mbrzozowski.vulcanizer.entity.User;
-import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
-import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.function.Consumer;
 
 @RequiredArgsConstructor
-public class ValidationUser implements Consumer<User> {
+public class ValidationUser {
     private static final long MIN_USER_AGE = 6;
-    private final UserRepository userRepository;
 
-    @Override
-    public void accept(User user) {
-        validEmail(user.getEmail(), user.getId());
+    public static void validBeforeCreated(User user) {
+        validEmail(user.getEmail());
         validPassword(user.getPassword(), user.getId());
         validFirstName(user.getFirstName());
         validLastName(user.getLastName());
-        validAccountCreateTime(user.getCreateAccountTime());
-        validBirthDay(user.getBirthDate());
     }
 
-    private void validBirthDay(LocalDate birthDate) {
+    public static void validBeforeEditing(User user) {
+        //TODO
+
+    }
+
+    private static void validBirthDay(LocalDate birthDate) {
         if (birthDate != null) {
             if (birthDate.isAfter(LocalDate.now())) {
                 throw new IllegalArgumentException("Birth day is after today!");
@@ -38,26 +36,9 @@ public class ValidationUser implements Consumer<User> {
         }
     }
 
-    public void validEmail(String email, Long id) {
+    public static void validEmail(String email) {
         if (email == null) {
             throw new NullParameterException("Email can not be null");
-        }
-        if (userRepository.findByEmail(email).isPresent()) {
-            User user = userRepository.findByEmail(email).get();
-            if (id != null) { //is edit
-                if (userRepository.findById(id).isPresent()) { // is edit
-                    User userTwo = userRepository.findById(id).get();
-                    if (!userTwo.getId().equals(user.getId())) {
-                        if (user.getEmail().equalsIgnoreCase(email)) {
-                            throw new EmailExistException("Email is ready exist.");
-                        }
-                    }
-                } else if (user.getEmail().equalsIgnoreCase(email)) {
-                    throw new EmailExistException("Email is ready exist.");
-                }
-            } else if (user.getEmail().equalsIgnoreCase(email)) {
-                throw new EmailExistException("Email is ready exist.");
-            }
         }
         EmailValidator emailValidator = EmailValidator.getInstance();
         boolean valid = emailValidator.isValid(email);
@@ -66,7 +47,7 @@ public class ValidationUser implements Consumer<User> {
         }
     }
 
-    private void validPassword(String password, Long id) {
+    private static void validPassword(String password, Long id) {
         if (id != null) {
             //edit
             if (password != null) {
@@ -91,7 +72,7 @@ public class ValidationUser implements Consumer<User> {
         }
     }
 
-    private void validFirstName(String firsName) {
+    private static void validFirstName(String firsName) {
         if (firsName == null) {
             throw new NullParameterException("First name can not be null");
         }
@@ -103,7 +84,7 @@ public class ValidationUser implements Consumer<User> {
         }
     }
 
-    private void validLastName(String lastName) {
+    private static void validLastName(String lastName) {
         if (lastName == null) {
             throw new NullParameterException("Last name can not be null");
         }
@@ -115,7 +96,7 @@ public class ValidationUser implements Consumer<User> {
         }
     }
 
-    private void validAccountCreateTime(LocalDateTime createAccountTime) {
+    private static void validAccountCreateTime(LocalDateTime createAccountTime) {
         if (createAccountTime == null) {
             throw new NullParameterException("Create Account time can not be null");
         }

@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
-import pl.mbrzozowski.vulcanizer.enums.converter.GenderConverter;
-import pl.mbrzozowski.vulcanizer.enums.converter.UserStatusAccountConverter;
+import pl.mbrzozowski.vulcanizer.enums.converter.Converter;
 
 import java.time.LocalDate;
 
@@ -20,9 +20,9 @@ public class UserRequest {
     private String password;
     private String firstName;
     private String lastName;
-    private String gender;
+    private Gender gender;
     private LocalDate birthDate;
-    private String statusAccount;
+    private UserStatusAccount statusAccount;
     private AddressRequest address;
     private String avatar;
     private String phone;
@@ -35,25 +35,10 @@ public class UserRequest {
     }
 
     public void setGender(int gender) {
-        this.gender = GenderConverter.convert(gender);
+        this.gender = Converter.convertIntToGender(gender);
     }
 
     public void setStatusAccount(int statusAccount) {
-        this.statusAccount = UserStatusAccountConverter.convert(statusAccount);
-    }
-
-    public static CustomUserRequestBuilder builder() {
-        return new CustomUserRequestBuilder();
-    }
-
-    public static class CustomUserRequestBuilder extends UserRequestBuilder {
-
-        @Override
-        public UserRequest build() {
-            if (super.statusAccount == null) {
-                super.statusAccount = UserStatusAccount.NOT_ACTIVATED.name();
-            }
-            return super.build();
-        }
+        this.statusAccount = Converter.convertIntToUserStatusAccount(statusAccount);
     }
 }

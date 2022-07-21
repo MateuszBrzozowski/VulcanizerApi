@@ -1,6 +1,8 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
@@ -13,13 +15,13 @@ import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
 import pl.mbrzozowski.vulcanizer.entity.User;
-import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,24 +32,31 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
     private final AddressService addressService;
     private final PhoneService phoneService;
     private final PhotoService photoService;
+    protected static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public User save(UserRequest userRequest) {
-        User user = new UserRequestToUser(stateService, phoneService, photoService).apply(userRequest);
-        ValidationUser validationUser = new ValidationUser(userRepository);
-        user.setStatusAccount(UserStatusAccount.NOT_ACTIVATED.name());
-        user.setCreateAccountTime(LocalDateTime.now());
-        validationUser.accept(user);
-        userRepository.save(user);
-        return user;
+        if (findByEmail(userRequest.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email is ready exist.");
+        }
+
+        User newUser =
+                new User(userRequest.getEmail(),
+                        userRequest.getPassword(),
+                        userRequest.getFirstName(),
+                        userRequest.getLastName());
+
+        ValidationUser.validBeforeCreated(newUser);
+
+        return userRepository.save(newUser);
     }
 
     @Override
     public UserResponse update(UserRequest userRequest) {
         User isUser = findById(userRequest.getId());
         User userEdit = new UserRequestToUser(stateService, phoneService, photoService).apply(userRequest);
-        ValidationUser validationUser = new ValidationUser(userRepository);
-        validationUser.accept(userEdit);
+        ValidationUser validationUser = new ValidationUser();
+        validationUser.validBeforeEditing(userEdit);
 
         updateAddress(userRequest, isUser, userEdit);
         updatePhone(userRequest, isUser, userEdit);
@@ -95,13 +104,13 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
         userRepository.deleteById(id);
     }
 
-    public UserResponse findByEmail(String email) {
-        User user = userRepository
-                .findByEmail(email)
-                .orElseThrow(() -> {
-                    throw new UserWasNotFoundException("User by email [" + email + "] was not found");
-                });
-        return new UserToUserResponse().apply(user);
+    public Optional<User> findByEmail(String email) {
+        Optional<User> user = userRepository
+                .findByEmail(email);
+//                .orElseThrow(() -> {
+//                    throw new UserWasNotFoundException("User by email [" + email + "] was not found");
+//                });
+        return user;
     }
 
     private void updatePhoto(UserRequest userRequest, User isUser, User userEdit) {

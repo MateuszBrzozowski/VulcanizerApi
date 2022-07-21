@@ -22,8 +22,8 @@ public class Visit {
     @JoinColumn(name = "id_service")
     private Service service;
 
-    //TODO
-    // CREATE ENUM!
+    // TODO
+    //  : CREATE ENUM!
     private String status;
 
     @Column(name = "time_start")

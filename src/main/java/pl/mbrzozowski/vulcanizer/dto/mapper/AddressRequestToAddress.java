@@ -22,9 +22,7 @@ public class AddressRequestToAddress implements Function<AddressRequest, Address
         State state = null;
         if (stateName != null) {
             if (!stateName.equalsIgnoreCase("")) {
-                State stateServiceByName = stateService.findByName(stateName);
-                StateResponse stateResponse = new StateToStateResponse().apply(stateServiceByName);
-                state = new StateResponseToState().apply(stateResponse);
+                state = stateService.findByName(stateName);
             }
         }
         return Address.builder()

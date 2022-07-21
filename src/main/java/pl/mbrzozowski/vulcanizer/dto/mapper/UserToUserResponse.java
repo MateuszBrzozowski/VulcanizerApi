@@ -16,10 +16,10 @@ public class UserToUserResponse implements Function<User, UserResponse> {
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .gender(user.getGender())
+                .gender(user.getGender().toString())
                 .birthDate(user.getBirthDate())
                 .createAccountTime(user.getCreateAccountTime())
-                .statusAccount(user.getStatusAccount())
+                .statusAccount(user.getStatusAccount().toString())
                 .address(new AddressToAddressResponse().apply(user.getAddress()))
                 .build();
         if (user.getPhone() != null) {

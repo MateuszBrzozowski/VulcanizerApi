@@ -38,12 +38,6 @@ public class UserController {
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<UserResponse> findByEmail(@Param("email") String email) {
-        UserResponse userResponse = userService.findByEmail(email);
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<?> save(@RequestBody UserRegisterBody userRequest) {
         userService.save(new UserRegisterBodyToUserRequest().apply(userRequest));

@@ -49,9 +49,12 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
                         .apply(businessRequest);
 
         business.setPhones(
-                businessRequest.getPhones().stream().map(phoneService::save).collect(Collectors.toSet())
+                businessRequest
+                        .getPhones()
+                        .stream()
+                        .map(phoneService::save)
+                        .collect(Collectors.toSet())
         );
-
 
         if (businessRequest.getPhoto() != null) {
             Photo photo = new Photo(businessRequest.getPhoto());
@@ -88,8 +91,31 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         businessNewData.setPhoto(business.getPhoto());
         businessToBusinessTransferNewData(business, businessNewData);
         updatePhoto(businessRequest, business);
+
+        // TODO
+        //  : Update phones before save business
+
         businessRepository.save(business);
         return new BusinessToBusinessResponse().apply(business);
+    }
+
+    @Override
+    public List<BusinessResponse> findAll() {
+        return null;
+    }
+
+    @Override
+    public Business findById(Long id) {
+        return businessRepository
+                .findById(id)
+                .orElseThrow(() -> {
+                    throw new NoSuchElementException(String.format("Business not found by id [%s]", id));
+                });
+    }
+
+    @Override
+    public void deleteById(Long id) {
+
     }
 
     private void updatePhoto(BusinessRequest businessRequest, Business business) {
@@ -123,24 +149,5 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
 
     public BusinessResponse updateStatus(BusinessRequest businessRequest) {
         return null;
-    }
-
-    @Override
-    public List<BusinessResponse> findAll() {
-        return null;
-    }
-
-    @Override
-    public Business findById(Long id) {
-        return businessRepository
-                .findById(id)
-                .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Business not found by id [%s]", id));
-                });
-    }
-
-    @Override
-    public void deleteById(Long id) {
-
     }
 }

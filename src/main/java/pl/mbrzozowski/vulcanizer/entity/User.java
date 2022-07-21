@@ -3,6 +3,7 @@ package pl.mbrzozowski.vulcanizer.entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.enums.Gender;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 
 import javax.persistence.*;
@@ -25,13 +26,15 @@ public class User {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     @Column(name = "birth_date")
     private LocalDate birthDate;
     @Column(name = "create_time")
     private LocalDateTime createAccountTime;
     @Column(name = "status")
-    private String statusAccount;
+    @Enumerated(EnumType.STRING)
+    private UserStatusAccount statusAccount;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_address")
     private Address address;
@@ -42,11 +45,11 @@ public class User {
     @JoinColumn(name = "id_phone")
     private Phone phone;
 
-    @OneToMany
+    @OneToMany(mappedBy = "userId")
     private List<Employee> employees;
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Favorites> favorites;
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Visit> visits;
 
     @Builder
@@ -55,10 +58,10 @@ public class User {
                 final String password,
                 final String firstName,
                 final String lastName,
-                final String gender,
+                final Gender gender,
                 final LocalDate birthDate,
                 final LocalDateTime createAccountTime,
-                final String statusAccount,
+                final UserStatusAccount statusAccount,
                 final Address idAddress,
                 final Photo avatar,
                 final Phone phone) {
@@ -69,7 +72,7 @@ public class User {
         this.lastName = lastName;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.createAccountTime = createAccountTime;
+        this.createAccountTime = LocalDateTime.now();
         this.statusAccount = statusAccount;
         this.address = idAddress;
         this.avatar = avatar;
@@ -85,30 +88,44 @@ public class User {
         this.password = password;
         this.firstName = firsName;
         this.lastName = lastName;
-        this.statusAccount = UserStatusAccount.NOT_ACTIVATED.name();
+        this.statusAccount = UserStatusAccount.NOT_ACTIVATED;
         this.createAccountTime = LocalDateTime.now();
     }
 
-    public void setCreateAccountTime(LocalDateTime createAccountTime) {
-        this.createAccountTime = createAccountTime;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender=" + gender +
+                ", birthDate=" + birthDate +
+                ", createAccountTime=" + createAccountTime +
+                ", statusAccount=" + statusAccount +
+                ", address=" + address +
+                ", avatar=" + avatar +
+                ", phone=" + phone +
+                '}';
     }
 
-    public static UserBuilder builder() {
-        return new CustomUserBuilder();
-    }
-
-    private static class CustomUserBuilder extends UserBuilder {
-
-        @Override
-        public User build() {
-            if (super.createAccountTime == null) {
-                super.createAccountTime = LocalDateTime.now();
-            }
-            if (super.statusAccount == null) {
-                super.statusAccount = UserStatusAccount.NOT_ACTIVATED.name();
-            }
-            return super.build();
-        }
-    }
+    //    public static UserBuilder builder() {
+//        return new CustomUserBuilder();
+//    }
+//
+//    private static class CustomUserBuilder extends UserBuilder {
+//
+//        @Override
+//        public User build() {
+//            if (super.createAccountTime == null) {
+//                super.createAccountTime = LocalDateTime.now();
+//            }
+//            if (super.statusAccount == null) {
+//                super.statusAccount = UserStatusAccount.NOT_ACTIVATED;
+//            }
+//            return super.build();
+//        }
+//    }
 }
 

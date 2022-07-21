@@ -25,4 +25,6 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "id_role")
     private EmployeeRole roleId;
+
+
 }
