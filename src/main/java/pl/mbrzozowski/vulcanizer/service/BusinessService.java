@@ -23,12 +23,14 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BusinessService implements ServiceLayer<BusinessRequest, BusinessResponse, Business> {
     private final BusinessRepository businessRepository;
     private final PhotoService photoService;
+    private final PhoneService phoneService;
     private final StateRepository stateRepository;
     private final StateService stateService;
     private final AddressService addressService;
@@ -45,6 +47,11 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         Business business =
                 new BusinessRequestToBusiness()
                         .apply(businessRequest);
+
+        business.setPhones(
+                businessRequest.getPhones().stream().map(phoneService::save).collect(Collectors.toSet())
+        );
+
 
         if (businessRequest.getPhoto() != null) {
             Photo photo = new Photo(businessRequest.getPhoto());

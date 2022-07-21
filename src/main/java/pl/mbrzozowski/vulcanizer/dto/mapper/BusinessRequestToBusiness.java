@@ -3,7 +3,6 @@ package pl.mbrzozowski.vulcanizer.dto.mapper;
 import lombok.RequiredArgsConstructor;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.entity.Business;
-import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 
 import java.util.function.Function;
 
@@ -17,6 +16,7 @@ public class BusinessRequestToBusiness implements Function<BusinessRequest, Busi
                 .name(businessRequest.getName())
                 .nip(businessRequest.getNip())
                 .description(businessRequest.getDescription())
+                .phones(businessRequest.getPhones())
                 .build();
     }
 }

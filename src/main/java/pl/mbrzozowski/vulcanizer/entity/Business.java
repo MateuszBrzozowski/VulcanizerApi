@@ -9,6 +9,7 @@ import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -35,6 +36,14 @@ public class Business {
     @Transient
     @OneToMany(fetch = FetchType.EAGER)
     private List<Employee> employees;
+
+    @ManyToMany
+    @JoinTable(
+            name = "business_phone",
+            joinColumns = @JoinColumn(name = "id_business"),
+            inverseJoinColumns = @JoinColumn(name = "id_phone")
+    )
+    private Set<Phone> phones;
 
 
     public void setStatus(BusinessStatus status) {

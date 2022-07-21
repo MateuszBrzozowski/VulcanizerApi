@@ -29,6 +29,19 @@ public class ValidationBusiness {
         validNip(businessRequest.getNip());
         validDescription(businessRequest.getDescription());
         validAddress(address, stateRepository);
+        validPhones(businessRequest);
+    }
+
+    private static void validPhones(BusinessRequest businessRequest) {
+        if (businessRequest.getPhones() == null) {
+            throw new IllegalArgumentException("Business must have minimum one number");
+        }
+        if (businessRequest.getPhones().isEmpty()) {
+            throw new IllegalArgumentException("Business must have minimum one number");
+        }
+        if (businessRequest.getPhones().size() > 2) {
+            throw new IllegalArgumentException("Business can have maximum two numbers");
+        }
     }
 
     private static void validID(BusinessRequest businessRequest) {

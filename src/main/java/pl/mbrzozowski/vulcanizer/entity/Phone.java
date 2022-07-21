@@ -4,10 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +15,9 @@ public class Phone {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String number;
+
+    @ManyToMany(mappedBy = "phones")
+    private Set<Business> businesses;
 
     @Builder
     public Phone(Long id, String number) {
