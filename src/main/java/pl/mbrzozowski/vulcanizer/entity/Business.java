@@ -8,6 +8,7 @@ import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class Business {
 
     @Transient
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -44,6 +45,10 @@ public class Business {
             inverseJoinColumns = @JoinColumn(name = "id_phone")
     )
     private Set<Phone> phones;
+
+    public void deletePhones(){
+        phones.clear();
+    }
 
 
     public void setStatus(BusinessStatus status) {

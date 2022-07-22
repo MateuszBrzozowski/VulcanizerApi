@@ -11,10 +11,7 @@ import pl.mbrzozowski.vulcanizer.dto.EmployeeRoleRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessRequestToBusiness;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessResponse;
-import pl.mbrzozowski.vulcanizer.entity.Address;
-import pl.mbrzozowski.vulcanizer.entity.Business;
-import pl.mbrzozowski.vulcanizer.entity.EmployeeRole;
-import pl.mbrzozowski.vulcanizer.entity.Photo;
+import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
@@ -22,7 +19,10 @@ import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,8 +92,16 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         businessToBusinessTransferNewData(business, businessNewData);
         updatePhoto(businessRequest, business);
 
-        // TODO
-        //  : Update phones before save business
+        Set<Phone> phones = business.getPhones();
+        Set<Phone> phonesToDelete = new HashSet<>(phones);
+        business.deletePhones();
+        phonesToDelete.forEach(phone -> phoneService.deleteById(phone.getId()));
+        business.setPhones(
+                businessRequest.getPhones()
+                        .stream()
+                        .map(phoneService::save)
+                        .collect(Collectors.toSet())
+        );
 
         businessRepository.save(business);
         return new BusinessToBusinessResponse().apply(business);
