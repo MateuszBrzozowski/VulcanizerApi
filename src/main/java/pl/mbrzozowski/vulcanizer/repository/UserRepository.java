@@ -13,19 +13,4 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE user u SET u.phone = NULL WHERE u.id = :userId")
-    void deletePhoneByUserId(@Param("userId") Long userId);
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE user u SET u.address = NULL WHERE u.id = :userId")
-    void deleteAddressByUserID(@Param("userId") Long userId);
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE user u SET u.avatar = NULL WHERE u.id = :userId")
-    void deletePhotoByUserId(@Param("userId") Long userId);
 }

@@ -21,8 +21,7 @@ public class ValidationUser {
     }
 
     public static void validBeforeEditing(User user) {
-        //TODO
-
+        validBeforeCreated(user);
     }
 
     private static void validBirthDay(LocalDate birthDate) {

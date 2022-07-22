@@ -191,8 +191,7 @@ public class ValidationAddress {
                 && isEmptyLineTwo(address.getAddressLineTwo())
                 && isEmptyCity(address.getCity())
                 && isEmptyPostalCode(address.getCode())
-                && isNullCountry(address.getCountry())
-                ;
+                && isNullCountry(address.getCountry());
     }
 
     private static boolean isEmptyLineOne(String addressLineOne) {

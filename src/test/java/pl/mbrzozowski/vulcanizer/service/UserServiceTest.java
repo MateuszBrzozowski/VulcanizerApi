@@ -38,7 +38,7 @@ class UserServiceTest {
         PhotoService photoService = mock(PhotoService.class);
         StateService stateService = mock(StateService.class);
         AddressService addressService = mock(AddressService.class);
-        userService = new UserService(userRepository, stateService, addressService, phoneService, photoService);
+        userService = new UserService(userRepository, addressService, phoneService, photoService);
     }
 
     @Test
@@ -416,7 +416,7 @@ class UserServiceTest {
                 .password(password)
                 .firstName(firstName)
                 .lastName("")
-                .statusAccount(UserStatusAccount.NOT_ACTIVATED.name())
+                .statusAccount(UserStatusAccount.NOT_ACTIVATED)
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
     }
@@ -429,7 +429,7 @@ class UserServiceTest {
         long idSecond = 2L;
         User userSecond = new User("email@p.pl", password, firstName, lastName);
         userSecond.setId(idSecond);
-        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED.name());
+        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.findByEmail("email@p.pl")).thenReturn(Optional.of(userSecond));
         UserRequest userRequestbuilder = UserRequest.builder()
@@ -438,7 +438,7 @@ class UserServiceTest {
                 .password(password)
                 .firstName(firstName)
                 .lastName(lastName)
-                .statusAccount(UserStatusAccount.ACTIVATED.name())
+                .statusAccount(UserStatusAccount.ACTIVATED)
                 .build();
         Assertions.assertDoesNotThrow(() -> userService.update(userRequestbuilder));
     }
@@ -451,7 +451,7 @@ class UserServiceTest {
         long idSecond = 2L;
         User userSecond = new User("email@p.pl", password, firstName, lastName);
         userSecond.setId(idSecond);
-        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED.name());
+        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.findByEmail("email@p.pl")).thenReturn(Optional.of(userSecond));
         UserRequest userRequestBuilder = UserRequest.builder()

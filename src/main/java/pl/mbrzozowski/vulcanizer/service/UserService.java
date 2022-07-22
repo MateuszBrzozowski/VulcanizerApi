@@ -4,11 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
-import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.AddressResponseToAddress;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
@@ -28,7 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService implements ServiceLayer<UserRequest, UserResponse, User> {
     private final UserRepository userRepository;
-    private final StateService stateService;
     private final AddressService addressService;
     private final PhoneService phoneService;
     private final PhotoService photoService;
@@ -41,7 +37,7 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
         }
 
         User newUser =
-                new User(userRequest.getEmail(),
+                new User(userRequest.getEmail().toLowerCase(),
                         userRequest.getPassword(),
                         userRequest.getFirstName(),
                         userRequest.getLastName());
@@ -53,32 +49,26 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
 
     @Override
     public UserResponse update(UserRequest userRequest) {
-        User isUser = findById(userRequest.getId());
-        User userEdit = new UserRequestToUser(stateService, phoneService, photoService).apply(userRequest);
-        ValidationUser validationUser = new ValidationUser();
-        validationUser.validBeforeEditing(userEdit);
+        if (userRequest.getId() == null) {
+            throw new IllegalArgumentException("[id] can not be null.");
+        }
 
-        updateAddress(userRequest, isUser, userEdit);
-        updatePhone(userRequest, isUser, userEdit);
-        updatePhoto(userRequest, isUser, userEdit);
+        User user = findById(userRequest.getId());
+        if (!user.getEmail().equalsIgnoreCase(userRequest.getEmail())) {
+            if (findByEmail(userRequest.getEmail()).isPresent()) {
+                throw new IllegalArgumentException("Email is ready exist.");
+            }
+        }
 
-        userEdit.setId(isUser.getId());
-        userEdit.setPassword(isUser.getPassword());
-        userEdit.setCreateAccountTime(isUser.getCreateAccountTime());
-        userRepository.save(userEdit);
-        return new UserToUserResponse().apply(userEdit);
-    }
+        updatePhone(userRequest, user);
+        updateAvatar(userRequest, user);
+        updateAddress(userRequest, user);
 
-    private void deletePhotoFromUser(Long userId) {
-        userRepository.deletePhotoByUserId(userId);
-    }
-
-    private void deleteAddressFromUser(Long userId) {
-        userRepository.deleteAddressByUserID(userId);
-    }
-
-    private void deletePhoneFromUser(Long userId) {
-        userRepository.deletePhoneByUserId(userId);
+        User userNewData = new UserRequestToUser().apply(userRequest);
+        businessToBusinessNewData(user, userNewData);
+        ValidationUser.validBeforeEditing(user);
+        userRepository.save(user);
+        return new UserToUserResponse().apply(user);
     }
 
     @Override
@@ -105,62 +95,59 @@ public class UserService implements ServiceLayer<UserRequest, UserResponse, User
     }
 
     public Optional<User> findByEmail(String email) {
-        Optional<User> user = userRepository
+        return userRepository
                 .findByEmail(email);
-//                .orElseThrow(() -> {
-//                    throw new UserWasNotFoundException("User by email [" + email + "] was not found");
-//                });
-        return user;
     }
 
-    private void updatePhoto(UserRequest userRequest, User isUser, User userEdit) {
-        if (isUser.getAvatar() == null && userEdit.getAvatar() != null) { //DB no photo, add photo from req
-            Photo avatar = photoService.save(userEdit.getAvatar());
-            userEdit.setAvatar(avatar);
-        } else if (isUser.getAvatar() != null && userEdit.getAvatar() != null) { //DB has a photo, edit photo from req
-            Long id = isUser.getAvatar().getId();
-            userEdit.getAvatar().setUrl(userRequest.getAvatar());
-            userEdit.getAvatar().setId(id);
-            Photo avatar = photoService.update(userEdit.getAvatar());
-            userEdit.setAvatar(avatar);
-        } else if (isUser.getAvatar() != null && userEdit.getAvatar() == null) { //DB has a photo, delete from DB.
-            Long id = isUser.getAvatar().getId();
-            deletePhotoFromUser(isUser.getId());
+    private void updateAddress(UserRequest userRequest, User user) {
+        if (user.getAddress() == null && userRequest.getAddress() != null) {
+            Address address = addressService.save(userRequest.getAddress());
+            user.setAddress(address);
+        } else if (user.getAddress() != null && userRequest.getAddress() != null) {
+            userRequest.getAddress().setId(user.getAddress().getId());
+            addressService.update(userRequest.getAddress());
+        } else if (user.getAddress() != null && userRequest.getAddress() == null) {
+            Long id = user.getAddress().getId();
+            user.setAddress(null);
+            addressService.deleteById(id);
+        }
+    }
+
+    private void updateAvatar(UserRequest userRequest, User user) {
+        if (user.getAvatar() == null && userRequest.getAvatar() != null) {
+            Photo photo = new Photo(userRequest.getAvatar());
+            Photo photoSaved = photoService.save(photo);
+            user.setAvatar(photoSaved);
+        } else if (user.getAvatar() != null && userRequest.getAvatar() != null) {
+            user.getAvatar().setUrl(userRequest.getAvatar());
+        } else if (user.getAvatar() != null && userRequest.getAvatar() == null) {
+            Long id = user.getAvatar().getId();
+            user.setAvatar(null);
             photoService.deleteById(id);
         }
     }
 
-    private void updatePhone(UserRequest userRequest, User isUser, User userEdit) {
-        if (isUser.getPhone() == null && userEdit.getPhone() != null) { //DB no phone, add phone from req
-            Phone phone = phoneService.save(userEdit.getPhone());
-            userEdit.setPhone(phone);
-        } else if (isUser.getPhone() != null && userEdit.getPhone() != null) { //DB has a phone, edit phone from req
-            Long id = isUser.getPhone().getId();
-            userEdit.getPhone().setNumber(userRequest.getPhone());
-            userEdit.getPhone().setId(id);
-            Phone phone = phoneService.update(userEdit.getPhone());
-            userEdit.setPhone(phone);
-        } else if (isUser.getPhone() != null && userEdit.getPhone() == null) { //DB has a phone, delete from DB.
-            Long id = isUser.getPhone().getId();
-            deletePhoneFromUser(isUser.getId());
+    private void updatePhone(UserRequest userRequest, User user) {
+        if (user.getPhone() == null && userRequest.getPhone() != null) {
+            Phone phone = new Phone(userRequest.getPhone());
+            Phone phoneSaved = phoneService.save(phone);
+            user.setPhone(phoneSaved);
+        } else if (user.getPhone() != null && userRequest.getPhone() != null) {
+            user.getPhone().setNumber(userRequest.getPhone());
+        } else if (user.getPhone() != null && userRequest.getPhone() == null) {
+            Long id = user.getPhone().getId();
+            user.setPhone(null);
             phoneService.deleteById(id);
         }
     }
 
-    private void updateAddress(UserRequest userRequest, User isUser, User userEdit) {
-        if (isUser.getAddress() == null && userEdit.getAddress() != null) { //DB no address, add address from req
-            Address address = addressService.save(userRequest.getAddress());
-            userEdit.setAddress(address);
-        } else if (isUser.getAddress() != null && userEdit.getAddress() != null) { // DB has an address, edit address from req
-            AddressRequest addressRequest = userRequest.getAddress();
-            addressRequest.setId(isUser.getAddress().getId());
-            AddressResponse addressResponse = addressService.update(addressRequest);
-            userEdit.setAddress(new AddressResponseToAddress(stateService).apply(addressResponse));
-        } else if (isUser.getAddress() != null && userEdit.getAddress() == null) { // DB has an address, delete address from DB.
-            Long id = isUser.getAddress().getId();
-            deleteAddressFromUser(isUser.getId());
-            addressService.deleteById(id);
-        }
+    private void businessToBusinessNewData(User user, User userNewData) {
+        user.setEmail(userNewData.getEmail());
+        user.setPassword(userNewData.getPassword());
+        user.setFirstName(userNewData.getFirstName());
+        user.setLastName(userNewData.getLastName());
+        user.setGender(userNewData.getGender());
+        user.setBirthDate(userNewData.getBirthDate());
     }
 
 }

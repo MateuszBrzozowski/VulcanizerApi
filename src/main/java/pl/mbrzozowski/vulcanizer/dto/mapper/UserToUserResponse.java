@@ -16,7 +16,6 @@ public class UserToUserResponse implements Function<User, UserResponse> {
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .gender(user.getGender().toString())
                 .birthDate(user.getBirthDate())
                 .createAccountTime(user.getCreateAccountTime())
                 .statusAccount(user.getStatusAccount().toString())
@@ -27,6 +26,9 @@ public class UserToUserResponse implements Function<User, UserResponse> {
         }
         if (user.getAvatar() != null) {
             userResponse.setAvatar(user.getAvatar().getUrl());
+        }
+        if (user.getGender() != null) {
+            userResponse.setGender(user.getGender().toString());
         }
         return userResponse;
     }
