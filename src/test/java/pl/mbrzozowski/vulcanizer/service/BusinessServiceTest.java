@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
+import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
@@ -13,6 +14,7 @@ import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
@@ -70,6 +72,8 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
+        HashSet<Phone> phones = new HashSet<>();
+        phones.add(new Phone("1111"));
         BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
@@ -77,6 +81,7 @@ class BusinessServiceTest {
                 .description("description")
                 .address(address)
                 .photo("urlurl")
+                .phones(phones)
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
@@ -171,12 +176,15 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
+        HashSet<Phone> phones = new HashSet<>();
+        phones.add(new Phone("1111"));
         BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
                 .address(address)
                 .photo("urlurl")
+                .phones(phones)
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
@@ -209,12 +217,15 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
+        HashSet<Phone> set = new HashSet<>();
+        set.add(new Phone("1111"));
         BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
                 .nip("0123456789")
                 .description("description")
                 .address(address)
+                .phones(set)
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
@@ -460,6 +471,8 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
+        HashSet<Phone> phones = new HashSet<>();
+        phones.add(new Phone("1111"));
         BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name(new StringGenerator().apply(255))
@@ -467,6 +480,7 @@ class BusinessServiceTest {
                 .description("description")
                 .address(address)
                 .photo("urlurl")
+                .phones(phones)
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
@@ -512,6 +526,8 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
+        HashSet<Phone> phones = new HashSet<>();
+        phones.add(new Phone("1111"));
         BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
@@ -519,6 +535,7 @@ class BusinessServiceTest {
                 .description(new StringGenerator().apply(1000))
                 .address(address)
                 .photo("urlurl")
+                .phones(phones)
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
@@ -538,6 +555,8 @@ class BusinessServiceTest {
                 .country("Country")
                 .build();
 
+        HashSet<Phone> phones = new HashSet<>();
+        phones.add(new Phone("1111"));
         BusinessRequest businessCreateRequest = BusinessRequest.builder()
                 .userId(20L)
                 .name("Name")
@@ -545,6 +564,7 @@ class BusinessServiceTest {
                 .description(new StringGenerator().apply(1000))
                 .address(address)
                 .photo("urlurl")
+                .phones(phones)
                 .build();
 
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));

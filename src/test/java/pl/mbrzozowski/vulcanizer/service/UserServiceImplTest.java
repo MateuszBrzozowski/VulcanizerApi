@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
-import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
-import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
 import java.time.LocalDate;
@@ -19,7 +17,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class UserServiceTest {
+class UserServiceImplTest {
 
     private final String email = "username@domain.com";
     private final String password = "password";
@@ -38,7 +36,9 @@ class UserServiceTest {
         PhotoService photoService = mock(PhotoService.class);
         StateService stateService = mock(StateService.class);
         AddressService addressService = mock(AddressService.class);
-        userService = new UserServiceImpl(userRepository, addressService, phoneService, photoService);
+        FavoriteService favoriteService = mock(FavoriteService.class);
+        BusinessService businessService = mock(BusinessService.class);
+        userService = new UserServiceImpl(userRepository, addressService, phoneService, photoService, favoriteService, businessService);
     }
 
     @Test
@@ -59,9 +59,9 @@ class UserServiceTest {
     }
 
     @Test
-    public void saveUser_ReqFieldByConstructorNoEmail_ThrowNullParameterException() {
+    public void saveUser_ReqFieldByConstructorNoEmail_ThrowIllegalArgumentException() {
         UserRequest user = new UserRequest(null, password, firstName, lastName);
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
@@ -71,13 +71,13 @@ class UserServiceTest {
     }
 
     @Test
-    public void save_ReqFieldByBuilderNoEmail_ThrowNullParameterException() {
+    public void save_ReqFieldByBuilderNoEmail_ThrowIllegalArgumentException() {
         UserRequest user = UserRequest.builder()
                 .password(password)
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
@@ -164,16 +164,10 @@ class UserServiceTest {
     }
 
     @Test
-    public void save_ReqFieldByConstructorAllNull_ThrowNullParameterException() {
-        UserRequest user = new UserRequest(null, null, null, null);
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
-    }
-
-    @Test
-    public void save_ReqFieldByBuilderAllNull_ThrowNullParameterException() {
+    public void save_ReqFieldAllNull_ThrowIllegalArgumentException() {
         UserRequest user = UserRequest.builder()
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
@@ -266,7 +260,7 @@ class UserServiceTest {
         User user = new User(email, password, firstName, lastName);
         UserRequest userSecond = new UserRequest(email, password, firstName, lastName);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        Assertions.assertThrows(EmailExistException.class, () -> userService.save(userSecond));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(userSecond));
     }
 
     @Test
@@ -294,7 +288,7 @@ class UserServiceTest {
     }
 
     @Test
-    void update_editParametersNoUserInDatabase_ThrowUserWasNotFoundException() {
+    void update_editParametersNoUserInDatabase_ThrowIllegalArgumentException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
@@ -305,7 +299,7 @@ class UserServiceTest {
                 .firstName(firstName)
                 .lastName("newLastName")
                 .build();
-        Assertions.assertThrows(UserWasNotFoundException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -321,7 +315,7 @@ class UserServiceTest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -466,23 +460,12 @@ class UserServiceTest {
     }
 
     @Test
-    void save_UserWithBirthDateAfterToday_ThrowsIllegalArgumentException() {
-        UserRequest user = UserRequest.builder()
-                .email(email)
-                .password(password)
-                .lastName(lastName)
-                .firstName(firstName)
-                .birthDate(LocalDate.now().plusDays(1))
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
-    }
-
-    @Test
     void update_UserWithBirthDateAfterToday_ThrowsIllegalArgumentException() {
         long id = 1L;
         User user = new User(email, password, firstName, lastName);
         user.setId(id);
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(email)).thenReturn(null);
         UserRequest userRequest = UserRequest.builder()
                 .id(id)
                 .email(email)
@@ -577,6 +560,7 @@ class UserServiceTest {
                 .lastName(NOT_NULL)
                 .email("mail@domain.pl")
                 .password(NOT_NULL)
+                .statusAccount(UserStatusAccount.NOT_ACTIVATED)
                 .build();
         when(userRepository.findById(17L)).thenReturn(Optional.of(user));
         Assertions.assertDoesNotThrow(() -> userService.update(userRequest));

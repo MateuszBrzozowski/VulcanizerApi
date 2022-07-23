@@ -11,14 +11,17 @@ public class UserRequestToUser implements Function<UserRequest, User> {
 
     @Override
     public User apply(UserRequest userRequest) {
-        return User.builder()
+        User user = User.builder()
                 .id(userRequest.getId())
-                .email(userRequest.getEmail().toLowerCase())
                 .password(userRequest.getPassword())
                 .firstName(userRequest.getFirstName())
                 .lastName(userRequest.getLastName())
                 .gender(userRequest.getGender())
                 .birthDate(userRequest.getBirthDate())
                 .build();
+        if (userRequest.getEmail() != null) {
+            user.setEmail(userRequest.getEmail().toLowerCase());
+        }
+        return user;
     }
 }

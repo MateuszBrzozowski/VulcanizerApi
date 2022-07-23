@@ -2,6 +2,7 @@ package pl.mbrzozowski.vulcanizer.validation;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
+import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
@@ -13,15 +14,19 @@ import java.time.LocalDateTime;
 public class ValidationUser {
     private static final long MIN_USER_AGE = 6;
 
-    public static void validBeforeCreated(User user) {
+    public static void validBeforeCreated(UserRequest userRequest) {
+        validEmail(userRequest.getEmail());
+        validPassword(userRequest.getPassword(), userRequest.getId());
+        validFirstName(userRequest.getFirstName());
+        validLastName(userRequest.getLastName());
+    }
+
+    public static void validBeforeEditing(User user) {
         validEmail(user.getEmail());
         validPassword(user.getPassword(), user.getId());
         validFirstName(user.getFirstName());
         validLastName(user.getLastName());
-    }
-
-    public static void validBeforeEditing(User user) {
-        validBeforeCreated(user);
+        validBirthDay(user.getBirthDate());
     }
 
     private static void validBirthDay(LocalDate birthDate) {
@@ -37,7 +42,7 @@ public class ValidationUser {
 
     public static void validEmail(String email) {
         if (email == null) {
-            throw new NullParameterException("Email can not be null");
+            throw new IllegalArgumentException("Email can not be null");
         }
         EmailValidator emailValidator = EmailValidator.getInstance();
         boolean valid = emailValidator.isValid(email);

@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
@@ -39,6 +38,7 @@ public class UserServiceImpl implements UserService {
         if (findByEmail(userRequest.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email is ready exist.");
         }
+        ValidationUser.validBeforeCreated(userRequest);
 
         User newUser =
                 new User(userRequest.getEmail().toLowerCase(),
@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService {
                         userRequest.getFirstName(),
                         userRequest.getLastName());
 
-        ValidationUser.validBeforeCreated(newUser);
 
         return userRepository.save(newUser);
     }
@@ -131,7 +130,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isBusinessFavoriteForUser(Long userId, Long businessId) {
-        return false;
+        User user = findById(userId);
+        List<Favorites> favorites = user.getFavorites();
+        return favorites.stream().anyMatch(favorites1 -> favorites1.getBusiness().getId().equals(businessId));
     }
 
     @Override

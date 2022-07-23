@@ -66,8 +66,8 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     @Override
     public Business save(BusinessRequest businessRequest) {
         Address address = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
-        ValidationBusiness.validCreateRequest(businessRequest, stateRepository, address);
         userService.findById(businessRequest.getUserId());
+        ValidationBusiness.validCreateRequest(businessRequest, stateRepository, address);
         Business business =
                 new BusinessRequestToBusiness()
                         .apply(businessRequest);
