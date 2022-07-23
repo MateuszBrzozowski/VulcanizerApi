@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
-import pl.mbrzozowski.vulcanizer.dto.BusinessCreateRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
@@ -23,8 +22,7 @@ class BusinessServiceTest {
     private BusinessService businessService;
     private StateRepository stateRepository;
     private StateService stateService;
-    private UserRepository userRepository;
-    private UserService userService;
+    private UserServiceImpl userService;
 
 
 //    Business business = Business.builder()
@@ -40,11 +38,11 @@ class BusinessServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        userRepository = mock(UserRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
         BusinessRepository businessRepository = mock(BusinessRepository.class);
         stateRepository = mock(StateRepository.class);
         stateService = mock(StateService.class);
-        userService = mock(UserService.class);
+        userService = mock(UserServiceImpl.class);
         PhotoService photoService = mock(PhotoService.class);
         PhoneService phoneService = mock(PhoneService.class);
         AddressService addressService = mock(AddressService.class);

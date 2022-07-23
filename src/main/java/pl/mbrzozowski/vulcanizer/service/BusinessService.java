@@ -19,7 +19,6 @@ import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +33,7 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     private final StateRepository stateRepository;
     private final StateService stateService;
     private final AddressService addressService;
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final EmployeeRoleService employeeRoleService;
     private final EmployeeService employeeService;
     protected Logger logger = LoggerFactory.getLogger(BusinessService.class);

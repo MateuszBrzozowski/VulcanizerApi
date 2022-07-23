@@ -22,21 +22,18 @@ class EmployeeServiceTest {
     private EmployeeService employeeService;
     private EmployeeRepository employeeRepository;
     private BusinessService businessService;
-    private BusinessRepository businessRepository;
-    private UserService userService;
-    private UserRepository userRepository;
+    private UserServiceImpl userService;
     private EmployeeRoleService employeeRoleService;
-    private EmployeeRoleRepository employeeRoleRepository;
 
     @BeforeEach
     public void beforeEach() {
         employeeRepository = mock(EmployeeRepository.class);
         businessService = mock(BusinessService.class);
-        businessRepository = mock(BusinessRepository.class);
-        userService = mock(UserService.class);
-        userRepository = mock(UserRepository.class);
+        BusinessRepository businessRepository = mock(BusinessRepository.class);
+        userService = mock(UserServiceImpl.class);
+        UserRepository userRepository = mock(UserRepository.class);
         employeeRoleService = mock(EmployeeRoleService.class);
-        employeeRoleRepository = mock(EmployeeRoleRepository.class);
+        EmployeeRoleRepository employeeRoleRepository = mock(EmployeeRoleRepository.class);
         employeeService = new EmployeeService(employeeRepository, userService);
     }
 

@@ -26,7 +26,7 @@ class UserServiceTest {
     private final String firstName = "firstName";
     private final String lastName = "LastName";
     private final LocalDateTime createAccountTime = LocalDateTime.now();
-    private UserService userService;
+    private UserServiceImpl userService;
     private UserRepository userRepository;
     private final int USER_AGE = 6;
 
@@ -38,7 +38,7 @@ class UserServiceTest {
         PhotoService photoService = mock(PhotoService.class);
         StateService stateService = mock(StateService.class);
         AddressService addressService = mock(AddressService.class);
-        userService = new UserService(userRepository, addressService, phoneService, photoService);
+        userService = new UserServiceImpl(userRepository, addressService, phoneService, photoService);
     }
 
     @Test

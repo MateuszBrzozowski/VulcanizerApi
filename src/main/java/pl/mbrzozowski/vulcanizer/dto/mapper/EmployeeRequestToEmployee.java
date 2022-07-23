@@ -7,12 +7,12 @@ import pl.mbrzozowski.vulcanizer.entity.Employee;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
-import pl.mbrzozowski.vulcanizer.service.UserService;
+import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
 
 @Component
 @RequiredArgsConstructor
 public class EmployeeRequestToEmployee {
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     public Employee convert(EmployeeRequest employeeRequest) {
         User user = findUserById(employeeRequest);

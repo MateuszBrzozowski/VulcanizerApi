@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeService implements ServiceLayer<EmployeeRequest, EmployeeResponse, Employee> {
     private final EmployeeRepository employeeRepository;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Override
     public Employee save(EmployeeRequest employeeRequest) {
