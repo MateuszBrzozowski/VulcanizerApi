@@ -7,7 +7,7 @@ import pl.mbrzozowski.vulcanizer.dto.StateResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.StateRequestToState;
 import pl.mbrzozowski.vulcanizer.dto.mapper.StateToStateResponse;
 import pl.mbrzozowski.vulcanizer.entity.State;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationState;
 
@@ -22,7 +22,7 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
     @Override
     public State save(StateRequest stateRequest) {
         State state = new StateRequestToState().apply(stateRequest);
-        ValidationState.valid(state,stateRepository);
+        ValidationState.valid(state, stateRepository);
         stateRepository.save(state);
         return state;
     }
@@ -34,7 +34,7 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
             throw new IllegalArgumentException("Id can not be null");
         }
         findById(state.getId());
-        ValidationState.valid(state,stateRepository);
+        ValidationState.valid(state, stateRepository);
         stateRepository.save(state);
         return new StateToStateResponse().apply(state);
     }
@@ -52,7 +52,7 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
         return stateRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("State by id [%s] was not found", id));
+                    throw new IllegalArgumentException(String.format("State by id [%s] was not found", id));
                 });
     }
 
@@ -64,7 +64,7 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
         return stateRepository
                 .findByName(name)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("State by name [%s] was not found", name));
+                    throw new IllegalArgumentException(String.format("State by name [%s] was not found", name));
                 });
     }
 

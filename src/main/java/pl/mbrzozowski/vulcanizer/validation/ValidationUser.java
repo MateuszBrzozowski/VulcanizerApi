@@ -5,7 +5,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,7 +55,7 @@ public class ValidationUser {
             //edit
             if (password != null) {
                 if (password.isEmpty()) {
-                    throw new NullParameterException("Password can not be empty");
+                    throw new IllegalArgumentException("Password can not be empty");
                 }
                 if (password.length() > 30) {
                     throw new IllegalArgumentException("Password to long. Max length 30 chars.");
@@ -65,7 +64,7 @@ public class ValidationUser {
         } else {
             //add
             if (password == null) {
-                throw new NullParameterException("Password can not be null");
+                throw new IllegalArgumentException("Password can not be null");
             }
             if (password.isEmpty()) {
                 throw new IllegalArgumentException("Password can not be empty");
@@ -78,7 +77,7 @@ public class ValidationUser {
 
     private static void validFirstName(String firsName) {
         if (firsName == null) {
-            throw new NullParameterException("First name can not be null");
+            throw new IllegalArgumentException("First name can not be null");
         }
         if (firsName.isEmpty()) {
             throw new IllegalArgumentException("First name can not be empty");
@@ -90,7 +89,7 @@ public class ValidationUser {
 
     private static void validLastName(String lastName) {
         if (lastName == null) {
-            throw new NullParameterException("Last name can not be null");
+            throw new IllegalArgumentException("Last name can not be null");
         }
         if (lastName.isEmpty()) {
             throw new IllegalArgumentException("Last name can not be empty");
@@ -102,7 +101,7 @@ public class ValidationUser {
 
     private static void validAccountCreateTime(LocalDateTime createAccountTime) {
         if (createAccountTime == null) {
-            throw new NullParameterException("Create Account time can not be null");
+            throw new IllegalArgumentException("Create Account time can not be null");
         }
     }
 }

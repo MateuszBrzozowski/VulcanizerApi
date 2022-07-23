@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.EmployeeRoleRequest;
 import pl.mbrzozowski.vulcanizer.entity.EmployeeRole;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRoleRepository;
 import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 
@@ -116,8 +115,8 @@ class EmployeeRoleServiceTest {
     void update_NoSuchRole_ThrowNoSuchElementException() {
         EmployeeRoleRequest employeeRoleRequest = new EmployeeRoleRequest(1L, "new name");
         EmployeeRole employeeRole = new EmployeeRole(1L, "asdasdasd");
-        when(employeeRoleRepository.findById(1L)).thenThrow(NoSuchElementException.class);
-        Assertions.assertThrows(NoSuchElementException.class, () -> employeeRoleService.update(employeeRoleRequest));
+        when(employeeRoleRepository.findById(1L)).thenThrow(IllegalArgumentException.class);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> employeeRoleService.update(employeeRoleRequest));
     }
 
     //
@@ -133,8 +132,8 @@ class EmployeeRoleServiceTest {
 
     @Test
     void findByID_NoSuchRole_ThrowNoSuchElementException() {
-        when(employeeRoleRepository.findById(1L)).thenThrow(NoSuchElementException.class);
-        Assertions.assertThrows(NoSuchElementException.class, () -> employeeRoleService.findById(1L));
+        when(employeeRoleRepository.findById(1L)).thenThrow(IllegalArgumentException.class);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> employeeRoleService.findById(1L));
     }
 
 }

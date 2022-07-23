@@ -7,8 +7,6 @@ import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.AddressRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.util.StringGenerator;
@@ -51,7 +49,7 @@ class AddressServiceTest {
     public void save_AllVariableNull_ThrowNullPointerException() {
         AddressRequest addressRequest = AddressRequest.builder()
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -120,7 +118,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .addressLineOne("")
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -128,7 +126,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .addressLineTwo("")
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -136,7 +134,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .city("")
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -144,7 +142,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .code("")
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -152,7 +150,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .state("")
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -160,7 +158,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .state("NotCorrect")
                 .build();
-        Assertions.assertThrows(NoSuchElementException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -186,7 +184,7 @@ class AddressServiceTest {
                 .code("")
                 .state("")
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -197,7 +195,7 @@ class AddressServiceTest {
                 .city("")
                 .code("")
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -208,7 +206,7 @@ class AddressServiceTest {
                 .city(null)
                 .code("")
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.save(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -283,12 +281,12 @@ class AddressServiceTest {
     void findById_DoesNotFoundAddress_ThrowNoSuchElementException() {
         long id = 1L;
         when(addressRepository.findById(id)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> addressService.findById(id));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.findById(id));
     }
 
     @Test
     void findById_IdIsNull_ThrowNoSuchElementException() {
-        Assertions.assertThrows(NoSuchElementException.class, () -> addressService.findById(null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.findById(null));
     }
 
     @Test
@@ -319,7 +317,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder().build();
         Address address = Address.builder().build();
         when(addressRepository.findById(null)).thenReturn(Optional.of(address));
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.update(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.update(addressRequest));
     }
 
     @Test
@@ -333,7 +331,7 @@ class AddressServiceTest {
                 .state("")
                 .build();
         when(stateRepository.findByName("")).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> addressService.update(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.update(addressRequest));
     }
 
     @Test
@@ -349,7 +347,7 @@ class AddressServiceTest {
                 .id(1L)
                 .build();
         when(addressRepository.findById(1L)).thenReturn(Optional.of(address));
-        Assertions.assertThrows(NullParameterException.class, () -> addressService.update(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.update(addressRequest));
     }
 
     @Test
@@ -357,7 +355,7 @@ class AddressServiceTest {
         AddressRequest addressRequest = AddressRequest.builder()
                 .city(CITY)
                 .build();
-        Assertions.assertThrows(NoSuchElementException.class, () -> addressService.update(addressRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.update(addressRequest));
     }
 
     @Test
@@ -376,12 +374,12 @@ class AddressServiceTest {
 
     @Test
     void delete_IdIsNull_ThrowNoSuchElementException() {
-        Assertions.assertThrows(NoSuchElementException.class, () -> addressService.deleteById(null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.deleteById(null));
     }
 
     @Test
     void delete_DoesNotFoundAddress_ThrowNoSuchElementException() {
-        Assertions.assertThrows(NoSuchElementException.class, () -> addressService.deleteById(1L));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.deleteById(1L));
     }
 
     @Test

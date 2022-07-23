@@ -1,7 +1,6 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessRequestToBusiness;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
@@ -141,7 +140,7 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         return businessRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Business not found by id [%s]", id));
+                    throw new IllegalArgumentException(String.format("Business not found by id [%s]", id));
                 });
     }
 

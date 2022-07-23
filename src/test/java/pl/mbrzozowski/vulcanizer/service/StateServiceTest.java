@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import pl.mbrzozowski.vulcanizer.dto.StateRequest;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 
@@ -83,7 +81,7 @@ class StateServiceTest {
         StateRequest state = StateRequest.builder()
                 .name(null)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> stateService.save(state));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> stateService.save(state));
     }
 
     @Test
@@ -119,7 +117,7 @@ class StateServiceTest {
     void findById_DoesNotFound_Throw() {
         long id = 1L;
         when(stateRepository.findById(id)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> stateService.findById(id));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> stateService.findById(id));
     }
 
     @Test
@@ -138,7 +136,7 @@ class StateServiceTest {
     void findByName_DoesNotFound_ThrowNoSuchElementException() {
         String name = "Łódzkie";
         when(stateRepository.findByName(name)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> stateService.findByName(name));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> stateService.findByName(name));
     }
 
     @Test
@@ -158,7 +156,7 @@ class StateServiceTest {
     void findByName_NoFound_ThrowNoSuchElementException() {
         String name = "za";
         when(stateRepository.findByName(name)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> stateService.findByName(name));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> stateService.findByName(name));
     }
 
     @Test

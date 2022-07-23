@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.EmployeeRoleRequest;
 import pl.mbrzozowski.vulcanizer.dto.EmployeeRoleResponse;
 import pl.mbrzozowski.vulcanizer.entity.EmployeeRole;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRoleRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationEmployeeRole;
 
@@ -50,7 +50,7 @@ public class EmployeeRoleService implements ServiceLayer<EmployeeRoleRequest, Em
         return employeeRoleRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Not found role by id [%s]", id));
+                    throw new IllegalArgumentException(String.format("Not found role by id [%s]", id));
                 });
     }
 

@@ -8,7 +8,6 @@ import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
@@ -697,10 +696,10 @@ class BusinessServiceTest {
                 .photo("urlurl")
                 .build();
         when(stateService.findByName("state")).thenReturn(state);
-        when(userService.findById(20L)).thenThrow(NoSuchElementException.class);
+        when(userService.findById(20L)).thenThrow(IllegalArgumentException.class);
         when(stateRepository.findByName("state")).thenReturn(Optional.of(state));
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> businessService.save(businessCreateRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> businessService.save(businessCreateRequest));
     }
 
 }

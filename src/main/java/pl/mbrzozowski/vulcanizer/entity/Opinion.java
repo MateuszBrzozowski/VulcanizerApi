@@ -24,7 +24,7 @@ public class Opinion {
     private String description;
     private boolean visibility;
     @Column(name = "created_time")
-    private LocalDateTime createdTime;
+    private LocalDateTime createdTime = LocalDateTime.now();
     @Column(name = "author_name")
     private String authorName;
 

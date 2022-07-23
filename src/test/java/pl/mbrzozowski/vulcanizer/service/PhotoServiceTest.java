@@ -3,11 +3,8 @@ package pl.mbrzozowski.vulcanizer.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.PhotoRepository;
 import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 
@@ -92,7 +89,7 @@ class PhotoServiceTest {
     @Test
     void findById_NotFound_ThrowNoSuchElementException() {
         when(photoRepository.findById(1L)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> photoService.findById(1L));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> photoService.findById(1L));
     }
 
     @Test
@@ -105,7 +102,7 @@ class PhotoServiceTest {
     @Test
     void findById_nullID_ThrowIllegalArgumentException() {
         when(photoRepository.findById(null)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> photoService.findById(null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> photoService.findById(null));
     }
 
     @Test

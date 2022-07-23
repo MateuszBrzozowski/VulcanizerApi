@@ -12,7 +12,6 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
@@ -87,7 +86,7 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new UserWasNotFoundException("User by id [" + id + "] was not found");
+                    throw new IllegalArgumentException("User by id [" + id + "] was not found");
                 });
     }
 

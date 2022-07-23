@@ -3,7 +3,7 @@ package pl.mbrzozowski.vulcanizer.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.entity.Phone;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.PhoneRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationPhone;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PhoneService implements ServiceLayer<Phone, Phone, Phone> {
     private final PhoneRepository phoneRepository;
-    private ValidationPhone validationPhone = new ValidationPhone();
+    private final ValidationPhone validationPhone = new ValidationPhone();
 
 
     @Override
@@ -43,7 +43,7 @@ public class PhoneService implements ServiceLayer<Phone, Phone, Phone> {
         return phoneRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Not found phone by id [%s]", id));
+                    throw new IllegalArgumentException(String.format("Not found phone by id [%s]", id));
                 });
     }
 
@@ -51,7 +51,7 @@ public class PhoneService implements ServiceLayer<Phone, Phone, Phone> {
         return phoneRepository
                 .findByNumber(number)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Not found phone number [%s]", number));
+                    throw new IllegalArgumentException(String.format("Not found phone number [%s]", number));
                 });
 
     }

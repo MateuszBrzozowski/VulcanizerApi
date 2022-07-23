@@ -3,15 +3,21 @@ package pl.mbrzozowski.vulcanizer.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
+import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.Favorites;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
+import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
+import pl.mbrzozowski.vulcanizer.repository.FavoritesRepository;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
@@ -26,6 +32,8 @@ class UserServiceImplTest {
     private final LocalDateTime createAccountTime = LocalDateTime.now();
     private UserServiceImpl userService;
     private UserRepository userRepository;
+    private BusinessService businessService;
+    private BusinessRepository businessRepository;
     private final int USER_AGE = 6;
 
     @BeforeEach
@@ -37,7 +45,9 @@ class UserServiceImplTest {
         StateService stateService = mock(StateService.class);
         AddressService addressService = mock(AddressService.class);
         FavoriteService favoriteService = mock(FavoriteService.class);
-        BusinessService businessService = mock(BusinessService.class);
+        FavoritesRepository favoritesRepository = mock(FavoritesRepository.class);
+        businessService = mock(BusinessService.class);
+        businessRepository = mock(BusinessRepository.class);
         userService = new UserServiceImpl(userRepository, addressService, phoneService, photoService, favoriteService, businessService);
     }
 
@@ -83,7 +93,7 @@ class UserServiceImplTest {
     @Test
     public void save_ReqFieldByConstructorNoPass_ThrowNullParameterException() {
         UserRequest user = new UserRequest(email, null, firstName, lastName);
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
@@ -99,13 +109,13 @@ class UserServiceImplTest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
     public void save_ReqFieldByConstructorNoFirstName_ThrowNullParameterException() {
         UserRequest user = new UserRequest(email, password, null, lastName);
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
@@ -121,13 +131,13 @@ class UserServiceImplTest {
                 .password(password)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
     public void save_ReqFieldByConstructorNoLastName_ThrowNullParameterException() {
         UserRequest user = new UserRequest(email, password, firstName, null);
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
@@ -143,7 +153,7 @@ class UserServiceImplTest {
                 .password(password)
                 .firstName(firstName)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.save(user));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(user));
     }
 
     @Test
@@ -347,7 +357,7 @@ class UserServiceImplTest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -363,7 +373,7 @@ class UserServiceImplTest {
                 .firstName(null)
                 .lastName(lastName)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -395,7 +405,7 @@ class UserServiceImplTest {
                 .firstName(firstName)
                 .lastName(null)
                 .build();
-        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
     }
 
     @Test
@@ -584,6 +594,109 @@ class UserServiceImplTest {
                 .password(NOT_NULL)
                 .build();
         when(userRepository.findById(17L)).thenReturn(Optional.of(user));
-        Assertions.assertThrows(NullParameterException.class, () -> userService.update(userRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(userRequest));
+    }
+
+    @Test
+    void saveFavorites_Success() {
+        FavoritesRequest favoritesRequest = new FavoritesRequest(1L, 1L);
+        User user = new User();
+        Business business = new Business();
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(businessRepository.findById(1L)).thenReturn(Optional.of(business));
+        boolean b = userService.saveFavorite(favoritesRequest);
+        Assertions.assertTrue(b);
+    }
+
+    @Test
+    void saveFavorites_BusinessIDNotNull_ThrowIllegalArgumentException() {
+        FavoritesRequest favoritesRequest = new FavoritesRequest(1L, null);
+        User user = new User();
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(businessService.findById(null)).thenThrow(IllegalArgumentException.class);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveFavorite(favoritesRequest));
+    }
+
+    @Test
+    void saveFavorites_UserIDNotNull_ThrowIllegalArgumentException() {
+        FavoritesRequest favoritesRequest = new FavoritesRequest(null, 1L);
+        Business business = new Business();
+        when(userRepository.findById(1L)).thenThrow(IllegalArgumentException.class);
+        when(businessService.findById(null)).thenReturn(business);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveFavorite(favoritesRequest));
+    }
+
+    @Test
+    void saveFavorites_BusinessNotFound_ThrowIllegalArgumentException() {
+        FavoritesRequest favoritesRequest = new FavoritesRequest(1L, 1L);
+        User user = new User();
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(businessService.findById(1L)).thenThrow(IllegalArgumentException.class);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveFavorite(favoritesRequest));
+    }
+
+    @Test
+    void saveFavorites_UserIDNoTfOUND_ThrowIllegalArgumentException() {
+        FavoritesRequest favoritesRequest = new FavoritesRequest(1L, 1L);
+        Business business = new Business();
+        when(userRepository.findById(1L)).thenThrow(IllegalArgumentException.class);
+        when(businessService.findById(1L)).thenReturn(business);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveFavorite(favoritesRequest));
+    }
+
+    @Test
+    void isBusinessFavoriteForUser_True() {
+        User user = new User();
+        user.setId(1L);
+        Business business = new Business();
+        business.setId(1L);
+        List<Favorites> favorites = new ArrayList<>();
+        favorites.add(new Favorites(user, business));
+        user.setFavorites(favorites);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        boolean isTrue = userService.isBusinessFavoriteForUser(1L, 1L);
+        Assertions.assertTrue(isTrue);
+    }
+
+    @Test
+    void isBusinessFavoriteForUser_False() {
+        User user = new User();
+        user.setId(1L);
+        Business business = new Business();
+        business.setId(1L);
+        List<Favorites> favorites = new ArrayList<>();
+        favorites.add(new Favorites(user, business));
+        user.setFavorites(favorites);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        boolean isFalse = userService.isBusinessFavoriteForUser(1L, 2L);
+        Assertions.assertFalse(isFalse);
+    }
+
+    @Test
+    void deleteFavorite_True(){
+        User user = new User();
+        user.setId(1L);
+        Business business = new Business();
+        business.setId(1L);
+        List<Favorites> favorites = new ArrayList<>();
+        favorites.add(new Favorites(user, business));
+        user.setFavorites(favorites);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        boolean isTrue = userService.deleteFavorite(1L, 1L);
+        Assertions.assertTrue(isTrue);
+    }
+
+    @Test
+    void deleteFavorite_False(){
+        User user = new User();
+        user.setId(1L);
+        Business business = new Business();
+        business.setId(1L);
+        List<Favorites> favorites = new ArrayList<>();
+        favorites.add(new Favorites(user, business));
+        user.setFavorites(favorites);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        boolean isFalse = userService.deleteFavorite(1L, 2L);
+        Assertions.assertFalse(isFalse);
     }
 }

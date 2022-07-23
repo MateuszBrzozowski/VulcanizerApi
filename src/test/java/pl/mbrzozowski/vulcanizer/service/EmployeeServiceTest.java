@@ -9,8 +9,6 @@ import pl.mbrzozowski.vulcanizer.entity.Employee;
 import pl.mbrzozowski.vulcanizer.entity.EmployeeRole;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
-import pl.mbrzozowski.vulcanizer.exceptions.UserWasNotFoundException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRepository;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRoleRepository;
@@ -128,7 +126,7 @@ class EmployeeServiceTest {
                 .build();
         when(employeeRoleService.findById(1L)).thenReturn(role);
         when(businessService.findById(1L)).thenReturn(business);
-        when(userService.findById(1L)).thenThrow(UserWasNotFoundException.class);
+        when(userService.findById(1L)).thenThrow(IllegalArgumentException.class);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> employeeService.save(employeeRequest));
@@ -152,7 +150,7 @@ class EmployeeServiceTest {
                 .roleId(role)
                 .build();
         when(employeeRoleService.findById(1L)).thenReturn(role);
-        when(businessService.findById(1L)).thenThrow(NoSuchElementException.class);
+        when(businessService.findById(1L)).thenThrow(IllegalArgumentException.class);
         when(userService.findById(1L)).thenReturn(user);
         Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -171,7 +169,7 @@ class EmployeeServiceTest {
                 .role(role)
                 .build();
 
-        when(employeeRoleService.findById(1L)).thenThrow(NoSuchElementException.class);
+        when(employeeRoleService.findById(1L)).thenThrow(IllegalArgumentException.class);
         when(businessService.findById(1L)).thenReturn(business);
         when(userService.findById(1L)).thenReturn(user);
         Assertions.assertThrows(

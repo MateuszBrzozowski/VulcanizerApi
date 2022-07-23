@@ -7,7 +7,7 @@ import pl.mbrzozowski.vulcanizer.dto.EmployeeResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.EmployeeRequestToEmployee;
 import pl.mbrzozowski.vulcanizer.dto.mapper.EmployeeToEmployeeResponse;
 import pl.mbrzozowski.vulcanizer.entity.Employee;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationEmployee;
 
@@ -49,7 +49,7 @@ public class EmployeeService implements ServiceLayer<EmployeeRequest, EmployeeRe
         return employeeRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Not found employee by id [%s]", id));
+                    throw new IllegalArgumentException(String.format("Not found employee by id [%s]", id));
                 });
     }
 

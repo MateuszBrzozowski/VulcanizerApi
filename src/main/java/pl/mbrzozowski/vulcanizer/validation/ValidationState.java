@@ -1,10 +1,8 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
 public class ValidationState {
@@ -16,7 +14,7 @@ public class ValidationState {
     private static void validName(String name, StateRepository stateRepository) {
         boolean isState = stateRepository.findByName(name).isPresent();
         if (name == null) {
-            throw new NullParameterException("State name can not be null");
+            throw new IllegalArgumentException("State name can not be null");
         }
         if (name.equalsIgnoreCase("")) {
             throw new IllegalArgumentException("State name can not be empty");
@@ -37,7 +35,7 @@ public class ValidationState {
         }
         boolean isState = stateRepository.findByName(state.getName()).isPresent();
         if (state.getName() == null) {
-            throw new NullParameterException("State name can not be null");
+            throw new IllegalArgumentException("State name can not be null");
         }
         if (!isState) {
             throw new IllegalArgumentException("State is not exist");

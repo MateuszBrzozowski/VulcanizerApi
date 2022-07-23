@@ -7,7 +7,7 @@ import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.AddressRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationAddress;
 
@@ -62,7 +62,7 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
         return addressRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Address by id [%s] was not found", id));
+                    throw new IllegalArgumentException(String.format("Address by id [%s] was not found", id));
                 });
     }
 

@@ -3,7 +3,6 @@ package pl.mbrzozowski.vulcanizer.validation;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
 public class ValidationAddress {
@@ -11,7 +10,7 @@ public class ValidationAddress {
     public static void valid(Address address) {
         ifArgsEmptySetNull(address);
         if (isAllParametersNull(address)) {
-            throw new NullParameterException("Address: All parameters can not be null");
+            throw new IllegalArgumentException("Address: All parameters can not be null");
         } else {
             if (isAllParametersEmpty(address)) {
                 throw new IllegalArgumentException("Address: All parameters can not be empty");

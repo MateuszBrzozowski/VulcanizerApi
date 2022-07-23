@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
 import pl.mbrzozowski.vulcanizer.repository.PhoneRepository;
 
 import java.util.Optional;
@@ -109,13 +108,13 @@ class PhoneServiceTest {
     @Test
     void findById_DoesNotFound_ThrowNoSuchElementException() {
         when(phoneRepository.findById(1L)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> phoneService.findById(1L));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> phoneService.findById(1L));
     }
 
     @Test
     void findById_NullId_ThrowNoSuchElementException() {
         when(phoneRepository.findById(null)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> phoneService.findById(null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> phoneService.findById(null));
     }
 
     @Test
@@ -126,7 +125,7 @@ class PhoneServiceTest {
         phoneService.findById(id);
         phoneService.deleteById(id);
         when(phoneRepository.findById(id)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoSuchElementException.class, () -> phoneService.findById(id));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> phoneService.findById(id));
     }
 
 }

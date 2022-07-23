@@ -3,7 +3,7 @@ package pl.mbrzozowski.vulcanizer.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
-import pl.mbrzozowski.vulcanizer.exceptions.NoSuchElementException;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.PhotoRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationPhoto;
 
@@ -13,14 +13,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
     private final PhotoRepository photoRepository;
-    private ValidationPhoto validationPhoto = new ValidationPhoto();
+    private final ValidationPhoto validationPhoto = new ValidationPhoto();
 
     @Override
     public Photo save(Photo photo) {
         photo.setId(null);
         validationPhoto.accept(photo);
-        Photo save = photoRepository.save(photo);
-        return save;
+        return photoRepository.save(photo);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
         return photoRepository
                 .findById(id)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Not found photo by id [%s]", id));
+                    throw new IllegalArgumentException(String.format("Not found photo by id [%s]", id));
                 });
     }
 
@@ -55,7 +54,7 @@ public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
         return photoRepository
                 .findByUserId(userId)
                 .orElseThrow(() -> {
-                    throw new NoSuchElementException(String.format("Not found photo for User id [%s]", userId));
+                    throw new IllegalArgumentException(String.format("Not found photo for User id [%s]", userId));
                 });
     }
 }
