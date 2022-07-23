@@ -1,9 +1,12 @@
 package pl.mbrzozowski.vulcanizer.service;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Data
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -26,6 +30,8 @@ public class UserServiceImpl implements UserService {
     private final AddressService addressService;
     private final PhoneService phoneService;
     private final PhotoService photoService;
+    private final FavoriteService favoriteService;
+    private final BusinessService businessService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
@@ -99,12 +105,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean saveFavorite(Long userId, Long businessId) {
-        return false;
+    public boolean saveFavorite(FavoritesRequest favoritesRequest) {
+        User user = findById(favoritesRequest.getUserId());
+        Business business = businessService.findById(favoritesRequest.getBusinessId());
+        Favorites favorites = new Favorites(user, business);
+        favoriteService.save(favorites);
+        return true;
     }
 
     @Override
     public boolean deleteFavorite(Long userId, Long businessId) {
+        User user = findById(userId);
+        List<Favorites> favoritesList = user.getFavorites();
+        for (int i = 0; i < favoritesList.size(); i++) {
+            if (favoritesList.get(i).getBusiness().getId().equals(businessId)) {
+                Favorites favoritesToDelete = favoritesList.get(i);
+                favoritesList.remove(i);
+                favoriteService.deleteById(favoritesToDelete.getId());
+                userRepository.save(user);
+                return true;
+            }
+        }
         return false;
     }
 

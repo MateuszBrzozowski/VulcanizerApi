@@ -1,8 +1,11 @@
 package pl.mbrzozowski.vulcanizer.service;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
@@ -24,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Data
 @Service
-@RequiredArgsConstructor
 public class BusinessService implements ServiceLayer<BusinessRequest, BusinessResponse, Business> {
     private final BusinessRepository businessRepository;
     private final PhotoService photoService;
@@ -37,6 +40,28 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     private final EmployeeRoleService employeeRoleService;
     private final EmployeeService employeeService;
     protected Logger logger = LoggerFactory.getLogger(BusinessService.class);
+
+    @Lazy
+    @Autowired
+    public BusinessService(BusinessRepository businessRepository,
+                           PhotoService photoService,
+                           PhoneService phoneService,
+                           StateRepository stateRepository,
+                           StateService stateService,
+                           AddressService addressService,
+                           UserServiceImpl userService,
+                           EmployeeRoleService employeeRoleService,
+                           EmployeeService employeeService) {
+        this.businessRepository = businessRepository;
+        this.photoService = photoService;
+        this.phoneService = phoneService;
+        this.stateRepository = stateRepository;
+        this.stateService = stateService;
+        this.addressService = addressService;
+        this.userService = userService;
+        this.employeeRoleService = employeeRoleService;
+        this.employeeService = employeeService;
+    }
 
     @Override
     public Business save(BusinessRequest businessRequest) {

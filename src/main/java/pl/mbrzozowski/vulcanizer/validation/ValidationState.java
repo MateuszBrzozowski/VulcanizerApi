@@ -7,10 +7,8 @@ import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.NullParameterException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
-@Component
 public class ValidationState {
 
-    @Autowired
     public static void valid(State state, StateRepository stateRepository) {
         validName(state.getName(), stateRepository);
     }

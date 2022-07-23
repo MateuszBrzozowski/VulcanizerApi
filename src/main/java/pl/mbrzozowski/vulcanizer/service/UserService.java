@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.service;
 
+import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.entity.Business;
@@ -12,7 +13,7 @@ public interface UserService extends ServiceLayer<UserRequest, UserResponse, Use
 
     Optional<User> findByEmail(String email);
 
-    boolean saveFavorite(Long userId, Long businessId);
+    boolean saveFavorite(FavoritesRequest favoritesRequest);
 
     boolean deleteFavorite(Long userId, Long businessId);
 

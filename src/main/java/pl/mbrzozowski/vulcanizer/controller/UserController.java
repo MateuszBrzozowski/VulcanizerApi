@@ -1,29 +1,31 @@
 package pl.mbrzozowski.vulcanizer.controller;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
+import pl.mbrzozowski.vulcanizer.service.BusinessService;
 import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
 
 import java.util.List;
 
 @Controller
 @RestController
+@Data
+//@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
     private final UserServiceImpl userService;
-
-    @Autowired
-    public UserController(UserServiceImpl userService) {
-        this.userService = userService;
-    }
+    private final BusinessService businessService;
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> findAll() {
@@ -47,6 +49,12 @@ public class UserController {
     public ResponseEntity<?> update(@RequestBody UserRequest userRequest) {
         UserResponse userResponse = userService.update(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/users/favorites")
+    public ResponseEntity<Boolean> saveFavorite(@RequestBody FavoritesRequest favoritesRequest) {
+        boolean isAdd = userService.saveFavorite(favoritesRequest);
+        return new ResponseEntity<>(isAdd, HttpStatus.OK);
     }
 
 

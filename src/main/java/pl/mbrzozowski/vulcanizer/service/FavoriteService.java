@@ -2,10 +2,7 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
-import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Favorites;
-import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.FavoritesRepository;
 
@@ -13,32 +10,29 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FavoriteService implements ServiceLayer<FavoritesRequest, Favorites, Favorites> {
+public class FavoriteService implements ServiceLayer<Favorites, Favorites, Favorites> {
     private final FavoritesRepository favoritesRepository;
-    private final UserService userService;
-    private final BusinessService businessService;
 
     @Override
-    public Favorites save(FavoritesRequest favoritesRequest) {
-        User user = userService.findById(favoritesRequest.getUserId());
-        Business business = businessService.findById(favoritesRequest.getBusinessId());
-        Favorites newFavorite = new Favorites(user, business);
+    public Favorites save(Favorites favorites) {
+        if (favorites.getUser() == null && favorites.getBusiness() == null) {
+            throw new IllegalArgumentException("Can not add favorite without user and business");
+        }
+        Favorites newFavorite = new Favorites(favorites.getUser(), favorites.getBusiness());
         return favoritesRepository.save(newFavorite);
     }
 
     @Override
-    public Favorites update(FavoritesRequest favoritesRequest) {
-        if (favoritesRequest.getUserId() == null && favoritesRequest.getBusinessId() == null) {
-            throw new IllegalArgumentException("user id and business id can not be null");
+    public Favorites update(Favorites favorites) {
+        if (favorites.getUser() == null && favorites.getBusiness() == null) {
+            throw new IllegalArgumentException("user and business can not be null");
         }
-        if (favoritesRequest.getId() == null) {
+        if (favorites.getId() == null) {
             throw new IllegalArgumentException("Favorite id can not be null");
         }
-        Favorites favorites = findById(favoritesRequest.getId());
-        User user = userService.findById(favoritesRequest.getUserId());
-        Business business = businessService.findById(favoritesRequest.getBusinessId());
-        favorites.setBusiness(business);
-        favorites.setUser(user);
+        Favorites favorites1 = findById(favorites.getId());
+        favorites1.setBusiness(favorites.getBusiness());
+        favorites1.setUser(favorites.getUser());
         return favoritesRepository.save(favorites);
     }
 
