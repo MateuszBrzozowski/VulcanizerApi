@@ -18,6 +18,7 @@ public class State {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Transient
     @OneToMany(mappedBy = "state")
     private List<Address> addresses;
 

@@ -27,4 +27,17 @@ public class Address {
     @JoinColumn(name = "id_state")
     private State state;
     private String country;
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", addressLineOne='" + addressLineOne + '\'' +
+                ", addressLineTwo='" + addressLineTwo + '\'' +
+                ", city='" + city + '\'' +
+                ", code='" + code + '\'' +
+                ", state=" + state.getName() +
+                ", country='" + country + '\'' +
+                '}';
+    }
 }

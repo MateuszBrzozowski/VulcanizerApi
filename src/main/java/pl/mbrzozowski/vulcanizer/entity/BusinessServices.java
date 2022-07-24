@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "service")
-public class BusinessService {
+public class BusinessServices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,11 +26,11 @@ public class BusinessService {
     private LocalTime executionTime;
     private double price;
 
-    public BusinessService(Business business,
-                           String nameOne,
-                           String nameTwo,
-                           LocalTime executionTime,
-                           double price) {
+    public BusinessServices(Business business,
+                            String nameOne,
+                            String nameTwo,
+                            LocalTime executionTime,
+                            double price) {
         this.business = business;
         this.nameOne = nameOne;
         this.nameTwo = nameTwo;
