@@ -1,22 +1,22 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
-import pl.mbrzozowski.vulcanizer.dto.ServiceRequest;
+import pl.mbrzozowski.vulcanizer.dto.BusinessServiceRequest;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
 import java.time.LocalTime;
 
 public class ValidationService {
 
-    public static void validBeforeCreated(ServiceRequest service) {
+    public static void validBeforeCreated(BusinessServiceRequest service) {
         validBusinessId(service.getBusiness());
         validParam(service);
     }
 
-    public static void validBeforeUpdate(ServiceRequest serviceRequest) {
+    public static void validBeforeUpdate(BusinessServiceRequest serviceRequest) {
         validParam(serviceRequest);
     }
 
-    private static void validParam(ServiceRequest service) {
+    private static void validParam(BusinessServiceRequest service) {
         validNameOne(service.getNameOne());
         validNameTwo(service.getNameTwo());
         validExecutionTime(service.getExecutionTime());

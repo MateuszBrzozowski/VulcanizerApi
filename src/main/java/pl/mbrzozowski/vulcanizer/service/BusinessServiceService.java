@@ -1,9 +1,9 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
-import pl.mbrzozowski.vulcanizer.dto.ServiceRequest;
+import pl.mbrzozowski.vulcanizer.dto.BusinessServiceRequest;
 import pl.mbrzozowski.vulcanizer.entity.Business;
-import pl.mbrzozowski.vulcanizer.entity.Service;
+import pl.mbrzozowski.vulcanizer.entity.BusinessService;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.ServiceRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationService;
@@ -11,16 +11,16 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationService;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ServiceService implements ServiceLayer<ServiceRequest, Service, Service> {
+public class BusinessServiceService implements ServiceLayer<BusinessServiceRequest, BusinessService, BusinessService> {
     private final ServiceRepository serviceRepository;
-    private final BusinessService businessService;
+    private final pl.mbrzozowski.vulcanizer.service.BusinessService businessService;
 
     @Override
-    public Service save(ServiceRequest serviceRequest) {
+    public BusinessService save(BusinessServiceRequest serviceRequest) {
         ValidationService.validBeforeCreated(serviceRequest);
         Business business = businessService.findById(serviceRequest.getBusiness());
-        Service service =
-                new Service(business,
+        BusinessService service =
+                new BusinessService(business,
                         serviceRequest.getNameOne(),
                         serviceRequest.getNameTwo(),
                         serviceRequest.getExecutionTime(),
@@ -30,14 +30,14 @@ public class ServiceService implements ServiceLayer<ServiceRequest, Service, Ser
     }
 
     @Override
-    public Service update(ServiceRequest serviceRequest) {
-        Service service = findById(serviceRequest.getId());
+    public BusinessService update(BusinessServiceRequest serviceRequest) {
+        BusinessService service = findById(serviceRequest.getId());
         ValidationService.validBeforeUpdate(serviceRequest);
         serviceToServiceNewData(service, serviceRequest);
         return serviceRepository.save(service);
     }
 
-    private void serviceToServiceNewData(Service service, ServiceRequest serviceRequest) {
+    private void serviceToServiceNewData(BusinessService service, BusinessServiceRequest serviceRequest) {
         service.setNameOne(serviceRequest.getNameOne());
         service.setNameTwo(serviceRequest.getNameTwo());
         service.setExecutionTime(serviceRequest.getExecutionTime());
@@ -45,12 +45,12 @@ public class ServiceService implements ServiceLayer<ServiceRequest, Service, Ser
     }
 
     @Override
-    public List<Service> findAll() {
+    public List<BusinessService> findAll() {
         return serviceRepository.findAll();
     }
 
     @Override
-    public Service findById(Long id) {
+    public BusinessService findById(Long id) {
         return serviceRepository
                 .findById(id)
                 .orElseThrow(() -> {

@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ServiceRequest {
+public class BusinessServiceRequest {
     private Long id;
     private Long business;
     private String nameOne;
