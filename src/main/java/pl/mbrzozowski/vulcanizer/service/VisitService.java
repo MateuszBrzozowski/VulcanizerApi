@@ -19,15 +19,18 @@ public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
     private final VisitRepository visitRepository;
     private final UserServiceImpl userService;
     private final BusinessServicesService serviceService;
+    private final OpinionService opinionService;
 
     @Lazy
     @Autowired
     public VisitService(VisitRepository visitRepository,
                         UserServiceImpl userService,
-                        BusinessServicesService serviceService) {
+                        BusinessServicesService serviceService,
+                        OpinionService opinionService) {
         this.visitRepository = visitRepository;
         this.userService = userService;
         this.serviceService = serviceService;
+        this.opinionService = opinionService;
     }
 
     @Override
@@ -72,12 +75,57 @@ public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
     }
 
     public List<Visit> findByService(BusinessServices servicesBusiness) {
-        return visitRepository.findByService(servicesBusiness)
-                .stream().toList();
+        return visitRepository.findByService(servicesBusiness).stream().toList();
     }
 
-    public boolean isActiveVisit(BusinessServices servicesBusiness) {
-        List<Visit> visits = findByService(servicesBusiness);
+    private List<Visit> findByUser(User user) {
+        return visitRepository.findByUser(user).stream().toList();
+    }
+
+    /**
+     * @param userId Long
+     * @return All visits for user with id
+     */
+    public List<Visit> findAllByUserId(Long userId) {
+        User user = userService.findById(userId);
+        return findByUser(user);
+    }
+
+    /**
+     * @param userId Long
+     * @return Last user visit if is no opinion else return null.
+     */
+    public Visit findLastVisitWithoutOpinionForUser(Long userId) {
+        User user = userService.findById(userId);
+        List<Visit> visits = findByUser(user);
+        List<Visit> endedVisits =
+                visits.stream()
+                        .filter(
+                                visit -> visit.getStatus().equals(VisitStatus.ENDED))
+                        .toList();
+        Visit lastVisit = null;
+        for (Visit v : endedVisits) {
+            if (lastVisit == null) {
+                lastVisit = v;
+            }
+            if (lastVisit.getStartTime().isBefore(v.getStartTime())) {
+                lastVisit = v;
+            }
+        }
+        if (lastVisit != null) {
+            if (lastVisit.getOpinion() == null) {
+                return lastVisit;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param businessServices
+     * @return true if business service have active or waiting visits, else return false.
+     */
+    public boolean isActiveVisit(BusinessServices businessServices) {
+        List<Visit> visits = findByService(businessServices);
         for (Visit v : visits) {
             if (v.getStatus().equals(VisitStatus.NEW_VISIT) ||
                     v.getStatus().equals(VisitStatus.CONFIRM) ||

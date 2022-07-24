@@ -24,6 +24,9 @@ public class Visit {
     private BusinessServices service;
     @Enumerated(EnumType.STRING)
     private VisitStatus status = VisitStatus.NEW_VISIT;
+    @OneToOne
+    @JoinColumn(name = "id_opinion")
+    private Opinion opinion;
 
     @Column(name = "time_start")
     private LocalDateTime startTime;
