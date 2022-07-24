@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.VisitRequest;
 import pl.mbrzozowski.vulcanizer.entity.BusinessServices;
+import pl.mbrzozowski.vulcanizer.entity.Opinion;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.entity.Visit;
 import pl.mbrzozowski.vulcanizer.enums.VisitStatus;
@@ -19,18 +20,15 @@ public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
     private final VisitRepository visitRepository;
     private final UserServiceImpl userService;
     private final BusinessServicesService serviceService;
-    private final OpinionService opinionService;
 
     @Lazy
     @Autowired
     public VisitService(VisitRepository visitRepository,
                         UserServiceImpl userService,
-                        BusinessServicesService serviceService,
-                        OpinionService opinionService) {
+                        BusinessServicesService serviceService) {
         this.visitRepository = visitRepository;
         this.userService = userService;
         this.serviceService = serviceService;
-        this.opinionService = opinionService;
     }
 
     @Override
@@ -134,5 +132,11 @@ public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
             }
         }
         return false;
+    }
+
+    public void addOpinionToVisit(Long visitId, Opinion savedOpinion) {
+        Visit visit = findById(visitId);
+        visit.setOpinion(savedOpinion);
+        visitRepository.save(visit);
     }
 }

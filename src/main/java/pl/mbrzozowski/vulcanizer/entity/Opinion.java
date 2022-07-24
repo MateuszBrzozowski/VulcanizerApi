@@ -22,26 +22,23 @@ public class Opinion {
     private Business business;
     private int stars;
     private String description;
-    private boolean visibility;
+    private boolean visibility = true;
     @Column(name = "created_time")
     private LocalDateTime createdTime = LocalDateTime.now();
     @Column(name = "author_name")
     private String authorName;
+    @OneToOne(mappedBy = "opinion")
+    private Visit visit;
 
     @Builder
     public Opinion(User user,
                    Business business,
                    int stars,
-                   String description,
-                   boolean visibility,
-                   LocalDateTime createdTime,
-                   String authorName) {
+                   String description) {
         this.user = user;
         this.business = business;
         this.stars = stars;
         this.description = description;
-        this.visibility = visibility;
-        this.createdTime = createdTime;
-        this.authorName = authorName;
+        this.authorName = user.getFirstName() + " " + user.getLastName();
     }
 }

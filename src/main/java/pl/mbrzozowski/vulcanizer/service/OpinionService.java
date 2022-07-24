@@ -7,8 +7,10 @@ import pl.mbrzozowski.vulcanizer.dto.OpinionResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.OpinionToOpinionResponse;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Opinion;
+import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.OpinionRepository;
+import pl.mbrzozowski.vulcanizer.validation.ValidationOpinion;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +19,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OpinionService implements ServiceLayer<OpinionRequest, OpinionResponse, Opinion> {
     private final OpinionRepository opinionRepository;
+    private final UserServiceImpl userService;
+    private final BusinessService businessService;
+    private final VisitService visitService;
 
     @Override
     public Opinion save(OpinionRequest opinionRequest) {
-        return null;
+        ValidationOpinion.validBeforeCreated(opinionRequest);
+        User user = userService.findById(opinionRequest.getUser());
+        Business business = businessService.findById(opinionRequest.getBusiness());
+        Opinion opinion = new Opinion(user,
+                business,
+                opinionRequest.getStars(),
+                opinionRequest.getDescription());
+        Opinion savedOpinion = opinionRepository.save(opinion);
+        visitService.addOpinionToVisit(opinionRequest.getVisit(),savedOpinion);
+        return savedOpinion;
     }
 
     @Override
