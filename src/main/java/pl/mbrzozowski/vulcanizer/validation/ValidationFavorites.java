@@ -17,7 +17,7 @@ public class ValidationFavorites {
     }
 
     private static void validUserAndBusiness(Favorites favorites) {
-        if (favorites.getUser() == null && favorites.getBusiness() == null) {
+        if (favorites.getUser() == null || favorites.getBusiness() == null) {
             throw new IllegalArgumentException("Can not add favorite without user and business");
         }
     }

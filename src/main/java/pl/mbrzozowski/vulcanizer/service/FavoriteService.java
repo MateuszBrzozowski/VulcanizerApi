@@ -23,11 +23,7 @@ public class FavoriteService implements ServiceLayer<Favorites, Favorites, Favor
 
     @Override
     public Favorites update(Favorites favorites) {
-        ValidationFavorites.validBeforeEdit(favorites);
-        Favorites favorites1 = findById(favorites.getId());
-        favorites1.setBusiness(favorites.getBusiness());
-        favorites1.setUser(favorites.getUser());
-        return favoritesRepository.save(favorites);
+        return findById(favorites.getId()); //Cant edit favorites
     }
 
     @Override
