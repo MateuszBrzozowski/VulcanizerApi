@@ -13,6 +13,11 @@ public class ValidationOpinion {
         validDescription(opinionRequest.getDescription());
     }
 
+    public static void validBeforeEdit(OpinionRequest opinionRequest) {
+        validStars(opinionRequest.getStars());
+        validDescription(opinionRequest.getDescription());
+    }
+
     private static void validDescription(String description) {
         if (description == null) {
             throw new IllegalArgumentException("Description can not be null");

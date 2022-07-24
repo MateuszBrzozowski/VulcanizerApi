@@ -33,13 +33,18 @@ public class OpinionService implements ServiceLayer<OpinionRequest, OpinionRespo
                 opinionRequest.getStars(),
                 opinionRequest.getDescription());
         Opinion savedOpinion = opinionRepository.save(opinion);
-        visitService.addOpinionToVisit(opinionRequest.getVisit(),savedOpinion);
+        visitService.addOpinionToVisit(opinionRequest.getVisit(), savedOpinion);
         return savedOpinion;
     }
 
     @Override
     public OpinionResponse update(OpinionRequest opinionRequest) {
-        return null;
+        Opinion opinion = findById(opinionRequest.getId());
+        ValidationOpinion.validBeforeEdit(opinionRequest);
+        opinion.setDescription(opinionRequest.getDescription());
+        opinion.setStars(opinionRequest.getStars());
+        Opinion save = opinionRepository.save(opinion);
+        return new OpinionToOpinionResponse().convert(save);
     }
 
     @Override
