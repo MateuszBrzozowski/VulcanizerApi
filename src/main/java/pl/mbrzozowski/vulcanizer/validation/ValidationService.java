@@ -51,10 +51,14 @@ public class ValidationService {
         if (executionTime == null) {
             throw new IllegalArgumentException("Execution time can not be null");
         }
+        LocalTime timeZero = LocalTime.of(0, 0);
+        if (executionTime.equals(timeZero)) {
+            throw new IllegalArgumentException("Execution time can not be zero");
+        }
     }
 
     private static void validPrice(double price) {
-        if (price > 1_000) {
+        if (price > 10_000 || price < 0) {
             throw new IllegalArgumentException("Price is not valid");
         }
     }

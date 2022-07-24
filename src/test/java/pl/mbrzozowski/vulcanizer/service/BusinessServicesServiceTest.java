@@ -1,13 +1,17 @@
 package pl.mbrzozowski.vulcanizer.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.BusinessServicesRequest;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.BusinessServices;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessServicesRepository;
+import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -57,6 +61,133 @@ class BusinessServicesServiceTest {
                 .build();
         businessServicesService.save(businessServicesRequest);
         verify(businessServicesRepository).save(businessServices);
+    }
+
+    @Test
+    void save_BusinessIDNull_ThrowException() {
+        Business business = new Business();
+        when(businessService.findById(id)).thenThrow(IllegalArgumentException.class);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.save(businessServicesRequest));
+    }
+
+    @Test
+    void save_ToLongNameOne_ThrowException() {
+        String toLongName = new StringGenerator().apply(256);
+        businessServicesRequest.setNameOne(toLongName);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.save(businessServicesRequest));
+    }
+
+    @Test
+    void save_MaxLengthNameOne_DoesNotThrow() {
+        String toLongName = new StringGenerator().apply(255);
+        businessServicesRequest.setNameOne(toLongName);
+        Assertions.assertDoesNotThrow(() -> businessServicesService.save(businessServicesRequest));
+    }
+
+    @Test
+    void save_ToLongNameTwo_ThrowException() {
+        String toLongName = new StringGenerator().apply(256);
+        businessServicesRequest.setNameTwo(toLongName);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.save(businessServicesRequest));
+    }
+
+    @Test
+    void save_MaxLengthNameTwo_DoesNotThrow() {
+        String toLongName = new StringGenerator().apply(255);
+        businessServicesRequest.setNameTwo(toLongName);
+        Assertions.assertDoesNotThrow(() -> businessServicesService.save(businessServicesRequest));
+    }
+
+    @Test
+    void save_ExecutionTimeEqualsZero_ThrowException() {
+        LocalTime timeZero = LocalTime.of(0, 0);
+        businessServicesRequest.setExecutionTime(timeZero);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.save(businessServicesRequest));
+    }
+
+    @Test
+    void save_PriceOver10_000_ThrowException() {
+        businessServicesRequest.setPrice(10_001);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.save(businessServicesRequest));
+    }
+
+    @Test
+    void save_PriceLessThanZero_ThrowException() {
+        businessServicesRequest.setPrice(-1);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.save(businessServicesRequest));
+    }
+
+    @Test
+    void update_idNull_ThrowException() {
+        businessServicesRequest.setId(null);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.update(businessServicesRequest));
+    }
+
+    @Test
+    void update_ToLongNameOne_ThrowException() {
+        String toLongName = new StringGenerator().apply(256);
+        businessServicesRequest.setNameOne(toLongName);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.update(businessServicesRequest));
+    }
+
+    @Test
+    void update_MaxLengthNameOne_DoesNotThrow() {
+        String toLongName = new StringGenerator().apply(255);
+        businessServicesRequest.setNameOne(toLongName);
+        BusinessServices businessServices = new BusinessServices();
+        businessServices.setId(id);
+        when(businessServicesRepository.findById(id)).thenReturn(Optional.of(businessServices));
+        when(businessServicesRepository.save(businessServices)).thenReturn(businessServices);
+        Assertions.assertDoesNotThrow(() -> businessServicesService.update(businessServicesRequest));
+    }
+
+    @Test
+    void update_ToLongNameTwo_ThrowException() {
+        String toLongName = new StringGenerator().apply(256);
+        businessServicesRequest.setNameTwo(toLongName);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.update(businessServicesRequest));
+    }
+
+    @Test
+    void update_MaxLengthNameTwo_DoesNotThrow() {
+        String toLongName = new StringGenerator().apply(255);
+        businessServicesRequest.setNameTwo(toLongName);
+        BusinessServices businessServices = new BusinessServices();
+        businessServices.setId(id);
+        when(businessServicesRepository.findById(id)).thenReturn(Optional.of(businessServices));
+        when(businessServicesRepository.save(businessServices)).thenReturn(businessServices);
+        Assertions.assertDoesNotThrow(() -> businessServicesService.update(businessServicesRequest));
+    }
+
+    @Test
+    void update_PriceOver10_000_ThrowException() {
+        businessServicesRequest.setPrice(10_001);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.update(businessServicesRequest));
+    }
+
+    @Test
+    void update_PriceLessThanZero_ThrowException() {
+        businessServicesRequest.setPrice(-1);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.update(businessServicesRequest));
+    }
+
+    @Test
+    void update_ExecutionTimeEqualsZero_ThrowException() {
+        LocalTime timeZero = LocalTime.of(0, 0);
+        businessServicesRequest.setExecutionTime(timeZero);
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> businessServicesService.update(businessServicesRequest));
     }
 
 }

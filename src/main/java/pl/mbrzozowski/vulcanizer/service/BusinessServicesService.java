@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BusinessServicesService implements ServiceLayer<BusinessServicesRequest, BusinessServicesResponse, BusinessServices> {
-    private final BusinessServicesRepository serviceRepository;
+    private final BusinessServicesRepository businessServicesRepository;
     private final VisitService visitService;
     private final BusinessService businessService;
 
@@ -33,7 +33,7 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
                         serviceRequest.getExecutionTime(),
                         serviceRequest.getPrice()
                 );
-        return serviceRepository.save(service);
+        return businessServicesRepository.save(service);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
         }
         ValidationService.validBeforeUpdate(serviceRequest);
         serviceToServiceNewData(service, serviceRequest);
-        BusinessServices servicesBusiness = serviceRepository.save(service);
+        BusinessServices servicesBusiness = businessServicesRepository.save(service);
         return new ServicesBusinessToServicesBusinessResponse().convert(servicesBusiness);
     }
 
@@ -58,7 +58,7 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
 
     @Override
     public List<BusinessServicesResponse> findAll() {
-        return serviceRepository
+        return businessServicesRepository
                 .findAll()
                 .stream()
                 .map(
@@ -70,7 +70,7 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
 
     @Override
     public BusinessServices findById(Long id) {
-        return serviceRepository
+        return businessServicesRepository
                 .findById(id)
                 .orElseThrow(() -> {
                     throw new IllegalArgumentException(String.format("Not found service by id [%s]", id));
@@ -79,6 +79,6 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
 
     @Override
     public void deleteById(Long id) {
-        serviceRepository.deleteById(id);
+        businessServicesRepository.deleteById(id);
     }
 }
