@@ -3,6 +3,8 @@ package pl.mbrzozowski.vulcanizer.validation;
 import pl.mbrzozowski.vulcanizer.dto.VisitRequest;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
+import java.time.LocalDateTime;
+
 public class ValidationVisit {
 
     public static void validBeforeCreated(VisitRequest visitRequest) {
@@ -37,6 +39,10 @@ public class ValidationVisit {
     private static void validStartTime(VisitRequest visitRequest) {
         if (visitRequest.getStartTime() == null) {
             throw new IllegalArgumentException("Start time can not be null");
+        }
+        LocalDateTime now = LocalDateTime.now().plusSeconds(1);
+        if (visitRequest.getStartTime().isBefore(now)) {
+            throw new IllegalArgumentException("Start time can not be before than now");
         }
     }
 }
