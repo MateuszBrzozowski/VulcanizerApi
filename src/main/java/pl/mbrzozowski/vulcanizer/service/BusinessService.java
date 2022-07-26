@@ -149,6 +149,23 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
 
     }
 
+    public List<BusinessResponse> getRecommendBusiness() {
+        //TODO
+        // Pobieramy maksymalnie 10 biznesow ktore
+        // w pierwszej kolejnosci pobieramy te ktore maja najwiecej opinii
+        // potem jezeli takich nie ma to te ktore sa najdluzej, najdalsza data powstania
+        // Jezeli jest mniej niz 10 biznesow to wypuszczamy wszystkie
+        long count = businessRepository.count();
+        if (count < 10) {
+            List<Business> all = businessRepository.findAll();
+            return all
+                    .stream()
+                    .map(business -> new BusinessToBusinessResponse().apply(business))
+                    .collect(Collectors.toList());
+        }
+        return null;
+    }
+
     private void updatePhoto(BusinessRequest businessRequest, Business business) {
         if (business.getPhoto() == null && businessRequest.getPhoto() != null) { //DB no photo, add photo from req
             Photo photo = photoService.save(new Photo(businessRequest.getPhoto()));
