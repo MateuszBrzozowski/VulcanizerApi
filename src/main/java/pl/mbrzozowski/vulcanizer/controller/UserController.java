@@ -1,8 +1,8 @@
 package pl.mbrzozowski.vulcanizer.controller;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,10 +22,11 @@ import java.util.List;
 @RestController
 @Data
 //@RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserServiceImpl userService;
     private final BusinessService businessService;
+    protected final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> findAll() {
@@ -55,6 +56,12 @@ public class UserController {
     public ResponseEntity<Boolean> saveFavorite(@RequestBody FavoritesRequest favoritesRequest) {
         boolean isAdd = userService.saveFavorite(favoritesRequest);
         return new ResponseEntity<>(isAdd, HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> login(@RequestBody UserRegisterBody userRequest) {
+        UserResponse response = userService.login(userRequest);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

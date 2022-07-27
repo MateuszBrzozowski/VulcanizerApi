@@ -28,6 +28,11 @@ public class ValidationUser {
         validBirthDay(user.getBirthDate());
     }
 
+    public static void validLogin(String email, String password) {
+        validEmail(email);
+        validPassword(password, null);
+    }
+
     private static void validBirthDay(LocalDate birthDate) {
         if (birthDate != null) {
             if (birthDate.isAfter(LocalDate.now())) {

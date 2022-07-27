@@ -15,7 +15,7 @@ import pl.mbrzozowski.vulcanizer.service.BusinessServicesService;
 @Controller
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/services")
+@RequestMapping("/api/v1/services")
 public class ServicesBusinessController {
     private final BusinessServicesService businessService;
 

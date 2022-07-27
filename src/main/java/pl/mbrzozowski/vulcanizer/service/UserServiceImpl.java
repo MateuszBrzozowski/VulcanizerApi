@@ -6,12 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
+import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
+import pl.mbrzozowski.vulcanizer.exceptions.LoginException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
@@ -139,6 +141,25 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    public UserResponse login(UserRegisterBody userRequest) {
+        logger.info(String.valueOf(userRequest));
+        String email = userRequest.getEmail();
+        String password = userRequest.getPassword();
+        ValidationUser.validLogin(email, password);
+        Optional<User> byEmail = findByEmail(email);
+        if (byEmail.isPresent()) {
+            User user = byEmail.get();
+            if (user.getPassword().equals(password)) {
+                return new UserToUserResponse().apply(user);
+            } else {
+                throw new LoginException("Email or password is not correct.");
+            }
+        } else {
+            throw new LoginException("Email is not correct.");
+        }
+
+    }
+
     private void updateAddress(UserRequest userRequest, User user) {
         if (user.getAddress() == null && userRequest.getAddress() != null) {
             Address address = addressService.save(userRequest.getAddress());
@@ -189,5 +210,4 @@ public class UserServiceImpl implements UserService {
         user.setGender(userNewData.getGender());
         user.setBirthDate(userNewData.getBirthDate());
     }
-
 }

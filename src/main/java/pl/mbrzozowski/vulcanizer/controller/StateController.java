@@ -15,7 +15,7 @@ import java.util.List;
 
 @Controller
 @RestController
-@RequestMapping("/address/state")
+@RequestMapping("/api/v1/address/state")
 public class StateController {
     private final StateService stateService;
 
