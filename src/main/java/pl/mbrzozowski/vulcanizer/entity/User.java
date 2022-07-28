@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,16 +9,20 @@ import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name = "user")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private Long id;
     @Email
     private String email;
@@ -52,32 +57,38 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Visit> visits;
 
-    @Builder
-    public User(final Long id,
-                final String email,
-                final String password,
-                final String firstName,
-                final String lastName,
-                final Gender gender,
-                final LocalDate birthDate,
-                final LocalDateTime createAccountTime,
-                final UserStatusAccount statusAccount,
-                final Address idAddress,
-                final Photo avatar,
-                final Phone phone) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.birthDate = birthDate;
-        this.createAccountTime = LocalDateTime.now();
-        this.statusAccount = statusAccount;
-        this.address = idAddress;
-        this.avatar = avatar;
-        this.phone = phone;
-    }
+
+    private String[] roles;
+    private String[] authorities;
+    private boolean isActive;
+    private boolean isNotLocked;
+
+//    @Builder
+//    public User(final Long id,
+//                final String email,
+//                final String password,
+//                final String firstName,
+//                final String lastName,
+//                final Gender gender,
+//                final LocalDate birthDate,
+//                final LocalDateTime createAccountTime,
+//                final UserStatusAccount statusAccount,
+//                final Address idAddress,
+//                final Photo avatar,
+//                final Phone phone) {
+//        this.id = id;
+//        this.email = email;
+//        this.password = password;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.gender = gender;
+//        this.birthDate = birthDate;
+//        this.createAccountTime = LocalDateTime.now();
+//        this.statusAccount = statusAccount;
+//        this.address = idAddress;
+//        this.avatar = avatar;
+//        this.phone = phone;
+//    }
 
     public User(final String email,
                 final String password,
@@ -109,23 +120,5 @@ public class User {
                 ", phone=" + phone +
                 '}';
     }
-
-    //    public static UserBuilder builder() {
-//        return new CustomUserBuilder();
-//    }
-//
-//    private static class CustomUserBuilder extends UserBuilder {
-//
-//        @Override
-//        public User build() {
-//            if (super.createAccountTime == null) {
-//                super.createAccountTime = LocalDateTime.now();
-//            }
-//            if (super.statusAccount == null) {
-//                super.statusAccount = UserStatusAccount.NOT_ACTIVATED;
-//            }
-//            return super.build();
-//        }
-//    }
 }
 
