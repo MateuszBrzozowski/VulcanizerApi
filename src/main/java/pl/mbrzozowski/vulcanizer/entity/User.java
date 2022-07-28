@@ -12,10 +12,7 @@ import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-
-import static pl.mbrzozowski.vulcanizer.enums.AppRole.ROLE_USER;
 
 @Data
 @NoArgsConstructor
@@ -61,13 +58,10 @@ public class User implements Serializable {
     private List<Visit> visits;
 
 
-    private String role;
+    private String[] roles;
     private String[] authorities;
     private boolean isActive;
     private boolean isNotLocked;
-    private Date lastLoginDate;
-    private Date lastLoginDateDisplay;
-
 
 //    @Builder
 //    public User(final Long id,
@@ -96,14 +90,6 @@ public class User implements Serializable {
 //        this.phone = phone;
 //    }
 
-    /**
-     * Method to register new user
-     *
-     * @param email user's email
-     * @param password users's password
-     * @param firsName user's first name
-     * @param lastName user's last name
-     */
     public User(final String email,
                 final String password,
                 final String firsName,
@@ -115,10 +101,6 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.statusAccount = UserStatusAccount.NOT_ACTIVATED;
         this.createAccountTime = LocalDateTime.now();
-        setActive(true);
-        setNotLocked(true);
-        setRole(ROLE_USER.name());
-        setAuthorities(ROLE_USER.getAuthorities());
     }
 
     @Override
