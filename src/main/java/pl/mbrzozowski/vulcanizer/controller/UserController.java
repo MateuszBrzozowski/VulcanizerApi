@@ -1,10 +1,12 @@
 package pl.mbrzozowski.vulcanizer.controller;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
@@ -21,6 +23,7 @@ import java.util.List;
 @Controller
 @RestController
 @Data
+@Slf4j
 //@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserController {
@@ -28,7 +31,10 @@ public class UserController {
     private final BusinessService businessService;
     protected final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    // hasRole('ROLE_') hasAnyRole('ROLE_') hastAuthority('permission') hasAnyAuthority('permission')
+
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<List<UserResponse>> findAll() {
         List<UserResponse> users = userService.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -42,7 +48,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody UserRegisterBody userRequest) {
-        userService.save(new UserRegisterBodyToUserRequest().apply(userRequest));
+//        userService.save(new UserRegisterBodyToUserRequest().apply(userRequest));
+        log.info("Post Mapping good");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -60,8 +67,9 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody UserRegisterBody userRequest) {
-        UserResponse response = userService.login(userRequest);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+//        UserResponse response = userService.login(userRequest);
+        log.info("Jest dobrze, dobrze jest");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
