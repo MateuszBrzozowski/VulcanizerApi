@@ -54,4 +54,20 @@ public class Business {
     public void setStatus(BusinessStatus status) {
         this.status = status.name();
     }
+
+    @Override
+    public String toString() {
+        return "Business{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", nip='" + nip + '\'' +
+                ", createdDate=" + createdDate +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", address=" + address +
+                ", photo=" + photo +
+                ", employees=" + employees +
+                ", phones=" + phones +
+                '}';
+    }
 }
