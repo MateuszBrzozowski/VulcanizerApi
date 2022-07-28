@@ -6,12 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
-import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
-import pl.mbrzozowski.vulcanizer.dto.EmployeeRequest;
-import pl.mbrzozowski.vulcanizer.dto.EmployeeRoleRequest;
+import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessRequestToBusiness;
+import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
@@ -149,7 +147,7 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
 
     }
 
-    public List<BusinessResponse> getRecommendBusiness() {
+    public List<BusinessPublicResponse> getRecommendBusiness() {
         //TODO
         // Pobieramy maksymalnie 10 biznesow ktore
         // w pierwszej kolejnosci pobieramy te ktore maja najwiecej opinii
@@ -160,7 +158,7 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
             List<Business> all = businessRepository.findAll();
             return all
                     .stream()
-                    .map(business -> new BusinessToBusinessResponse().apply(business))
+                    .map(business -> new BusinessToBusinessPublicResponse().convert(business))
                     .collect(Collectors.toList());
         }
         return null;

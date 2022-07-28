@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import pl.mbrzozowski.vulcanizer.dto.BusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
 import pl.mbrzozowski.vulcanizer.service.BusinessService;
@@ -31,8 +32,8 @@ public class BusinessController {
     }
 
     @GetMapping("/recommend")
-    public ResponseEntity<List<BusinessResponse>> getRecommendBusinesses(){
-        List<BusinessResponse> recommendBusiness = businessService.getRecommendBusiness();
+    public ResponseEntity<List<BusinessPublicResponse>> getRecommendBusinesses(){
+        List<BusinessPublicResponse> recommendBusiness = businessService.getRecommendBusiness();
         return new ResponseEntity<>(recommendBusiness,HttpStatus.OK);
     }
 

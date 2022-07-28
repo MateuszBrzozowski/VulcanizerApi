@@ -17,6 +17,7 @@ public class Phone {
     private Long id;
     private String number;
 
+    @Transient
     @ManyToMany(mappedBy = "phones")
     private Set<Business> businesses;
 
