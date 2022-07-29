@@ -36,13 +36,11 @@ class UserServiceImplTest {
     private UserRepository userRepository;
     private BusinessService businessService;
     private BusinessRepository businessRepository;
+    private BCryptPasswordEncoder passwordEncoder;
     private final int USER_AGE = 6;
 
     @BeforeEach
     public void beforeEach() {
-        EmailService emailService = mock(EmailService.class);
-        LoginAttemptService loginAttemptService = mock(LoginAttemptService.class);
-        BCryptPasswordEncoder passwordEncoder = mock(BCryptPasswordEncoder.class);
         userRepository = mock(UserRepository.class);
         userRepository = mock(UserRepository.class);
         PhoneService phoneService = mock(PhoneService.class);
@@ -59,9 +57,7 @@ class UserServiceImplTest {
                 photoService,
                 favoriteService,
                 businessService,
-                passwordEncoder,
-                loginAttemptService,
-                emailService);
+                passwordEncoder);
     }
 
     @Test
