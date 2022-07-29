@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final BusinessService businessService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
+    private final EmailService emailService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
@@ -60,7 +61,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         userRequest.getFirstName(),
                         userRequest.getLastName());
 
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
+        //TODO
+        // Send email message by javax mail not working with gmail. Gmail to strong protection for this custom app.
+        // Check Spring mail for this feature.
+//        emailService.sendWelcomeEmail(userRequest.getFirstName(), userRequest.getPassword(), userRequest.getEmail());
+        return newUser;
     }
 
     private String encodePassword(String password) {
