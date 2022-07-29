@@ -1,7 +1,7 @@
 package pl.mbrzozowski.vulcanizer.constant;
 
 public class SecurityConstant {
-    private static final long EXPIRATION_TIME = 432_000_000; // miliseconds - now for tests 5 days
+    public static final long EXPIRATION_TIME = 5 * 24 * 60 * 60 * 1000; // miliseconds - now for tests 5 days
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String JWT_TOKEN_HEADER = "Jwt-Token";
     public static final String TOKEN_CANNOT_BE_VERIFIED = "Token cannot be verified";
