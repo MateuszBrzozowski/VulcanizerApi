@@ -3,12 +3,14 @@ package pl.mbrzozowski.vulcanizer.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Favorites;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
+import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.FavoritesRepository;
@@ -34,6 +36,7 @@ class UserServiceImplTest {
     private UserRepository userRepository;
     private BusinessService businessService;
     private BusinessRepository businessRepository;
+    private BCryptPasswordEncoder passwordEncoder;
     private final int USER_AGE = 6;
 
     @BeforeEach
@@ -48,7 +51,13 @@ class UserServiceImplTest {
         FavoritesRepository favoritesRepository = mock(FavoritesRepository.class);
         businessService = mock(BusinessService.class);
         businessRepository = mock(BusinessRepository.class);
-        userService = new UserServiceImpl(userRepository, addressService, phoneService, photoService, favoriteService, businessService);
+        userService = new UserServiceImpl(userRepository,
+                addressService,
+                phoneService,
+                photoService,
+                favoriteService,
+                businessService,
+                passwordEncoder);
     }
 
     @Test
@@ -270,7 +279,7 @@ class UserServiceImplTest {
         User user = new User(email, password, firstName, lastName);
         UserRequest userSecond = new UserRequest(email, password, firstName, lastName);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.save(userSecond));
+        Assertions.assertThrows(EmailExistException.class, () -> userService.save(userSecond));
     }
 
     @Test
@@ -673,7 +682,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteFavorite_True(){
+    void deleteFavorite_True() {
         User user = new User();
         user.setId(1L);
         Business business = new Business();
@@ -687,7 +696,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteFavorite_False(){
+    void deleteFavorite_False() {
         User user = new User();
         user.setId(1L);
         Business business = new Business();

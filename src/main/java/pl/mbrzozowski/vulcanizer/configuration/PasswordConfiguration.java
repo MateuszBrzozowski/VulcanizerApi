@@ -1,15 +1,14 @@
-package pl.mbrzozowski.vulcanizer.security;
+package pl.mbrzozowski.vulcanizer.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class PasswordConfiguration {
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
 }

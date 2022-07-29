@@ -20,7 +20,7 @@ public class EmployeeRequestToEmployee {
                 .id(employeeRequest.getId())
                 .userId(user)
                 .businessId(employeeRequest.getBusiness())
-                .roleId(employeeRequest.getRole())
+//                .roleId(employeeRequest.getRole())
                 .build();
     }
 

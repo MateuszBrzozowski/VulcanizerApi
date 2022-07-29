@@ -34,7 +34,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
     private final StateService stateService;
     private final AddressService addressService;
     private final UserServiceImpl userService;
-    private final EmployeeRoleService employeeRoleService;
     private final EmployeeService employeeService;
     protected Logger logger = LoggerFactory.getLogger(BusinessService.class);
 
@@ -47,7 +46,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
                            StateService stateService,
                            AddressService addressService,
                            UserServiceImpl userService,
-                           EmployeeRoleService employeeRoleService,
                            EmployeeService employeeService) {
         this.businessRepository = businessRepository;
         this.photoService = photoService;
@@ -56,7 +54,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         this.stateService = stateService;
         this.addressService = addressService;
         this.userService = userService;
-        this.employeeRoleService = employeeRoleService;
         this.employeeService = employeeService;
     }
 
@@ -83,7 +80,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
             business.setPhoto(photoReady);
         }
         Address savedAddress = addressService.save(businessRequest.getAddress());
-        EmployeeRole owner = employeeRoleService.save(new EmployeeRoleRequest("Owner"));
         business.setAddress(savedAddress);
         business.setStatus(BusinessStatus.NOT_ACTIVATED);
         business.setCreatedDate(LocalDateTime.now());
@@ -92,7 +88,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         EmployeeRequest employeeRequest = EmployeeRequest.builder()
                 .business(businessSaved)
                 .userId(businessRequest.getUserId())
-                .role(owner)
                 .build();
 
         employeeService.save(employeeRequest);

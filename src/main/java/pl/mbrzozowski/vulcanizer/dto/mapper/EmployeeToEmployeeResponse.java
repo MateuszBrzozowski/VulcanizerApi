@@ -10,7 +10,6 @@ public class EmployeeToEmployeeResponse {
                 .id(employee.getId())
                 .userId(employee.getUserId())
                 .businessId(employee.getBusinessId())
-                .roleId(employee.getRoleId())
                 .build();
     }
 }

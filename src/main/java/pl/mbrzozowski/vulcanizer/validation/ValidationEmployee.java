@@ -8,7 +8,6 @@ public class ValidationEmployee {
     public static void valid(EmployeeRequest employeeRequest) {
         isUserIdNull(employeeRequest);
         isBusinessNull(employeeRequest);
-        isRoleNull(employeeRequest);
     }
 
     private static void isUserIdNull(EmployeeRequest employeeRequest) {
@@ -23,13 +22,4 @@ public class ValidationEmployee {
         }
     }
 
-    private static void isRoleNull(EmployeeRequest employeeRequest) {
-        if (employeeRequest.getRole() == null) {
-            throw new IllegalArgumentException("User Id can not be null");
-        } else {
-            if (employeeRequest.getRole().getId() == null) {
-                throw new IllegalArgumentException("Role id can not be null");
-            }
-        }
-    }
 }

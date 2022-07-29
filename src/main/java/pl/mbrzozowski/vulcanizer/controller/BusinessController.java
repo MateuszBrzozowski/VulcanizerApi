@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.BusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
+import pl.mbrzozowski.vulcanizer.exceptions.ExceptionHandling;
+import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
+import pl.mbrzozowski.vulcanizer.exceptions.UserNotFoundException;
 import pl.mbrzozowski.vulcanizer.service.BusinessService;
 
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/business")
 @RequiredArgsConstructor
-public class BusinessController {
+public class BusinessController extends ExceptionHandling {
     private final BusinessService businessService;
 
     @PostMapping

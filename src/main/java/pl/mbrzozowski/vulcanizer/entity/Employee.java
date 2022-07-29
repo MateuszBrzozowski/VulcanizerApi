@@ -22,9 +22,9 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "id_business")
     private Business businessId;
-    @ManyToOne
-    @JoinColumn(name = "id_role")
-    private EmployeeRole roleId;
+//    @ManyToOne
+//    @JoinColumn(name = "id_role")
+//    private EmployeeRole roleId;
 
 
 }

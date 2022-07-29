@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class ValidationUser {
     private static final long MIN_USER_AGE = 6;
 
-    public static void validBeforeCreated(UserRequest userRequest) {
+    public static void validBeforeRegister(UserRequest userRequest) {
         validEmail(userRequest.getEmail());
         validPassword(userRequest.getPassword(), userRequest.getId());
         validFirstName(userRequest.getFirstName());
