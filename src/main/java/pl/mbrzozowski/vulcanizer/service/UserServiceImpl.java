@@ -1,6 +1,5 @@
 package pl.mbrzozowski.vulcanizer.service;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -45,6 +44,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final FavoriteService favoriteService;
     private final BusinessService businessService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final LoginAttemptService loginAttemptService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
@@ -233,11 +233,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             log.error("User not found by email {}", email);
             throw new UsernameNotFoundException(String.format("User not found by email - %s", email));
         });
+        validateLoginAttempt(user);
         user.setLastLoginDateDisplay(user.getLastLoginDate());
         user.setLastLoginDate(new Date());
         userRepository.save(user);
         UserPrincipal userPrincipal = new UserPrincipal(user);
-        log.info("Returning found user by emial {}", email);
+        log.info("Returning found user by email {}", email);
         return userPrincipal;
+    }
+
+    private void validateLoginAttempt(User user) {
+        if (user.isNotLocked()) {
+            if (loginAttemptService.hasExceededMaxAttempts(user.getEmail())) {
+                user.setNotLocked(false);
+            } else {
+                user.setNotLocked(true);
+            }
+        } else {
+            loginAttemptService.evictUserFromLoginAttemptCache(user.getEmail());
+        }
     }
 }
