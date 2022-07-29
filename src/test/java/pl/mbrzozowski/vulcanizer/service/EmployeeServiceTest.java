@@ -77,17 +77,6 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void save_NoRoleId_ThrowIllegalArgumentException() {
-        EmployeeRequest employeeRequest = EmployeeRequest.builder()
-                .id(1L)
-                .userId(1L)
-                .business(new Business())
-//                .roleId(1L)
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> employeeService.save(employeeRequest));
-    }
-
-    @Test
     void save_NoEmployeeRole_DoesNotThrow() {
         EmployeeRequest employeeRequest = EmployeeRequest.builder()
 //                .id(1L)
@@ -117,44 +106,4 @@ class EmployeeServiceTest {
                 IllegalArgumentException.class,
                 () -> employeeService.save(employeeRequest));
     }
-
-    @Test
-    void save_BusinessIsNotExist_ThrowIllegalArgumentException() {
-        User user = new User();
-        Business business = new Business();
-        EmployeeRequest employeeRequest = EmployeeRequest.builder()
-                .id(1L)
-                .userId(1L)
-                .business(business)
-                .build();
-
-        Employee employee = Employee.builder()
-                .userId(user)
-                .businessId(business)
-                .build();
-        when(businessService.findById(1L)).thenThrow(IllegalArgumentException.class);
-        when(userService.findById(1L)).thenReturn(user);
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> employeeService.save(employeeRequest));
-    }
-
-    @Test
-    void save_RoleIsNotExist_ThrowIllegalArgumentException() {
-        User user = new User();
-        Business business = new Business();
-        EmployeeRequest employeeRequest = EmployeeRequest.builder()
-                .id(1L)
-                .userId(1L)
-                .business(business)
-                .build();
-
-        when(businessService.findById(1L)).thenReturn(business);
-        when(userService.findById(1L)).thenReturn(user);
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> employeeService.save(employeeRequest));
-    }
-
-
 }

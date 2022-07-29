@@ -41,6 +41,7 @@ class UserServiceImplTest {
 
     @BeforeEach
     public void beforeEach() {
+        passwordEncoder = mock(BCryptPasswordEncoder.class);
         userRepository = mock(UserRepository.class);
         userRepository = mock(UserRepository.class);
         PhoneService phoneService = mock(PhoneService.class);
