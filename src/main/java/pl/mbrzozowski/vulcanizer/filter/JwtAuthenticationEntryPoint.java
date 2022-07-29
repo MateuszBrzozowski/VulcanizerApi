@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.stereotype.Component;
 import pl.mbrzozowski.vulcanizer.constant.SecurityConstant;
 import pl.mbrzozowski.vulcanizer.domain.HttpResponse;
 
@@ -14,6 +15,7 @@ import java.io.OutputStream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Component
 public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
 
     @Override
