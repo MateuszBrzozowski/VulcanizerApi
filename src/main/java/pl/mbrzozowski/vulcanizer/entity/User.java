@@ -12,6 +12,7 @@ import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -62,6 +63,9 @@ public class User implements Serializable {
     private String[] authorities;
     private boolean isActive;
     private boolean isNotLocked;
+    private Date lastLoginDate;
+    private Date lastLoginDateDisplay;
+
 
 //    @Builder
 //    public User(final Long id,

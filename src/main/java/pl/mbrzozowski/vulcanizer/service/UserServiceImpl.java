@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.service;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -7,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
@@ -18,20 +18,18 @@ import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
-import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.LoginException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+@Data
 @Service
 @Slf4j
 @Transactional
@@ -43,34 +41,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PhotoService photoService;
     private final FavoriteService favoriteService;
     private final BusinessService businessService;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final LoginAttemptService loginAttemptService;
-    private final EmailService emailService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
-    public User save(@NotNull UserRequest userRequest) {
+    public User save(UserRequest userRequest) {
         if (findByEmail(userRequest.getEmail()).isPresent()) {
-            throw new EmailExistException("Email is ready exist.");
+            throw new IllegalArgumentException("Email is ready exist.");
         }
-        ValidationUser.validBeforeRegister(userRequest);
-        String encodedPassword = encodePassword(userRequest.getPassword());
+        ValidationUser.validBeforeCreated(userRequest);
+
         User newUser =
                 new User(userRequest.getEmail().toLowerCase(),
-                        encodedPassword,
+                        userRequest.getPassword(),
                         userRequest.getFirstName(),
                         userRequest.getLastName());
 
-        userRepository.save(newUser);
-        //TODO
-        // Send email message by javax mail not working with gmail. Gmail to strong protection for this custom app.
-        // Check Spring mail for this feature.
-//        emailService.sendWelcomeEmail(userRequest.getFirstName(), userRequest.getPassword(), userRequest.getEmail());
-        return newUser;
-    }
 
-    private String encodePassword(String password) {
-        return passwordEncoder.encode(password);
+        return userRepository.save(newUser);
     }
 
     @Override
@@ -239,24 +226,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             log.error("User not found by email {}", email);
             throw new UsernameNotFoundException(String.format("User not found by email - %s", email));
         });
-        validateLoginAttempt(user);
         user.setLastLoginDateDisplay(user.getLastLoginDate());
         user.setLastLoginDate(new Date());
         userRepository.save(user);
         UserPrincipal userPrincipal = new UserPrincipal(user);
-        log.info("Returning found user by email {}", email);
+        log.info("Returning found user by emial {}", email);
         return userPrincipal;
-    }
-
-    private void validateLoginAttempt(User user) {
-        if (user.isNotLocked()) {
-            if (loginAttemptService.hasExceededMaxAttempts(user.getEmail())) {
-                user.setNotLocked(false);
-            } else {
-                user.setNotLocked(true);
-            }
-        } else {
-            loginAttemptService.evictUserFromLoginAttemptCache(user.getEmail());
-        }
     }
 }
