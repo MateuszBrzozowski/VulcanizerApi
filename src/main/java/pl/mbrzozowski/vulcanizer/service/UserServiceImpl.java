@@ -2,9 +2,15 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
 import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
@@ -18,14 +24,17 @@ import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
 @Service
+@Slf4j
+@Transactional
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final AddressService addressService;
     private final PhoneService phoneService;
@@ -209,5 +218,19 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userNewData.getLastName());
         user.setGender(userNewData.getGender());
         user.setBirthDate(userNewData.getBirthDate());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            log.error("User not found by email {}", email);
+            throw new UsernameNotFoundException(String.format("User not found by email - %s", email));
+        });
+        user.setLastLoginDateDisplay(user.getLastLoginDate());
+        user.setLastLoginDate(new Date());
+        userRepository.save(user);
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        log.info("Returning found user by emial {}", email);
+        return userPrincipal;
     }
 }
