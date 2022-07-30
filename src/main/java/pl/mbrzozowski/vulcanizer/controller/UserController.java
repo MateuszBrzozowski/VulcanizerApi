@@ -1,6 +1,5 @@
 package pl.mbrzozowski.vulcanizer.controller;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,26 +10,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
 import pl.mbrzozowski.vulcanizer.dto.UserLoginBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
+import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.ExceptionHandling;
 import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
 import pl.mbrzozowski.vulcanizer.util.JWTTokenProvider;
 
+import java.util.List;
+
 import static pl.mbrzozowski.vulcanizer.constant.SecurityConstant.JWT_TOKEN_HEADER;
+import static pl.mbrzozowski.vulcanizer.constant.SecurityConstant.TOKEN_PREFIX;
 
 @Controller
 @RestController
 @Slf4j
-@RequestMapping(path = {"/", "/users"})
+//@RequestMapping(path = {"/", "/users"})
+@RequestMapping("/users")
 public class UserController extends ExceptionHandling {
     private final UserServiceImpl userService;
     private final AuthenticationManager authenticationManager;
@@ -78,13 +79,21 @@ public class UserController extends ExceptionHandling {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
     }
 
+    @GetMapping()
+    public ResponseEntity<List<UserResponse>> findAll(@RequestHeader HttpHeaders headers) {
+        List<String> strings = headers.get(headers.AUTHORIZATION);
+        String token = strings.stream().findFirst().get();
 
-//    @GetMapping
-////    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-//    public ResponseEntity<List<UserResponse>> findAll() {
-//        List<UserResponse> users = userService.findAll();
-//        return new ResponseEntity<>(users, HttpStatus.OK);
-//    }
+        String username = null;
+        if (token != null && token.startsWith(TOKEN_PREFIX)) {
+            token = token.substring(TOKEN_PREFIX.length());
+            username = jwtTokenProvider.getSubject(token);
+        }
+
+        log.info(username);
+        List<UserResponse> users = userService.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 //
 //    @GetMapping("/{id}")
 //    public ResponseEntity<UserResponse> findById(@PathVariable("id") Long id) {
