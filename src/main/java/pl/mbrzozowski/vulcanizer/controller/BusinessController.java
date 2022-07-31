@@ -33,12 +33,4 @@ public class BusinessController extends ExceptionHandling {
         BusinessResponse businessResponse = businessService.update(businessRequest);
         return new ResponseEntity<>(businessResponse,HttpStatus.OK);
     }
-
-    @GetMapping("/recommend")
-    public ResponseEntity<List<BusinessPublicResponse>> getRecommendBusinesses(){
-        List<BusinessPublicResponse> recommendBusiness = businessService.getRecommendBusiness();
-        return new ResponseEntity<>(recommendBusiness,HttpStatus.OK);
-    }
-
-
 }

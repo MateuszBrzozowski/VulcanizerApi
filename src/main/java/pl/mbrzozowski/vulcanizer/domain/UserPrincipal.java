@@ -9,15 +9,13 @@ import pl.mbrzozowski.vulcanizer.entity.User;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
-
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
     private User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return stream(this.user.getAuthorities()).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return this.user.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static pl.mbrzozowski.vulcanizer.enums.AppRole.ROLE_USER;
 
@@ -62,7 +63,9 @@ public class User implements Serializable {
 
 
     private String role;
-    private String[] authorities;
+    @ElementCollection
+    @CollectionTable(name = "authorities")
+    private Set<String> authorities;
     private boolean isActive;
     private boolean isNotLocked;
     private Date lastLoginDate;
@@ -99,7 +102,7 @@ public class User implements Serializable {
     /**
      * Method to register new user
      *
-     * @param email user's email
+     * @param email    user's email
      * @param password users's password
      * @param firsName user's first name
      * @param lastName user's last name
