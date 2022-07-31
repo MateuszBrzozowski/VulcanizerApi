@@ -446,7 +446,6 @@ class UserServiceImplTest {
         long idSecond = 2L;
         User userSecond = new User("email@p.pl", password, firstName, lastName);
         userSecond.setId(idSecond);
-        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.findByEmail("email@p.pl")).thenReturn(Optional.of(userSecond));
         UserRequest userRequestbuilder = UserRequest.builder()
@@ -468,7 +467,6 @@ class UserServiceImplTest {
         long idSecond = 2L;
         User userSecond = new User("email@p.pl", password, firstName, lastName);
         userSecond.setId(idSecond);
-        userSecond.setStatusAccount(UserStatusAccount.NOT_ACTIVATED);
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.findByEmail("email@p.pl")).thenReturn(Optional.of(userSecond));
         UserRequest userRequestBuilder = UserRequest.builder()
@@ -583,7 +581,6 @@ class UserServiceImplTest {
                 .lastName(NOT_NULL)
                 .email("mail@domain.pl")
                 .password(NOT_NULL)
-                .statusAccount(UserStatusAccount.NOT_ACTIVATED)
                 .build();
         when(userRepository.findById(17L)).thenReturn(Optional.of(user));
         Assertions.assertDoesNotThrow(() -> userService.update(userRequest));

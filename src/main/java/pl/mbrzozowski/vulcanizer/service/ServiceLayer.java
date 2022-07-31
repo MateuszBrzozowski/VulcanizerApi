@@ -6,7 +6,7 @@ import java.util.List;
  * @param <R> The Response Body
  * @param <E> The Entity
  */
-public interface ServiceLayer<T, R, E> {
+interface ServiceLayer<T, R, E> {
 
     E save(T t);
 

@@ -41,9 +41,6 @@ public class User implements Serializable {
     private LocalDate birthDate;
     @Column(name = "create_time")
     private LocalDateTime createAccountTime;
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private UserStatusAccount statusAccount;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_address")
     private Address address;
@@ -116,9 +113,8 @@ public class User implements Serializable {
         this.password = password;
         this.firstName = firsName;
         this.lastName = lastName;
-        this.statusAccount = UserStatusAccount.NOT_ACTIVATED;
         this.createAccountTime = LocalDateTime.now();
-        setActive(true);
+        setActive(false);
         setNotLocked(true);
         setRole(ROLE_USER.name());
         setAuthorities(ROLE_USER.getAuthorities());
@@ -135,7 +131,6 @@ public class User implements Serializable {
                 ", gender=" + gender +
                 ", birthDate=" + birthDate +
                 ", createAccountTime=" + createAccountTime +
-                ", statusAccount=" + statusAccount +
                 ", address=" + address +
                 ", avatar=" + avatar +
                 ", phone=" + phone +

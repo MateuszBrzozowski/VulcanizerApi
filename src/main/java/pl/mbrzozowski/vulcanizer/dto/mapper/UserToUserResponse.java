@@ -1,16 +1,12 @@
 package pl.mbrzozowski.vulcanizer.dto.mapper;
 
+import org.springframework.core.convert.converter.Converter;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
 
-import java.util.function.Function;
-
-public class UserToUserResponse implements Function<User, UserResponse> {
+public class UserToUserResponse implements Converter<User, UserResponse> {
     @Override
-    public UserResponse apply(User user) {
-        if (user == null) {
-            return null;
-        }
+    public UserResponse convert(User user) {
         UserResponse userResponse = UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -18,7 +14,6 @@ public class UserToUserResponse implements Function<User, UserResponse> {
                 .lastName(user.getLastName())
                 .birthDate(user.getBirthDate())
                 .createAccountTime(user.getCreateAccountTime())
-                .statusAccount(user.getStatusAccount().toString())
                 .address(new AddressToAddressResponse().apply(user.getAddress()))
                 .build();
         if (user.getPhone() != null) {

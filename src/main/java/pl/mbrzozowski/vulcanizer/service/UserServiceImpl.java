@@ -11,20 +11,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
-import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
-import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
-import pl.mbrzozowski.vulcanizer.dto.UserRequest;
-import pl.mbrzozowski.vulcanizer.dto.UserResponse;
+import pl.mbrzozowski.vulcanizer.dto.*;
+import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
+import pl.mbrzozowski.vulcanizer.exceptions.AccountNotActiveException;
 import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.exceptions.LoginException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +47,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
-    public User save(@NotNull UserRequest userRequest) {
+    public User save(UserRequest userRequest) {
         if (findByEmail(userRequest.getEmail()).isPresent()) {
             throw new EmailExistException("Email is ready exist.");
         }
@@ -94,14 +92,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         businessToBusinessNewData(user, userNewData);
         ValidationUser.validBeforeEditing(user);
         userRepository.save(user);
-        return new UserToUserResponse().apply(user);
+        return new UserToUserResponse().convert(user);
     }
 
     @Override
     public List<UserResponse> findAll() {
         List<User> users = userRepository.findAll();
         return users.stream()
-                .map(user -> new UserToUserResponse().apply(user))
+                .map(user -> new UserToUserResponse().convert(user))
                 .collect(Collectors.toList());
     }
 
@@ -163,6 +161,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return null;
     }
 
+    @Override
+    public UserResponse register(UserRegisterBody userRegisterBody) {
+        UserRequest userRequest = new UserRegisterBodyToUserRequest().convert(userRegisterBody);
+        if (userRequest == null) {
+            return null;
+        }
+        User userSaved = save(userRequest);
+        return new UserToUserResponse().convert(userSaved);
+    }
+
+    @Override
+    public User login(UserLoginBody userLoginBody) {
+        User user = new User();
+        if (findByEmail(userLoginBody.getEmail()).isPresent()) {
+            user = findByEmail(userLoginBody.getEmail()).get();
+        }
+        if (!user.isActive()) {
+            throw new AccountNotActiveException("Account not active");
+        }
+        return user;
+    }
+
     public UserResponse login(UserRegisterBody userRequest) {
         logger.info(String.valueOf(userRequest));
         String email = userRequest.getEmail();
@@ -172,7 +192,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (byEmail.isPresent()) {
             User user = byEmail.get();
             if (user.getPassword().equals(password)) {
-                return new UserToUserResponse().apply(user);
+                return new UserToUserResponse().convert(user);
             } else {
                 throw new LoginException("Email or password is not correct.");
             }
@@ -250,13 +270,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private void validateLoginAttempt(User user) {
         if (user.isNotLocked()) {
-            if (loginAttemptService.hasExceededMaxAttempts(user.getEmail())) {
-                user.setNotLocked(false);
-            } else {
-                user.setNotLocked(true);
-            }
+            user.setNotLocked(!loginAttemptService.hasExceededMaxAttempts(user.getEmail()));
         } else {
             loginAttemptService.evictUserFromLoginAttemptCache(user.getEmail());
         }
     }
+
+
 }

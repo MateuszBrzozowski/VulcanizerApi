@@ -1,6 +1,6 @@
 package pl.mbrzozowski.vulcanizer.exceptions;
 
-public class EmailNotFoundException extends CustomRuntimeExceptions{
+public class EmailNotFoundException extends RuntimeException{
 
     public EmailNotFoundException(String message) {
         super(message);

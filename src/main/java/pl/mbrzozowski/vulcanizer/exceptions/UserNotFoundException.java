@@ -1,6 +1,6 @@
 package pl.mbrzozowski.vulcanizer.exceptions;
 
-public class UserNotFoundException extends CustomRuntimeExceptions {
+public class UserNotFoundException extends RuntimeException {
 
     public UserNotFoundException(String message) {
         super(message);

@@ -4,6 +4,8 @@ import org.springframework.core.convert.converter.Converter;
 import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 
+import javax.validation.constraints.NotNull;
+
 public class UserRegisterBodyToUserRequest implements Converter<UserRegisterBody, UserRequest> {
     @Override
     public UserRequest convert(UserRegisterBody source) {

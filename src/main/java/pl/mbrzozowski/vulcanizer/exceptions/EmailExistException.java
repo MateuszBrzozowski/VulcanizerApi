@@ -1,6 +1,6 @@
 package pl.mbrzozowski.vulcanizer.exceptions;
 
-public class EmailExistException extends CustomRuntimeExceptions {
+public class EmailExistException extends RuntimeException {
 
     public EmailExistException(String message) {
         super(message);
