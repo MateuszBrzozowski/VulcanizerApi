@@ -1,7 +1,9 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.mbrzozowski.vulcanizer.entity.ConfirmationToken;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.repository.ConfirmationTokenRepository;
@@ -19,31 +21,25 @@ public class ConfirmationTokenService {
     /**
      * Confirm token for user
      *
-     * @param user  for which confirm token
      * @param token which confirm
-     * @return true if token is not expired and is possible, otherwise return false
+     * @return user if token is not expired and is possible, otherwise return null
      */
-    public boolean confirmToken(User user, String token) {
-        if (user == null) {
-            throw new IllegalArgumentException("User can not be empty");
-        }
-        Optional<ConfirmationToken> tokenDB = findByUser(user);
+    public User confirmToken(String token) {
+        Optional<ConfirmationToken> tokenDB = findByToken(token);
         if (tokenDB.isPresent()) {
             ConfirmationToken confirmationToken = tokenDB.get();
             boolean expired = isExpired(confirmationToken);
             if (!expired) {
-                boolean tokenCorrect = isTokenCorrect(token, confirmationToken);
-                if (tokenCorrect) {
-                    confirmationToken.setConfirmTime(LocalDateTime.now());
-                    confirmationTokenRepository.save(confirmationToken);
-                    return true;
-                }
+                confirmationToken.setConfirmTime(LocalDateTime.now());
+                confirmationTokenRepository.save(confirmationToken);
+                return confirmationToken.getUser();
             } else {
-                confirmationTokenRepository.delete(confirmationToken);
-                return false;
+                confirmationTokenRepository.deleteById(confirmationToken.getId());
+                return null;
             }
         }
-        return false;
+
+        return null;
     }
 
     private boolean isTokenCorrect(String token, ConfirmationToken confirmationToken) {

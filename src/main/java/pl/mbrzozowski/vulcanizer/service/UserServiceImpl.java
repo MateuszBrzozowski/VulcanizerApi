@@ -16,10 +16,8 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
-import pl.mbrzozowski.vulcanizer.exceptions.AccountNotActiveException;
-import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.LoginException;
+import pl.mbrzozowski.vulcanizer.exceptions.*;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
@@ -43,6 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final BusinessService businessService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
+    private final ConfirmationTokenService confirmationTokenService;
     private final EmailService emailService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -59,11 +58,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         userRequest.getFirstName(),
                         userRequest.getLastName());
 
-        userRepository.save(newUser);
-        //TODO
-        // Send email message by javax mail not working with gmail. Gmail to strong protection for this custom app.
-        // Check Spring mail for this feature.
-//        emailService.sendWelcomeEmail(userRequest.getFirstName(), userRequest.getPassword(), userRequest.getEmail());
+        User user = userRepository.save(newUser);
+        String token = confirmationTokenService.createNewToken(user);
+        log.info(token);
+        emailService.confirmYourEmail(user.getEmail(), token);
         return newUser;
     }
 
@@ -277,4 +275,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
+    public void confirmMail(String token) {
+        User user = confirmationTokenService.confirmToken(token);
+        if (user == null) {
+            throw new LinkHasExpiredException("Link has expired");
+        } else {
+            user.setActive(true);
+        }
+    }
 }

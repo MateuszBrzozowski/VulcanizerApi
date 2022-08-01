@@ -33,6 +33,7 @@ public class ExceptionHandling implements ErrorController {
     private static final String ERROR_PROCESSING_FILE = "Error occurred while processing file";
     private static final String NOT_ENOUGH_PERMISSION = "You do not have enough permission";
     public static final String ERROR_PATH = "/error";
+    public static final String LINK_HAS_EXPIRED = "Link to activate account has expired";
 
     public String getErrorPath() {
         return ERROR_PATH;
@@ -57,6 +58,11 @@ public class ExceptionHandling implements ErrorController {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpResponse> accessDeniedException() {
         return createHttpResponse(FORBIDDEN, NOT_ENOUGH_PERMISSION);
+    }
+
+    @ExceptionHandler(LinkHasExpiredException.class)
+    public ResponseEntity<HttpResponse> linkHasExpired() {
+        return createHttpResponse(BAD_REQUEST, LINK_HAS_EXPIRED);
     }
 
     @ExceptionHandler(LockedException.class)

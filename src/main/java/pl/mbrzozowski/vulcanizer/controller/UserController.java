@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -15,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
 import pl.mbrzozowski.vulcanizer.dto.UserLoginBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
-import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
+import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.ExceptionHandling;
 import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
@@ -48,37 +46,28 @@ public class UserController extends ExceptionHandling {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody UserRegisterBody userRegisterBody) {
-        UserRequest userRequest = new UserRegisterBodyToUserRequest().convert(userRegisterBody);
-        if (userRequest != null) {
-            User user = userService.save(userRequest);
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<UserResponse> register(@RequestBody UserRegisterBody userRegisterBody) {
+        UserResponse userResponse = userService.register(userRegisterBody);
+        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody UserLoginBody userLoginBody) {
+    public ResponseEntity<UserResponse> login(@RequestBody UserLoginBody userLoginBody) {
         authenticate(userLoginBody.getEmail(), userLoginBody.getPassword());
-        User user = new User();
-        if (userService.findByEmail(userLoginBody.getEmail()).isPresent()) {
-            user = userService.findByEmail(userLoginBody.getEmail()).get();
-        }
+        User user = userService.login(userLoginBody);
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        return new ResponseEntity<>(user, jwtHeader, HttpStatus.OK);
+        UserResponse userResponse = new UserToUserResponse().convert(user);
+        return new ResponseEntity<>(userResponse, jwtHeader, HttpStatus.OK);
     }
 
-    private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(JWT_TOKEN_HEADER, jwtTokenProvider.generateJwtToken(userPrincipal));
-        return headers;
+    @GetMapping("/confirm")
+    public ResponseEntity<?> confirmMail(@RequestParam("token") String token) {
+        userService.confirmMail(token);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private void authenticate(String email, String password) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-    }
-
+    //only for tests - remove or change this method
     @GetMapping()
     public ResponseEntity<List<UserResponse>> findAll(@RequestHeader HttpHeaders headers) {
         List<String> strings = headers.get(headers.AUTHORIZATION);
@@ -93,6 +82,16 @@ public class UserController extends ExceptionHandling {
         log.info(username);
         List<UserResponse> users = userService.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JWT_TOKEN_HEADER, jwtTokenProvider.generateJwtToken(userPrincipal));
+        return headers;
+    }
+
+    private void authenticate(String email, String password) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
     }
 //
 //    @GetMapping("/{id}")
