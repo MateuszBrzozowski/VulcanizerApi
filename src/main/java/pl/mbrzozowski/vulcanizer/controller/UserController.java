@@ -74,6 +74,12 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("/resetpass")
+    public ResponseEntity<?> resetPasswordSavePass(@RequestBody UserResetPasswordBody userResetPasswordBody) {
+        userService.resetPasswordSave(userResetPasswordBody);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     //only for tests - remove or change this method
     @GetMapping()
     public ResponseEntity<List<UserResponse>> findAll(@RequestHeader HttpHeaders headers) {

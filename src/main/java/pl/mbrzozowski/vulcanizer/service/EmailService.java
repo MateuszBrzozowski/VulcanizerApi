@@ -19,7 +19,7 @@ public class EmailService {
 
         log.info("EMAIL: ");
         log.info("SUBJECT: {}", SUBJECT_CONFIRM_EMAIL);
-        log.info("TEXT: Please confirm your email: http://localhost:4200/users/confirm?token={}", token);
+        log.info("TEXT: Please confirm your email: http://localhost:4200/users/confirm?id={}", token);
 //        send(to, subject, body);
     }
 
@@ -28,7 +28,7 @@ public class EmailService {
         // Config and testing
         log.info("EMAIL: ");
         log.info("SUBJECT: {}", SUBJECT_RESET_PASSWORD_LINK);
-        log.info("TEXT: To reset your password click link: http://localhost:4200/users/resetpass?token={}", token);
+        log.info("TEXT: To reset your password click link: http://localhost:4200/users/resetpass?id={}", token);
         //send(to,subject,body);
     }
 

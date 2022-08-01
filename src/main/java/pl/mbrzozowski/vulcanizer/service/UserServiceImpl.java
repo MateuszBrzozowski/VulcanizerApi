@@ -207,7 +207,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void resetPasswordSave(UserResetPasswordBody userResetPasswordBody) {
         ValidationUser.validResetNewPassword(userResetPasswordBody);
-
+        User userByToken = resetPasswordTokenService.confirmToken(userResetPasswordBody.getToken());
+        Optional<User> userOptional = findByEmail(userByToken.getEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            String encodePassword = encodePassword(userResetPasswordBody.getPassword());
+            user.setPassword(encodePassword);
+            userRepository.save(user);
+        } else {
+            throw new UsernameNotFoundException(String.format("User not found by email: %s", userResetPasswordBody.getEmail()));
+        }
     }
 
     public UserResponse login(UserRegisterBody userRequest) {
