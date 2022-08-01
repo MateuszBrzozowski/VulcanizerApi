@@ -18,7 +18,7 @@ public class EmailService {
 
         log.info("EMAIL: ");
         log.info("SUBJECT: {}", subject);
-        log.info("TEXT: Please confirm your email: http://localhost/users/confirm?token={}", token);
+        log.info("TEXT: Please confirm your email: http://localhost:4200/users/confirm?token={}", token);
 //        send(to, subject, body);
     }
 

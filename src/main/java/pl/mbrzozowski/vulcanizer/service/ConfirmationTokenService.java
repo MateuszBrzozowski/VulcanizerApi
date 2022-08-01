@@ -1,9 +1,7 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pl.mbrzozowski.vulcanizer.entity.ConfirmationToken;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.repository.ConfirmationTokenRepository;
@@ -29,6 +27,10 @@ public class ConfirmationTokenService {
         if (tokenDB.isPresent()) {
             ConfirmationToken confirmationToken = tokenDB.get();
             boolean expired = isExpired(confirmationToken);
+            boolean confirm = isConfirm(confirmationToken);
+            if (confirm) {
+                return confirmationToken.getUser();
+            }
             if (!expired) {
                 confirmationToken.setConfirmTime(LocalDateTime.now());
                 confirmationTokenRepository.save(confirmationToken);
@@ -40,10 +42,6 @@ public class ConfirmationTokenService {
         }
 
         return null;
-    }
-
-    private boolean isTokenCorrect(String token, ConfirmationToken confirmationToken) {
-        return confirmationToken.getToken().equals(token);
     }
 
     /**
@@ -66,6 +64,14 @@ public class ConfirmationTokenService {
         } else {
             return save(user);
         }
+    }
+
+    private boolean isConfirm(ConfirmationToken confirmationToken) {
+        return confirmationToken.getConfirmTime() != null;
+    }
+
+    private boolean isTokenCorrect(String token, ConfirmationToken confirmationToken) {
+        return confirmationToken.getToken().equals(token);
     }
 
     private String save(User user) {
