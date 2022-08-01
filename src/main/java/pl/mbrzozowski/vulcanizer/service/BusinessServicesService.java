@@ -8,7 +8,6 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.ServicesBusinessToServicesBusinessRe
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.BusinessServices;
 import pl.mbrzozowski.vulcanizer.exceptions.EditingNotAllowedException;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessServicesRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationService;
 

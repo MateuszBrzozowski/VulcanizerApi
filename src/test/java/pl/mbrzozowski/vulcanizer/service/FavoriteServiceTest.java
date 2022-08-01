@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Favorites;
 import pl.mbrzozowski.vulcanizer.entity.User;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.FavoritesRepository;
 
 import static org.mockito.Mockito.mock;

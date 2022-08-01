@@ -3,7 +3,6 @@ package pl.mbrzozowski.vulcanizer.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.PhotoRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationPhoto;
 

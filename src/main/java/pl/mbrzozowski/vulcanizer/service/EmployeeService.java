@@ -7,7 +7,6 @@ import pl.mbrzozowski.vulcanizer.dto.EmployeeResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.EmployeeRequestToEmployee;
 import pl.mbrzozowski.vulcanizer.dto.mapper.EmployeeToEmployeeResponse;
 import pl.mbrzozowski.vulcanizer.entity.Employee;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationEmployee;
 

@@ -2,7 +2,6 @@ package pl.mbrzozowski.vulcanizer.enums.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
 class GenderConverterToStringFromInt implements Converter<Integer, Gender> {
     @Override

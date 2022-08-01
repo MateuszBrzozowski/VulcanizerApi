@@ -2,7 +2,6 @@ package pl.mbrzozowski.vulcanizer.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.mbrzozowski.vulcanizer.entity.State;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
 public class ValidationState {

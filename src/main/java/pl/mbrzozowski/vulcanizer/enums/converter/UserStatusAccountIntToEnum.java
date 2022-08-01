@@ -2,7 +2,6 @@ package pl.mbrzozowski.vulcanizer.enums.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
 class UserStatusAccountIntToEnum implements Converter<Integer, UserStatusAccount> {
     @Override

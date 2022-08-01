@@ -8,7 +8,6 @@ import pl.mbrzozowski.vulcanizer.dto.VisitRequest;
 import pl.mbrzozowski.vulcanizer.entity.BusinessServices;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.enums.VisitStatus;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.VisitRepository;
 
 import java.time.LocalDateTime;
@@ -65,7 +64,7 @@ class VisitServiceTest {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> visitService.save(visitRequest));
     }
-    
+
     @RepeatedTest(100)
     public void save_DateNow_ThrowException() {
         visitRequest.setStartTime(LocalDateTime.now());

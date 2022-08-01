@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
 import pl.mbrzozowski.vulcanizer.dto.UserLoginBody;
 import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
+import pl.mbrzozowski.vulcanizer.dto.UserResetPasswordBody;
 import pl.mbrzozowski.vulcanizer.dto.UserResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
@@ -64,6 +65,12 @@ public class UserController extends ExceptionHandling {
     @GetMapping("/confirm")
     public ResponseEntity<?> confirmMail(@RequestParam("token") String token) {
         userService.confirmMail(token);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/resetpass")
+    public ResponseEntity<?> resetPasswordStart(@RequestBody UserResetPasswordBody userResetPasswordBody) {
+        userService.resetPasswordStart(userResetPasswordBody);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

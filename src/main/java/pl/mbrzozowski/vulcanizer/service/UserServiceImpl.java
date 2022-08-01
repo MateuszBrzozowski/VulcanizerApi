@@ -16,8 +16,10 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
-import pl.mbrzozowski.vulcanizer.exceptions.*;
+import pl.mbrzozowski.vulcanizer.exceptions.AccountNotActiveException;
+import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
+import pl.mbrzozowski.vulcanizer.exceptions.LinkHasExpiredException;
+import pl.mbrzozowski.vulcanizer.exceptions.LoginException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final LoginAttemptService loginAttemptService;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailService emailService;
+    private final ResetPasswordTokenService resetPasswordTokenService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
@@ -179,6 +182,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new AccountNotActiveException("Account not active");
         }
         return user;
+    }
+
+    @Override
+    public void resetPasswordStart(UserResetPasswordBody userResetPasswordBody) {
+        ValidationUser.validResetPassBody(userResetPasswordBody);
+        Optional<User> userOptional = findByEmail(userResetPasswordBody.getEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            String firstName = userResetPasswordBody.getFirstName();
+            String lastName = userResetPasswordBody.getLastName();
+            if (user.getFirstName().equalsIgnoreCase(firstName) && user.getLastName().equalsIgnoreCase(lastName)) {
+                String token = resetPasswordTokenService.createNewToken(user);
+                log.info(token);
+                emailService.resetPassword(user.getEmail(), token);
+            } else {
+                throw new IllegalArgumentException("First and last name not valid");
+            }
+        } else {
+            throw new UsernameNotFoundException(String.format("User not found by email: %s", userResetPasswordBody.getEmail()));
+        }
+    }
+
+    @Override
+    public void resetPasswordSave(UserResetPasswordBody userResetPasswordBody) {
+        ValidationUser.validResetNewPassword(userResetPasswordBody);
+
     }
 
     public UserResponse login(UserRegisterBody userRequest) {

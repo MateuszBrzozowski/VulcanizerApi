@@ -7,7 +7,6 @@ import pl.mbrzozowski.vulcanizer.dto.EmployeeRequest;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Employee;
 import pl.mbrzozowski.vulcanizer.entity.User;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRepository;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRoleRepository;

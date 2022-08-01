@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import pl.mbrzozowski.vulcanizer.dto.EmployeeRequest;
 import pl.mbrzozowski.vulcanizer.entity.Employee;
 import pl.mbrzozowski.vulcanizer.entity.User;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
 
 @Component

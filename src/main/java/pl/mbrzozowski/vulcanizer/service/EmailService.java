@@ -9,17 +9,27 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class EmailService {
+    public static final String SUBJECT_RESET_PASSWORD_LINK = "Link to reset password";
+    public static final String SUBJECT_CONFIRM_EMAIL = "Please confirm your email";
 
     public void confirmYourEmail(String to, String token) {
         //TODO
         // Config and testing
-        String subject = "Please confirm your email";
         String body = token;
 
         log.info("EMAIL: ");
-        log.info("SUBJECT: {}", subject);
+        log.info("SUBJECT: {}", SUBJECT_CONFIRM_EMAIL);
         log.info("TEXT: Please confirm your email: http://localhost:4200/users/confirm?token={}", token);
 //        send(to, subject, body);
+    }
+
+    public void resetPassword(String to, String token) {
+        //TODO
+        // Config and testing
+        log.info("EMAIL: ");
+        log.info("SUBJECT: {}", SUBJECT_RESET_PASSWORD_LINK);
+        log.info("TEXT: To reset your password click link: http://localhost:4200/users/resetpass?token={}", token);
+        //send(to,subject,body);
     }
 
     private void send(String to, String subject, String body) {

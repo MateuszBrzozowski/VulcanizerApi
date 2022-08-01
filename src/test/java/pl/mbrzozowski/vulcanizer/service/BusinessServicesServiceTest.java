@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.BusinessServicesRequest;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.BusinessServices;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessServicesRepository;
 import pl.mbrzozowski.vulcanizer.util.StringGenerator;
 

@@ -1,10 +1,11 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
+import pl.mbrzozowski.vulcanizer.dto.UserResetPasswordBody;
 import pl.mbrzozowski.vulcanizer.entity.User;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +34,23 @@ public class ValidationUser {
         validPassword(password, null);
     }
 
+    public static void validResetPassBody(UserResetPasswordBody userResetPasswordBody) {
+        validEmail(userResetPasswordBody.getEmail());
+        validFirstName(userResetPasswordBody.getFirstName());
+        validLastName(userResetPasswordBody.getLastName());
+    }
+
+    public static void validResetNewPassword(UserResetPasswordBody userResetPasswordBody) {
+        validToken(userResetPasswordBody.getToken());
+        validPassword(userResetPasswordBody.getPassword());
+    }
+
+    private static void validToken(String token) {
+        if (StringUtils.isBlank(token)) {
+            throw new IllegalArgumentException("Token is not valid");
+        }
+    }
+
     private static void validBirthDay(LocalDate birthDate) {
         if (birthDate != null) {
             if (birthDate.isAfter(LocalDate.now())) {
@@ -52,6 +70,12 @@ public class ValidationUser {
         boolean valid = emailValidator.isValid(email);
         if (!valid) {
             throw new IllegalArgumentException("Email is not valid!");
+        }
+    }
+
+    private static void validPassword(String password) {
+        if (StringUtils.isBlank(password)) {
+            throw new IllegalArgumentException("Password is not valid");
         }
     }
 

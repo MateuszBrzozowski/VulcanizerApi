@@ -1,7 +1,6 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
 import pl.mbrzozowski.vulcanizer.dto.BusinessServicesRequest;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
 import java.time.LocalTime;
 

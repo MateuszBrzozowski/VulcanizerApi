@@ -2,7 +2,6 @@ package pl.mbrzozowski.vulcanizer.validation;
 
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
 public class ValidationAddress {

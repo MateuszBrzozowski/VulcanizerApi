@@ -1,7 +1,6 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
 import pl.mbrzozowski.vulcanizer.dto.EmployeeRoleRequest;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 
 public class ValidationEmployeeRole {
 

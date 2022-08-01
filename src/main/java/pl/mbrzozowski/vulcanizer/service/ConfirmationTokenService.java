@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ConfirmationTokenService {
+public class ConfirmationTokenService implements TokenService {
 
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
@@ -22,6 +22,7 @@ public class ConfirmationTokenService {
      * @param token which confirm
      * @return user if token is not expired and is possible, otherwise return null
      */
+    @Override
     public User confirmToken(String token) {
         Optional<ConfirmationToken> tokenDB = findByToken(token);
         if (tokenDB.isPresent()) {
@@ -51,6 +52,7 @@ public class ConfirmationTokenService {
      * @param user for which created token
      * @return token String
      */
+    @Override
     public String createNewToken(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User can not by empty");
@@ -62,19 +64,21 @@ public class ConfirmationTokenService {
             confirmationTokenRepository.save(confirmationToken);
             return token;
         } else {
-            return save(user);
+            return generateToken(user);
         }
-    }
-
-    private boolean isConfirm(ConfirmationToken confirmationToken) {
-        return confirmationToken.getConfirmTime() != null;
     }
 
     private boolean isTokenCorrect(String token, ConfirmationToken confirmationToken) {
         return confirmationToken.getToken().equals(token);
     }
 
-    private String save(User user) {
+    /**
+     * Generate new token and save it to DB
+     *
+     * @param user for which generate token
+     * @return token as String
+     */
+    private String generateToken(User user) {
         ConfirmationToken confirmationToken = new ConfirmationToken(user);
         confirmationTokenRepository.save(confirmationToken);
         return confirmationToken.getToken();
@@ -101,5 +105,9 @@ public class ConfirmationTokenService {
             return expiredTime.isBefore(now);
         }
         return true;
+    }
+
+    private boolean isConfirm(ConfirmationToken confirmationToken) {
+        return confirmationToken.getConfirmTime() != null;
     }
 }

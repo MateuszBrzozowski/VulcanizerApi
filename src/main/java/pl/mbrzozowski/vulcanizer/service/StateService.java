@@ -7,7 +7,6 @@ import pl.mbrzozowski.vulcanizer.dto.StateResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.StateRequestToState;
 import pl.mbrzozowski.vulcanizer.dto.mapper.StateToStateResponse;
 import pl.mbrzozowski.vulcanizer.entity.State;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationState;
 

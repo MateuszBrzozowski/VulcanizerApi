@@ -9,7 +9,6 @@ import pl.mbrzozowski.vulcanizer.entity.Opinion;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.entity.Visit;
 import pl.mbrzozowski.vulcanizer.enums.VisitStatus;
-import pl.mbrzozowski.vulcanizer.exceptions.IllegalArgumentException;
 import pl.mbrzozowski.vulcanizer.repository.VisitRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationVisit;
 

@@ -6,6 +6,7 @@ import pl.mbrzozowski.vulcanizer.entity.User;
 
 import java.util.ArrayList;
 import java.util.Optional;
+
 interface UserService extends ServiceLayer<UserRequest, UserResponse, User> {
 
     Optional<User> findByEmail(String email);
@@ -21,4 +22,8 @@ interface UserService extends ServiceLayer<UserRequest, UserResponse, User> {
     UserResponse register(UserRegisterBody userRegisterBody);
 
     User login(UserLoginBody userLoginBody);
+
+    void resetPasswordStart(UserResetPasswordBody userResetPasswordBody);
+
+    void resetPasswordSave(UserResetPasswordBody userResetPasswordBody);
 }

@@ -6,15 +6,13 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "confirm_token")
-public class ConfirmationToken {
+@Entity(name = "reset_password_token")
+public class ResetPasswordToken {
     @Transient
-    private static final int EXPIRED_TIME = 15; // in minutes
+    private static final int EXPIRED_TIME = 10; // in minutes
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,13 +26,12 @@ public class ConfirmationToken {
     private LocalDateTime expiredTime;
     private LocalDateTime confirmTime;
 
-    public ConfirmationToken(User userId) {
-        this.user = userId;
+    public ResetPasswordToken(User user) {
+        this.user = user;
         setNewToken();
     }
 
     public String resetToken() {
-        token = UUID.randomUUID().toString();
         setNewToken();
         return token;
     }
@@ -45,26 +42,4 @@ public class ConfirmationToken {
         expiredTime = LocalDateTime.now().plusMinutes(EXPIRED_TIME);
         confirmTime = null;
     }
-
-    @Override
-    public String toString() {
-        return "ConfirmationToken{" +
-                "id=" + id +
-                ", token='" + token + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ConfirmationToken that = (ConfirmationToken) o;
-        return Objects.equals(id, that.id) && Objects.equals(token, that.token);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, token);
-    }
 }
-
