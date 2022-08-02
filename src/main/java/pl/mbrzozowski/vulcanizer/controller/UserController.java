@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
@@ -106,8 +107,12 @@ public class UserController extends ExceptionHandling {
 
     private void authenticate(String email, String password) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        }catch (LockedException exception){
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            Object principal = authenticate.getPrincipal();
+            if (principal instanceof UserPrincipal userPrincipal) {
+                userService.checkBans(userPrincipal.getUser());
+            }
+        } catch (LockedException exception) {
             userService.accountBlocked(email);
             throw new LockedException(exception.getMessage());
         }

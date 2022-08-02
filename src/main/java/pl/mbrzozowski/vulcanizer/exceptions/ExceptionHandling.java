@@ -33,6 +33,7 @@ public class ExceptionHandling implements ErrorController {
     private static final String ACCOUNT_DISABLED = "Your account is not active. If this is an error, please contact administration";
     private static final String ERROR_PROCESSING_FILE = "Error occurred while processing file";
     private static final String NOT_ENOUGH_PERMISSION = "You do not have enough permission";
+    private static final String USER_HAS_ACTIVE_BAN = "User has active ban";
     public static final String ERROR_PATH = "/error";
     public static final String LINK_HAS_EXPIRED = "Link to activate account has expired";
 
@@ -59,6 +60,11 @@ public class ExceptionHandling implements ErrorController {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpResponse> accessDeniedException() {
         return createHttpResponse(FORBIDDEN, NOT_ENOUGH_PERMISSION);
+    }
+
+    @ExceptionHandler(UserHasBanException.class)
+    public ResponseEntity<HttpResponse> userHasBanException() {
+        return createHttpResponse(FORBIDDEN, USER_HAS_ACTIVE_BAN);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)

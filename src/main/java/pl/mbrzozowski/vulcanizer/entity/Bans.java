@@ -18,7 +18,9 @@ public class Bans {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private String description;
+    @Column(nullable = false)
     private LocalDateTime createdTime;
+    @Column(nullable = false)
     private LocalDateTime expiredTime; // when null ban is perm
 
     /**

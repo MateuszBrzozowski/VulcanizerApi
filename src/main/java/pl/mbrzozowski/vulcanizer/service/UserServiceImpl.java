@@ -16,13 +16,11 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
-import pl.mbrzozowski.vulcanizer.exceptions.AccountNotActiveException;
-import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
-import pl.mbrzozowski.vulcanizer.exceptions.LinkHasExpiredException;
-import pl.mbrzozowski.vulcanizer.exceptions.LoginException;
+import pl.mbrzozowski.vulcanizer.exceptions.*;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +62,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         User user = userRepository.save(newUser);
         String token = confirmationTokenService.createNewToken(user);
-        log.info(token);
         emailService.confirmYourEmail(user.getEmail(), token);
         return newUser;
     }
@@ -195,7 +192,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             String lastName = userResetPasswordBody.getLastName();
             if (user.getFirstName().equalsIgnoreCase(firstName) && user.getLastName().equalsIgnoreCase(lastName)) {
                 String token = resetPasswordTokenService.createNewToken(user);
-                log.info(token);
                 emailService.resetPassword(user.getEmail(), token);
             } else {
                 throw new IllegalArgumentException("First and last name not valid");
@@ -231,7 +227,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     public UserResponse login(UserRegisterBody userRequest) {
-        logger.info(String.valueOf(userRequest));
         String email = userRequest.getEmail();
         String password = userRequest.getPassword();
         ValidationUser.validLogin(email, password);
@@ -303,16 +298,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
-            log.error("User not found by email {}", email);
             throw new UsernameNotFoundException(String.format("User not found by email - %s", email));
         });
         validateLoginAttempt(user);
         user.setLastLoginDateDisplay(user.getLastLoginDate());
         user.setLastLoginDate(new Date());
         userRepository.save(user);
-        UserPrincipal userPrincipal = new UserPrincipal(user);
-        log.info("Returning found user by email {}", email);
-        return userPrincipal;
+        return new UserPrincipal(user);
     }
 
     private void validateLoginAttempt(User user) {
@@ -334,4 +326,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
+    public void checkBans(User user) {
+        List<Bans> bans = user.getBans();
+        LocalDateTime now = LocalDateTime.now();
+        for (Bans ban : bans) {
+            if (ban.getExpiredTime().isAfter(now)) {
+                throw new UserHasBanException(
+                        String.format("User %s has ban for %s to %s, Description: %s",
+                                user.getEmail(),
+                                ban.getCreatedTime(),
+                                ban.getExpiredTime(),
+                                ban.getDescription()));
+            }
+        }
+    }
 }

@@ -13,6 +13,10 @@ import java.util.stream.Collectors;
 public class UserPrincipal implements UserDetails {
     private User user;
 
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.user.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
