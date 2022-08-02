@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
-import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -57,6 +56,8 @@ public class User implements Serializable {
     private List<Favorites> favorites;
     @OneToMany(mappedBy = "user")
     private List<Visit> visits;
+    @OneToMany(mappedBy = "user")
+    private List<Bans> bans;
 
 
     private String role;
