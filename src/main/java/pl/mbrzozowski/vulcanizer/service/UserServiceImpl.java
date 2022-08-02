@@ -213,6 +213,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             User user = userOptional.get();
             String encodePassword = encodePassword(userResetPasswordBody.getPassword());
             user.setPassword(encodePassword);
+            user.setNotLocked(true);
             userRepository.save(user);
         } else {
             throw new UsernameNotFoundException(String.format("User not found by email: %s", userResetPasswordBody.getEmail()));

@@ -73,7 +73,7 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<HttpResponse> lockedException() {
-        return createHttpResponse(UNAUTHORIZED, ACCOUNT_LOCKED);
+        return createHttpResponse(FORBIDDEN, ACCOUNT_LOCKED);
     }
 
     @ExceptionHandler(TokenExpiredException.class)
