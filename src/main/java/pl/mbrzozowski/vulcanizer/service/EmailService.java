@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     public static final String SUBJECT_RESET_PASSWORD_LINK = "Link to reset password";
     public static final String SUBJECT_CONFIRM_EMAIL = "Please confirm your email";
+    public static final String SUBJECT_YOUR_ACCOUNT_WAS_BLOCKED = "Your account was blocked";
 
     public void confirmYourEmail(String to, String token) {
         //TODO
@@ -29,6 +30,16 @@ public class EmailService {
         log.info("EMAIL: ");
         log.info("SUBJECT: {}", SUBJECT_RESET_PASSWORD_LINK);
         log.info("TEXT: To reset your password click link: http://localhost:4200/users/resetpass?id={}", token);
+        //send(to,subject,body);
+    }
+
+    public void yourAccountWasBlocked(String email) {
+        //TODO
+        // Config and testing
+        log.info("EMAIL: ");
+        log.info("SUBJECT: {}", SUBJECT_YOUR_ACCOUNT_WAS_BLOCKED);
+        log.info("TEXT: Yours account was blocked because you entered the wrong password too many times when logging in. " +
+                "You can active it by reset password.");
         //send(to,subject,body);
     }
 

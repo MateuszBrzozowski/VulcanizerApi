@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailService emailService;
     private final ResetPasswordTokenService resetPasswordTokenService;
+    private final SentMailAccountBlockedService sentMailAccountBlockedService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
@@ -214,9 +215,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             String encodePassword = encodePassword(userResetPasswordBody.getPassword());
             user.setPassword(encodePassword);
             user.setNotLocked(true);
+            sentMailAccountBlockedService.deleteByUser(user);
             userRepository.save(user);
         } else {
             throw new UsernameNotFoundException(String.format("User not found by email: %s", userResetPasswordBody.getEmail()));
+        }
+    }
+
+    public void accountBlocked(String email) {
+        Optional<User> optionalUser = findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            sentMailAccountBlockedService.checkAndSendEmail(user);
         }
     }
 
@@ -322,4 +332,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setActive(true);
         }
     }
+
+
 }

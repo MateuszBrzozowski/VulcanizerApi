@@ -54,6 +54,7 @@ class UserServiceImplTest {
         ResetPasswordTokenService resetPasswordTokenService = mock(ResetPasswordTokenService.class);
         businessService = mock(BusinessService.class);
         businessRepository = mock(BusinessRepository.class);
+        SentMailAccountBlockedService sentMailAccountBlockedService = mock(SentMailAccountBlockedService.class);
         userService = new UserServiceImpl(userRepository,
                 addressService,
                 phoneService,
@@ -64,7 +65,8 @@ class UserServiceImplTest {
                 loginAttemptService,
                 confirmationTokenService,
                 emailService,
-                resetPasswordTokenService);
+                resetPasswordTokenService,
+                sentMailAccountBlockedService);
     }
 
 //    @Test
