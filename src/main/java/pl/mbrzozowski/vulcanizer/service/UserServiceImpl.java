@@ -2,14 +2,18 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.mbrzozowski.vulcanizer.constant.SecurityConstant;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
 import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
@@ -45,6 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final EmailService emailService;
     private final ResetPasswordTokenService resetPasswordTokenService;
     private final SentMailAccountBlockedService sentMailAccountBlockedService;
+    private final TokenCheckSumService tokenCheckSumService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
@@ -176,9 +181,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (findByEmail(userLoginBody.getEmail()).isPresent()) {
             user = findByEmail(userLoginBody.getEmail()).get();
         }
-        if (!user.isActive()) {
-            throw new AccountNotActiveException("Account not active");
-        }
         return user;
     }
 
@@ -211,6 +213,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             String encodePassword = encodePassword(userResetPasswordBody.getPassword());
             user.setPassword(encodePassword);
             user.setNotLocked(true);
+            List<TokenCheckSum> tokenCheckSums = user.getTokenCheckSums();
+            tokenCheckSumService.deleteAllSumsForUser(user);
+            tokenCheckSums.clear();
             sentMailAccountBlockedService.deleteByUser(user);
             userRepository.save(user);
         } else {
@@ -223,8 +228,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         ValidationUser.validPassword(newPassword);
         String encodedNewPassword = encodePassword(newPassword);
         user.setPassword(encodedNewPassword);
+        List<TokenCheckSum> tokenCheckSums = user.getTokenCheckSums();
+        tokenCheckSumService.deleteAllSumsForUser(user);
+        tokenCheckSums.clear();
         userRepository.save(user);
         emailService.yourPasswordChangedCorrectly(user.getEmail());
+    }
+
+    @Override
+    public TokenCheckSumResponse generateCheckSum(User user, String jwtToken) {
+        String sum = RandomStringUtils.randomNumeric(20);
+        String md5Hex = DigestUtils.md5Hex(sum);
+        TokenCheckSum checkSum = tokenCheckSumService.getNewSum(user, jwtToken, md5Hex);
+        user.getTokenCheckSums().add(checkSum);
+        userRepository.save(user);
+        return new TokenCheckSumResponse(checkSum.getId(), sum);
+    }
+
+    @Override
+    public boolean isValidToken(User user, String token, String checkSumId, String checkSumProperties) {
+        long id;
+        try {
+            id = Long.parseLong(checkSumId);
+        } catch (NumberFormatException e) {
+            throw new BadCredentialsException(e.getMessage());
+        }
+        token = token.substring(SecurityConstant.TOKEN_PREFIX.length());
+        String md5Hex = DigestUtils.md5Hex(checkSumProperties);
+        int tokenHashCode = token.hashCode();
+        return tokenCheckSumService.checkSum(id, md5Hex, tokenHashCode);
     }
 
     public void accountBlocked(String email) {

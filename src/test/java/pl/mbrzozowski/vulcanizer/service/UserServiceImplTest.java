@@ -46,15 +46,14 @@ class UserServiceImplTest {
         userRepository = mock(UserRepository.class);
         PhoneService phoneService = mock(PhoneService.class);
         PhotoService photoService = mock(PhotoService.class);
-        StateService stateService = mock(StateService.class);
         AddressService addressService = mock(AddressService.class);
         FavoriteService favoriteService = mock(FavoriteService.class);
-        FavoritesRepository favoritesRepository = mock(FavoritesRepository.class);
         ConfirmationTokenService confirmationTokenService = mock(ConfirmationTokenService.class);
         ResetPasswordTokenService resetPasswordTokenService = mock(ResetPasswordTokenService.class);
         businessService = mock(BusinessService.class);
         businessRepository = mock(BusinessRepository.class);
         SentMailAccountBlockedService sentMailAccountBlockedService = mock(SentMailAccountBlockedService.class);
+        TokenCheckSumService tokenCheckSumService = mock(TokenCheckSumService.class);
         userService = new UserServiceImpl(userRepository,
                 addressService,
                 phoneService,
@@ -66,7 +65,8 @@ class UserServiceImplTest {
                 confirmationTokenService,
                 emailService,
                 resetPasswordTokenService,
-                sentMailAccountBlockedService);
+                sentMailAccountBlockedService,
+                tokenCheckSumService);
     }
 
 //    @Test

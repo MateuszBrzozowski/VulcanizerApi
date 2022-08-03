@@ -58,6 +58,8 @@ public class User implements Serializable {
     private List<Visit> visits;
     @OneToMany(mappedBy = "user")
     private List<Bans> bans;
+    @OneToMany(mappedBy = "user")
+    private List<TokenCheckSum> tokenCheckSums;
 
 
     private String role;

@@ -2,6 +2,7 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.TokenCheckSum;
 import pl.mbrzozowski.vulcanizer.entity.User;
 
 import java.util.ArrayList;
@@ -28,4 +29,8 @@ interface UserService extends ServiceLayer<UserRequest, UserResponse, User> {
     void resetPasswordSave(UserResetPasswordBody userResetPasswordBody);
 
     void setNewPassword(User user, String newPassword);
+
+    TokenCheckSumResponse generateCheckSum(User user, String jwtToken);
+
+    boolean isValidToken(User user, String token, String checkSumId, String checkSumProperties);
 }

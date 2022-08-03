@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,21 +16,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
-import pl.mbrzozowski.vulcanizer.dto.UserLoginBody;
-import pl.mbrzozowski.vulcanizer.dto.UserRegisterBody;
-import pl.mbrzozowski.vulcanizer.dto.UserResetPasswordBody;
-import pl.mbrzozowski.vulcanizer.dto.UserResponse;
+import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.ExceptionHandling;
 import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
 import pl.mbrzozowski.vulcanizer.util.JWTTokenProvider;
 
-import java.util.List;
 import java.util.Optional;
 
+import static pl.mbrzozowski.vulcanizer.constant.AppHttpHeaders.SUM_CONTROL_ID;
+import static pl.mbrzozowski.vulcanizer.constant.AppHttpHeaders.SUM_CONTROL_PROPERTIES;
 import static pl.mbrzozowski.vulcanizer.constant.SecurityConstant.JWT_TOKEN_HEADER;
-import static pl.mbrzozowski.vulcanizer.constant.SecurityConstant.TOKEN_PREFIX;
 
 @Controller
 @RestController
@@ -61,9 +59,9 @@ public class UserController extends ExceptionHandling {
         authenticate(userLoginBody.getEmail(), userLoginBody.getPassword());
         User user = userService.login(userLoginBody);
         UserPrincipal userPrincipal = new UserPrincipal(user);
-        HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
+        HttpHeaders httpHeaders = getHeaders(user, userPrincipal);
         UserResponse userResponse = new UserToUserResponse().convert(user);
-        return new ResponseEntity<>(userResponse, jwtHeader, HttpStatus.OK);
+        return new ResponseEntity<>(userResponse, httpHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/confirm")
@@ -85,11 +83,22 @@ public class UserController extends ExceptionHandling {
     }
 
     @PutMapping("/newpass")
-    public ResponseEntity<?> setNewPassword(@RequestParam("pass") String newPassword) {
+    public ResponseEntity<UserResponse> setNewPassword(@RequestParam("pass") String newPassword,
+                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                       @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                       @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+
+
         User user = authenticate();
-        userService.setNewPassword(user,newPassword);
-        return new ResponseEntity<>(HttpStatus.OK);
+        validToken(user, token, checkSumId, checkSumProperties);
+        userService.setNewPassword(user, newPassword);
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        HttpHeaders httpHeaders = getHeaders(user, userPrincipal);
+        UserResponse userResponse = new UserToUserResponse().convert(user);
+
+        return new ResponseEntity<>(userResponse, httpHeaders, HttpStatus.OK);
     }
+
 
 //    //only for tests - remove or change this method
 //    @GetMapping()
@@ -108,10 +117,14 @@ public class UserController extends ExceptionHandling {
 //        return new ResponseEntity<>(users, HttpStatus.OK);
 //    }
 
-    private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(JWT_TOKEN_HEADER, jwtTokenProvider.generateJwtToken(userPrincipal));
-        return headers;
+    private HttpHeaders getHeaders(User user, UserPrincipal userPrincipal) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        String jwtToken = jwtTokenProvider.generateJwtToken(userPrincipal);
+        httpHeaders.add(JWT_TOKEN_HEADER, jwtToken);
+        TokenCheckSumResponse tokenCheckSum = userService.generateCheckSum(user, jwtToken);
+        httpHeaders.add(SUM_CONTROL_ID, String.valueOf(tokenCheckSum.getId()));
+        httpHeaders.add(SUM_CONTROL_PROPERTIES, tokenCheckSum.getSum());
+        return httpHeaders;
     }
 
     private void authenticate(String email, String password) {
@@ -132,6 +145,15 @@ public class UserController extends ExceptionHandling {
         Optional<User> optionalUser = userService.findByEmail(authentication.getName());
         return optionalUser.orElse(null);
     }
+
+    private void validToken(User user, String token, String checkSumId, String checkSumProperties) {
+        boolean isValidToken = userService.isValidToken(user, token, checkSumId, checkSumProperties);
+        if (!isValidToken) {
+            throw new BadCredentialsException("Token is not valid");
+        }
+    }
+
+
 //
 //    @GetMapping("/{id}")
 //    public ResponseEntity<UserResponse> findById(@PathVariable("id") Long id) {
