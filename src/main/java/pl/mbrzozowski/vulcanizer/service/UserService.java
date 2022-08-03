@@ -26,4 +26,6 @@ interface UserService extends ServiceLayer<UserRequest, UserResponse, User> {
     void resetPasswordStart(UserResetPasswordBody userResetPasswordBody);
 
     void resetPasswordSave(UserResetPasswordBody userResetPasswordBody);
+
+    void setNewPassword(User user, String newPassword);
 }

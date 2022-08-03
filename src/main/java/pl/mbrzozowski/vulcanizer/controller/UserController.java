@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
@@ -25,6 +26,7 @@ import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
 import pl.mbrzozowski.vulcanizer.util.JWTTokenProvider;
 
 import java.util.List;
+import java.util.Optional;
 
 import static pl.mbrzozowski.vulcanizer.constant.SecurityConstant.JWT_TOKEN_HEADER;
 import static pl.mbrzozowski.vulcanizer.constant.SecurityConstant.TOKEN_PREFIX;
@@ -82,22 +84,29 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //only for tests - remove or change this method
-    @GetMapping()
-    public ResponseEntity<List<UserResponse>> findAll(@RequestHeader HttpHeaders headers) {
-        List<String> strings = headers.get(headers.AUTHORIZATION);
-        String token = strings.stream().findFirst().get();
-
-        String username = null;
-        if (token != null && token.startsWith(TOKEN_PREFIX)) {
-            token = token.substring(TOKEN_PREFIX.length());
-            username = jwtTokenProvider.getSubject(token);
-        }
-
-        log.info(username);
-        List<UserResponse> users = userService.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    @PutMapping("/newpass")
+    public ResponseEntity<?> setNewPassword(@RequestParam("pass") String newPassword) {
+        User user = authenticate();
+        userService.setNewPassword(user,newPassword);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+//    //only for tests - remove or change this method
+//    @GetMapping()
+//    public ResponseEntity<List<UserResponse>> findAll(@RequestHeader HttpHeaders headers) {
+//        List<String> strings = headers.get(headers.AUTHORIZATION);
+//        String token = strings.stream().findFirst().get();
+//
+//        String username = null;
+//        if (token != null && token.startsWith(TOKEN_PREFIX)) {
+//            token = token.substring(TOKEN_PREFIX.length());
+//            username = jwtTokenProvider.getSubject(token);
+//        }
+//
+//        log.info(username);
+//        List<UserResponse> users = userService.findAll();
+//        return new ResponseEntity<>(users, HttpStatus.OK);
+//    }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
         HttpHeaders headers = new HttpHeaders();
@@ -116,6 +125,12 @@ public class UserController extends ExceptionHandling {
             userService.accountBlocked(email);
             throw new LockedException(exception.getMessage());
         }
+    }
+
+    private User authenticate() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = userService.findByEmail(authentication.getName());
+        return optionalUser.orElse(null);
     }
 //
 //    @GetMapping("/{id}")

@@ -12,11 +12,11 @@ public class EmailService {
     public static final String SUBJECT_RESET_PASSWORD_LINK = "Link to reset password";
     public static final String SUBJECT_CONFIRM_EMAIL = "Please confirm your email";
     public static final String SUBJECT_YOUR_ACCOUNT_WAS_BLOCKED = "Your account was blocked";
+    public static final String SUBJECT_PASSWORD_CHANGED_CORRECTLY = "Password changed";
 
     public void confirmYourEmail(String to, String token) {
         //TODO
         // Config and testing
-        String body = token;
 
         log.info("EMAIL: ");
         log.info("SUBJECT: {}", SUBJECT_CONFIRM_EMAIL);
@@ -40,6 +40,15 @@ public class EmailService {
         log.info("SUBJECT: {}", SUBJECT_YOUR_ACCOUNT_WAS_BLOCKED);
         log.info("TEXT: Yours account was blocked because you entered the wrong password too many times when logging in. " +
                 "You can active it by reset password.");
+        //send(to,subject,body);
+    }
+
+    public void yourPasswordChangedCorrectly(String to) {
+        //TODO
+        // Config and testing, maybe user can blocked account if this change has not made by him
+        log.info("EMAIL: ");
+        log.info("SUBJECT: {}", SUBJECT_PASSWORD_CHANGED_CORRECTLY);
+        log.info("TEXT: Your password changed correctly.");
         //send(to,subject,body);
     }
 

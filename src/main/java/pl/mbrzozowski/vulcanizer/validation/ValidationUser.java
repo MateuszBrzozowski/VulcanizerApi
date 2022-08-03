@@ -73,9 +73,12 @@ public class ValidationUser {
         }
     }
 
-    private static void validPassword(String password) {
+    public static void validPassword(String password) {
         if (StringUtils.isBlank(password)) {
             throw new IllegalArgumentException("Password is not valid");
+        }
+        if (password.length() < 6) {
+            throw new IllegalArgumentException("Password to short");
         }
     }
 

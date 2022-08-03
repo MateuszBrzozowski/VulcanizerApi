@@ -218,6 +218,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    @Override
+    public void setNewPassword(User user, String newPassword) {
+        ValidationUser.validPassword(newPassword);
+        String encodedNewPassword = encodePassword(newPassword);
+        user.setPassword(encodedNewPassword);
+        userRepository.save(user);
+        emailService.yourPasswordChangedCorrectly(user.getEmail());
+    }
+
     public void accountBlocked(String email) {
         Optional<User> optionalUser = findByEmail(email);
         if (optionalUser.isPresent()) {
