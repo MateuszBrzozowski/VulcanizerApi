@@ -43,14 +43,6 @@ class AddressServiceTest {
         addressService.save(addressRequest);
         verify(addressRepository).save(address);
     }
-
-    @Test
-    public void save_AllVariableNull_ThrowNullPointerException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
     @Test
     void save_OnlyState_Correct() {
         AddressRequest addressRequest = AddressRequest.builder()
@@ -67,22 +59,10 @@ class AddressServiceTest {
     @Test
     void save_OnlyAddressLineOne_Correct() {
         AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .build();
         Address address = Address.builder()
-                .addressLineOne("Line One")
-                .build();
-        addressService.save(addressRequest);
-        verify(addressRepository).save(address);
-    }
-
-    @Test
-    void save_OnlyAddressLineTwo_Correct() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineTwo("Line Two")
-                .build();
-        Address address = Address.builder()
-                .addressLineTwo("Line Two")
+                .addressLine("Line One")
                 .build();
         addressService.save(addressRequest);
         verify(addressRepository).save(address);
@@ -113,46 +93,6 @@ class AddressServiceTest {
     }
 
     @Test
-    void save_EmptyAddressLineOneAndRestNull_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineOne("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_EmptyAddressLineTwoAndRestNull_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineTwo("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_EmptyCityAndRestNull_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .city("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_EmptyCodeAndRestNull_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .code("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_EmptyStateNameAndRestNull_ThrowNoSuchElementException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .state("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
     void save_NoSuchStateNameAndRestNull_ThrowNoSuchElementException() {
         AddressRequest addressRequest = AddressRequest.builder()
                 .state("NotCorrect")
@@ -174,70 +114,13 @@ class AddressServiceTest {
         Assertions.assertDoesNotThrow(() -> addressService.save(addressRequest));
     }
 
-    @Test
-    void save_EmptyAllAddress_ThrowNoSuchElementException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineOne("")
-                .addressLineTwo("")
-                .city("")
-                .code("")
-                .state("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_EmptyAllAddressAndNullState_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineOne("")
-                .addressLineTwo("")
-                .city("")
-                .code("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_AllEmptyOrNullArguments_ThrowNullParameterException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineOne("")
-                .addressLineTwo(null)
-                .city(null)
-                .code("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_ToLongLineOne_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineOne(new StringGenerator().apply(101))
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_ToLongLineTwo_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineTwo(new StringGenerator().apply(101))
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
 
     @Test
     void save_MaxLengthLineTwo_DoesNotThrow() {
         AddressRequest addressRequest = AddressRequest.builder()
-                .addressLineTwo(new StringGenerator().apply(100))
+                .addressLine(new StringGenerator().apply(100))
                 .build();
         Assertions.assertDoesNotThrow(() -> addressService.save(addressRequest));
-    }
-
-    @Test
-    void save_ToLongCityName_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .city(new StringGenerator().apply(41))
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
     }
 
     @Test
@@ -247,15 +130,6 @@ class AddressServiceTest {
                 .build();
         Assertions.assertDoesNotThrow(() -> addressService.save(addressRequest));
     }
-
-    @Test
-    void save_ToLongCode_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .code(new StringGenerator().apply(7))
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.save(addressRequest));
-    }
-
     @Test
     void save_MaxLengthCode_DoesNotThrow() {
         AddressRequest addressRequest = AddressRequest.builder()
@@ -310,42 +184,16 @@ class AddressServiceTest {
         Assertions.assertDoesNotThrow(() -> addressService.findAll());
     }
 
-    @SuppressWarnings("ConstantConditions")
-    @Test
-    void update_AllParametersNull_ThrowNullParameterException() {
-        AddressRequest addressRequest = AddressRequest.builder().build();
-        Address address = Address.builder().build();
-        when(addressRepository.findById(null)).thenReturn(Optional.of(address));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.update(addressRequest));
-    }
-
     @Test
     void update_AllParametersEmpty_ThrowNoSuchElementException() {
         AddressRequest addressRequest = AddressRequest.builder()
                 .id(1L)
-                .addressLineOne("")
-                .addressLineTwo("")
+                .addressLine("")
                 .city("")
                 .code("")
                 .state("")
                 .build();
         when(stateRepository.findByName("")).thenReturn(Optional.empty());
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.update(addressRequest));
-    }
-
-    @Test
-    void update_AllParametersWithoutStateEmpty_ThrowIllegalArgumentException() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .id(1L)
-                .addressLineOne("")
-                .addressLineTwo("")
-                .city("")
-                .code("")
-                .build();
-        Address address = Address.builder()
-                .id(1L)
-                .build();
-        when(addressRepository.findById(1L)).thenReturn(Optional.of(address));
         Assertions.assertThrows(IllegalArgumentException.class, () -> addressService.update(addressRequest));
     }
 

@@ -17,27 +17,14 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "address_line_one")
-    private String addressLineOne;
-    @Column(name = "address_line_two")
-    private String addressLineTwo;
+    private String addressLine;
+    @Column(length = 50)
     private String city;
     @Column(name = "postal_code")
     private String code;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "id_state")
     private State state;
     private String country;
 
-    @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", addressLineOne='" + addressLineOne + '\'' +
-                ", addressLineTwo='" + addressLineTwo + '\'' +
-                ", city='" + city + '\'' +
-                ", code='" + code + '\'' +
-                ", state=" + state.getName() +
-                ", country='" + country + '\'' +
-                '}';
-    }
 }

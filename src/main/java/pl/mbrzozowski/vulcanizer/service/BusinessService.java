@@ -173,8 +173,7 @@ public class BusinessService {
     }
 
     private void addressToAddressTransferNewData(Address address, Address addressNewData) {
-        address.setAddressLineOne(addressNewData.getAddressLineOne());
-        address.setAddressLineTwo(addressNewData.getAddressLineTwo());
+        address.setAddressLine(addressNewData.getAddressLine());
         address.setCity(addressNewData.getCity());
         address.setCode(addressNewData.getCode());
         address.setState(addressNewData.getState());

@@ -107,7 +107,9 @@ public class UserController extends ExceptionHandling {
         User user = authenticate();
         validToken(user, token, checkSumId, checkSumProperties);
         UserResponse userResponse = userService.update(user, userRequest);
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        HttpHeaders httpHeaders = getHeaders(user, userPrincipal);
+        return new ResponseEntity<>(userResponse, httpHeaders, HttpStatus.OK);
     }
 
 

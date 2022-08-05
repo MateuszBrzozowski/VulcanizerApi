@@ -14,8 +14,7 @@ public class AddressToAddressResponse implements Function<Address, AddressRespon
         }
         AddressResponse addressResponse = AddressResponse.builder()
                 .id(address.getId())
-                .addressLineOne(address.getAddressLineOne())
-                .addressLineTwo(address.getAddressLineTwo())
+                .addressLineOne(address.getAddressLine())
                 .code(address.getCode())
                 .city(address.getCity())
                 .country(address.getCountry())

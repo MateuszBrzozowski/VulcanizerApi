@@ -22,7 +22,6 @@ public class AddressService {
     public Address save(AddressRequest addressRequest) {
         addressRequest.setId(null);
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
-        ValidationAddress.valid(address);
         return addressRepository.save(address);
     }
 
@@ -30,7 +29,6 @@ public class AddressService {
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
         if (addressRequest != null) {
             findById(address.getId());
-            ValidationAddress.valid(address);
             if (address.getState() == null) {
                 deleteStateFromAddress(address.getId());
             }

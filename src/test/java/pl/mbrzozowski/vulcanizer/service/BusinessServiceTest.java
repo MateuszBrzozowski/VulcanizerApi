@@ -61,7 +61,7 @@ class BusinessServiceTest {
     void save_AllParamReq_Success() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -90,7 +90,7 @@ class BusinessServiceTest {
     void save_NoIdUser_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -115,7 +115,7 @@ class BusinessServiceTest {
     void save_NoName_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -140,7 +140,7 @@ class BusinessServiceTest {
     void save_NoNip_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -165,7 +165,7 @@ class BusinessServiceTest {
     void save_NoDescription_DoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -206,7 +206,7 @@ class BusinessServiceTest {
     void save_NoPhoto_DoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -259,7 +259,7 @@ class BusinessServiceTest {
     void save_NoAddressCity_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .code("99-999")
                 .state("state")
                 .country("Country")
@@ -284,7 +284,7 @@ class BusinessServiceTest {
     void save_NoAddressCode_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .state("state")
                 .country("Country")
@@ -309,7 +309,7 @@ class BusinessServiceTest {
     void save_NoAddressState_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .country("Country")
@@ -333,7 +333,7 @@ class BusinessServiceTest {
     void save_NoAddressCountry_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -358,7 +358,7 @@ class BusinessServiceTest {
     void save_NoAddressNoState_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .country("Country")
@@ -382,7 +382,7 @@ class BusinessServiceTest {
     void save_IllegalNip_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -408,7 +408,7 @@ class BusinessServiceTest {
     void save_IllegalNipToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -434,7 +434,7 @@ class BusinessServiceTest {
     void save_NameToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -460,7 +460,7 @@ class BusinessServiceTest {
     void save_NameMaxLength_ThrowDoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -489,7 +489,7 @@ class BusinessServiceTest {
     void save_DescriptionToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -515,7 +515,7 @@ class BusinessServiceTest {
     void save_MaxLengthDescription_DoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")
@@ -544,7 +544,7 @@ class BusinessServiceTest {
     void save_MaxLCityNameLength_DoesNotThrow() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city(new StringGenerator().apply(40))
                 .code("99-999")
                 .state("state")
@@ -573,7 +573,7 @@ class BusinessServiceTest {
     void save_CityNameToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city(new StringGenerator().apply(41))
                 .code("99-999")
                 .state("state")
@@ -599,7 +599,7 @@ class BusinessServiceTest {
     void save_NotValidPostalCodeLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-9999")
                 .state("state")
@@ -625,7 +625,7 @@ class BusinessServiceTest {
     void save_NotValidPostalCodeShort_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-99")
                 .state("state")
@@ -651,7 +651,7 @@ class BusinessServiceTest {
     void save_CountryToLong_ThrowIllegalArgumentException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-99")
                 .state("state")
@@ -677,7 +677,7 @@ class BusinessServiceTest {
     void save_UserIsNotExist_ThrowNoSuchElementException() {
         State state = new State(10L, "state");
         AddressRequest address = AddressRequest.builder()
-                .addressLineOne("Line One")
+                .addressLine("Line One")
                 .city("City")
                 .code("99-999")
                 .state("state")

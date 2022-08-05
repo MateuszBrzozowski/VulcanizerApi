@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         updatePhone(user, userRequest);
         user.setGender(userRequest.getGender());
         updateBirthDate(user, userRequest);
+        resetTokenCheckSum(user);
         return new UserToUserResponse().convert(userRepository.save(user));
     }
 
@@ -200,9 +201,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             String encodePassword = encodePassword(userResetPasswordBody.getPassword());
             user.setPassword(encodePassword);
             user.setNotLocked(true);
-            List<TokenCheckSum> tokenCheckSums = user.getTokenCheckSums();
-            tokenCheckSumService.deleteAllSumsForUser(user);
-            tokenCheckSums.clear();
+            resetTokenCheckSum(user);
             sentMailAccountBlockedService.deleteByUser(user);
             userRepository.save(user);
         } else {
@@ -215,9 +214,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         ValidationUser.validPassword(newPassword);
         String encodedNewPassword = encodePassword(newPassword);
         user.setPassword(encodedNewPassword);
-        List<TokenCheckSum> tokenCheckSums = user.getTokenCheckSums();
-        tokenCheckSumService.deleteAllSumsForUser(user);
-        tokenCheckSums.clear();
+        resetTokenCheckSum(user);
         userRepository.save(user);
         emailService.yourPasswordChangedCorrectly(user.getEmail());
     }
@@ -287,11 +284,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 //    }
 
     private void updateBirthDate(User user, UserRequest userRequest) {
-        try {
-            LocalDate date = LocalDate.parse(userRequest.getBirthDate());
-            user.setBirthDate(date);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date or format (YYYY-MM-DD)");
+        if (StringUtils.isNotEmpty(userRequest.getBirthDate())) {
+            try {
+                LocalDate date = LocalDate.parse(userRequest.getBirthDate());
+                user.setBirthDate(date);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Invalid date or format (YYYY-MM-DD)");
+            }
+        } else {
+            user.setBirthDate(null);
         }
     }
 
@@ -317,7 +318,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if (!user.getEmail().equalsIgnoreCase(userRequest.getEmail())) {
                 Optional<User> userOptional = findByEmail(userRequest.getEmail());
                 if (userOptional.isPresent()) {
-                    throw new EmailExistException(String.format("Email %s is exist.", userRequest.getEmail()));
+                    throw new EmailExistException("Email is exist.");
                 }
                 user.setEmail(userRequest.getEmail());
             }
@@ -405,5 +406,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                                 ban.getDescription()));
             }
         }
+    }
+
+    private void resetTokenCheckSum(User user) {
+        List<TokenCheckSum> tokenCheckSums = user.getTokenCheckSums();
+        tokenCheckSumService.deleteAllSumsForUser(user);
+        tokenCheckSums.clear();
     }
 }

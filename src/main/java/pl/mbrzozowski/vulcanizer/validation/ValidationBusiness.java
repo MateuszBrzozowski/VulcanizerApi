@@ -27,7 +27,7 @@ public class ValidationBusiness {
         validName(businessRequest.getName());
         validNip(businessRequest.getNip());
         validDescription(businessRequest.getDescription());
-        validAddress(address, stateRepository);
+//        validAddress(address, stateRepository);
         validPhones(businessRequest);
     }
 
@@ -96,11 +96,4 @@ public class ValidationBusiness {
         }
     }
 
-    private static void validAddress(Address address, StateRepository stateRepository) {
-        if (address == null) {
-            throw new IllegalArgumentException("Address can not be null");
-        } else {
-            ValidationAddress.allParamRequired(address, stateRepository);
-        }
-    }
 }

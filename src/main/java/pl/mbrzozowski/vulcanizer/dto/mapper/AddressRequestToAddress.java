@@ -2,7 +2,6 @@ package pl.mbrzozowski.vulcanizer.dto.mapper;
 
 import lombok.RequiredArgsConstructor;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
-import pl.mbrzozowski.vulcanizer.dto.StateResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.service.StateService;
@@ -27,8 +26,7 @@ public class AddressRequestToAddress implements Function<AddressRequest, Address
         }
         return Address.builder()
                 .id(addressRequest.getId())
-                .addressLineOne(addressRequest.getAddressLineOne())
-                .addressLineTwo(addressRequest.getAddressLineTwo())
+                .addressLine(addressRequest.getAddressLine())
                 .city(addressRequest.getCity())
                 .code(addressRequest.getCode())
                 .state(state)
