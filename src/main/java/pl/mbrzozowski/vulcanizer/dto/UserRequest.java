@@ -21,7 +21,7 @@ public class UserRequest {
     private String firstName;
     private String lastName;
     private Gender gender;
-    private LocalDate birthDate;
+    private String birthDate;
     private UserStatusAccount statusAccount;
     private AddressRequest address;
     private String avatar;

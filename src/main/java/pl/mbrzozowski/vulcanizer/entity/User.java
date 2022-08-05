@@ -40,13 +40,13 @@ public class User implements Serializable {
     private LocalDate birthDate;
     @Column(name = "create_time")
     private LocalDateTime createAccountTime;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "id_address")
     private Address address;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "id_avatar")
     private Photo avatar;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "id_phone")
     private Phone phone;
 

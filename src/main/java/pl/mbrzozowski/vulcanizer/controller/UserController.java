@@ -100,9 +100,14 @@ public class UserController extends ExceptionHandling {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserResponse> updateAccountDetails(@RequestBody UserRequest userRequest){
-        log.info(userRequest.toString());
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<UserResponse> updateAccountDetails(@RequestBody UserRequest userRequest,
+                                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                             @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                             @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = authenticate();
+        validToken(user, token, checkSumId, checkSumProperties);
+        UserResponse userResponse = userService.update(user, userRequest);
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
 

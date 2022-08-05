@@ -497,7 +497,6 @@ class UserServiceImplTest {
                 .password(password)
                 .lastName(lastName)
                 .firstName(firstName)
-                .birthDate(LocalDate.now().plusDays(1))
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(user, userRequest));
     }
@@ -514,7 +513,6 @@ class UserServiceImplTest {
                 .password(password)
                 .lastName(lastName)
                 .firstName(firstName)
-                .birthDate(LocalDate.now().minusYears(USER_AGE))
                 .build();
         Assertions.assertDoesNotThrow(() -> userService.update(user, userRequest));
     }
@@ -531,7 +529,6 @@ class UserServiceImplTest {
                 .password(password)
                 .lastName(lastName)
                 .firstName(firstName)
-                .birthDate(LocalDate.now().minusYears(USER_AGE).minusDays(1))
                 .build();
         Assertions.assertDoesNotThrow(() -> userService.update(user, userRequest));
     }
@@ -548,7 +545,6 @@ class UserServiceImplTest {
                 .password(password)
                 .lastName(lastName)
                 .firstName(firstName)
-                .birthDate(LocalDate.now().minusYears(USER_AGE).plusDays(1))
                 .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.update(user, userRequest));
     }
@@ -565,7 +561,6 @@ class UserServiceImplTest {
                 .password(password)
                 .lastName(lastName)
                 .firstName(firstName)
-                .birthDate(LocalDate.now().minusYears(25))
                 .build();
         Assertions.assertDoesNotThrow(() -> userService.update(user, userRequest));
     }

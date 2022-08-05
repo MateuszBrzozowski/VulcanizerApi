@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,13 +18,16 @@ import pl.mbrzozowski.vulcanizer.constant.SecurityConstant;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
 import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
-import pl.mbrzozowski.vulcanizer.dto.mapper.UserRequestToUser;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
-import pl.mbrzozowski.vulcanizer.exceptions.*;
+import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
+import pl.mbrzozowski.vulcanizer.exceptions.LinkHasExpiredException;
+import pl.mbrzozowski.vulcanizer.exceptions.LoginException;
+import pl.mbrzozowski.vulcanizer.exceptions.UserHasBanException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,22 +79,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
-        User user = findById(userRequest.getId());
-        if (!user.getEmail().equalsIgnoreCase(userRequest.getEmail())) {
-            if (findByEmail(userRequest.getEmail()).isPresent()) {
-                throw new IllegalArgumentException("Email is ready exist.");
-            }
-        }
-
-        updatePhone(userRequest, user);
-        updateAvatar(userRequest, user);
-        updateAddress(userRequest, user);
-
-        User userNewData = new UserRequestToUser().apply(userRequest);
-        businessToBusinessNewData(user, userNewData);
-        ValidationUser.validBeforeEditing(user);
-        userRepository.save(user);
-        return new UserToUserResponse().convert(user);
+    public UserResponse update(User user, UserRequest userRequest) {
+        updateEmail(user, userRequest);
+        updateFirstName(user, userRequest);
+        updateLastName(user, userRequest);
+        updatePhone(user, userRequest);
+        user.setGender(userRequest.getGender());
+        updateBirthDate(user, userRequest);
+        return new UserToUserResponse().convert(userRepository.save(user));
     }
 
     public List<UserResponse> findAll() {
@@ -276,17 +272,55 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     }
 
-    private void updateAddress(UserRequest userRequest, User user) {
-        if (user.getAddress() == null && userRequest.getAddress() != null) {
-            Address address = addressService.save(userRequest.getAddress());
-            user.setAddress(address);
-        } else if (user.getAddress() != null && userRequest.getAddress() != null) {
-            userRequest.getAddress().setId(user.getAddress().getId());
-            addressService.update(userRequest.getAddress());
-        } else if (user.getAddress() != null && userRequest.getAddress() == null) {
-            Long id = user.getAddress().getId();
-            user.setAddress(null);
-            addressService.deleteById(id);
+//    private void updateAddress(UserRequest userRequest, User user) {
+//        if (user.getAddress() == null && userRequest.getAddress() != null) {
+//            Address address = addressService.save(userRequest.getAddress());
+//            user.setAddress(address);
+//        } else if (user.getAddress() != null && userRequest.getAddress() != null) {
+//            userRequest.getAddress().setId(user.getAddress().getId());
+//            addressService.update(user, userRequest.getAddress());
+//        } else if (user.getAddress() != null && userRequest.getAddress() == null) {
+//            Long id = user.getAddress().getId();
+//            user.setAddress(null);
+//            addressService.deleteById(id);
+//        }
+//    }
+
+    private void updateBirthDate(User user, UserRequest userRequest) {
+        try {
+            LocalDate date = LocalDate.parse(userRequest.getBirthDate());
+            user.setBirthDate(date);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date or format (YYYY-MM-DD)");
+        }
+    }
+
+    private void updateLastName(User user, UserRequest userRequest) {
+        if (StringUtils.isNotBlank(userRequest.getLastName())) {
+            if (!user.getLastName().equalsIgnoreCase(userRequest.getLastName())) {
+                user.setLastName(userRequest.getLastName());
+            }
+        }
+    }
+
+    private void updateFirstName(User user, UserRequest userRequest) {
+        if (StringUtils.isNotBlank(userRequest.getFirstName())) {
+            if (!user.getFirstName().equalsIgnoreCase(userRequest.getFirstName())) {
+                user.setFirstName(userRequest.getFirstName());
+            }
+        }
+    }
+
+    private void updateEmail(User user, UserRequest userRequest) {
+        if (StringUtils.isNotBlank(userRequest.getEmail())) {
+            userRequest.setEmail(userRequest.getEmail().toLowerCase());
+            if (!user.getEmail().equalsIgnoreCase(userRequest.getEmail())) {
+                Optional<User> userOptional = findByEmail(userRequest.getEmail());
+                if (userOptional.isPresent()) {
+                    throw new EmailExistException(String.format("Email %s is exist.", userRequest.getEmail()));
+                }
+                user.setEmail(userRequest.getEmail());
+            }
         }
     }
 
@@ -304,14 +338,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-    private void updatePhone(UserRequest userRequest, User user) {
-        if (user.getPhone() == null && userRequest.getPhone() != null) {
+    private void updatePhone(User user, UserRequest userRequest) {
+        if (user.getPhone() == null && StringUtils.isNotBlank(userRequest.getPhone())) {
             Phone phone = new Phone(userRequest.getPhone());
             Phone phoneSaved = phoneService.save(phone);
             user.setPhone(phoneSaved);
-        } else if (user.getPhone() != null && userRequest.getPhone() != null) {
-            user.getPhone().setNumber(userRequest.getPhone());
-        } else if (user.getPhone() != null && userRequest.getPhone() == null) {
+        } else if (user.getPhone() != null && StringUtils.isNotBlank(userRequest.getPhone())) {
+            phoneService.update(user.getPhone(), userRequest.getPhone());
+        } else if (user.getPhone() != null && StringUtils.isBlank(userRequest.getPhone())) {
             Long id = user.getPhone().getId();
             user.setPhone(null);
             phoneService.deleteById(id);
