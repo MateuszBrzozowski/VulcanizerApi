@@ -20,7 +20,7 @@ public class UserRequest {
     private String password;
     private String firstName;
     private String lastName;
-    private Gender gender = Gender.UNDEFINED;
+    private Gender gender;
     private LocalDate birthDate;
     private UserStatusAccount statusAccount;
     private AddressRequest address;
