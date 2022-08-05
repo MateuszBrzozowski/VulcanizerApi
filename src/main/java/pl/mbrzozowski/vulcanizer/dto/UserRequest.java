@@ -34,8 +34,8 @@ public class UserRequest {
         this.lastName = lastName;
     }
 
-    public void setGender(int gender) {
-        this.gender = Converter.convertIntToGender(gender);
+    public void setGender(String gender) {
+        this.gender = Converter.convertStringToGender(gender);
     }
 
     public void setStatusAccount(int statusAccount) {

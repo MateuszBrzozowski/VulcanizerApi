@@ -14,12 +14,12 @@ public class Converter {
         return new UserStatusAccountIntToEnum().convert(number);
     }
 
+
     /**
-     * @param number of Enum
-     * @return Gender
-     * @see Gender
+     * @param gender as string
+     * @return gender as enum {@link Gender}
      */
-    public static Gender convertIntToGender(int number) {
-        return new GenderConverterToStringFromInt().convert(number);
+    public static Gender convertStringToGender(String gender) {
+        return new GenderConverterFromStringToEnum().convert(gender);
     }
 }

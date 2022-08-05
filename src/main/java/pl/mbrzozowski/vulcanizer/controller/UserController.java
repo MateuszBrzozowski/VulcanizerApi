@@ -99,6 +99,12 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(userResponse, httpHeaders, HttpStatus.OK);
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<UserResponse> updateAccountDetails(@RequestBody UserRequest userRequest){
+        log.info(userRequest.toString());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 //    //only for tests - remove or change this method
 //    @GetMapping()
