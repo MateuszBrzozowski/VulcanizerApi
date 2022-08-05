@@ -47,7 +47,7 @@ class PhoneServiceTest {
 
     @Test
     void save_PhoneNumberMaxLength_DoesNotThrow() {
-        Phone phone = new Phone("0048666666666");
+        Phone phone = new Phone("+48666666666");
         Assertions.assertDoesNotThrow(() -> phoneService.save(phone));
     }
 
@@ -65,13 +65,13 @@ class PhoneServiceTest {
 
     @Test
     void save_PhoneNumberWithEmptyChars_DoeasNotThrow() {
-        Phone phone = new Phone("0048 66 666 66 66");
+        Phone phone = new Phone("+48 66 666 66 66");
         Assertions.assertDoesNotThrow(() -> phoneService.save(phone));
     }
 
     @Test
     void save_PhoneNumberWithDash_DoeasNotThrow() {
-        Phone phone = new Phone("0048 66-666-66-66");
+        Phone phone = new Phone("+48 66-666-66-66");
         Assertions.assertDoesNotThrow(() -> phoneService.save(phone));
     }
 
@@ -84,8 +84,7 @@ class PhoneServiceTest {
     @Test
     void update_Correct_DoesNotThrowAndVerfiryRepositorySave() {
         Phone phone = new Phone(1L, "+48666666666");
-        when(phoneRepository.findById(1L)).thenReturn(Optional.of(phone));
-        Assertions.assertDoesNotThrow(() -> phoneService.update(phone));
+        Assertions.assertDoesNotThrow(() -> phoneService.update(phone, phone.getNumber()));
         verify(phoneRepository).save(phone);
     }
 
@@ -93,8 +92,7 @@ class PhoneServiceTest {
     void update_NotValidPhoneNumber_DoesNotThrowAndVerfiryRepositorySave() {
         Phone phoneNew = new Phone(1L, "00486666666667");
         Phone phoneDB = new Phone(1L, "0048666666666");
-        when(phoneRepository.findById(1L)).thenReturn(Optional.of(phoneDB));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> phoneService.update(phoneNew));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> phoneService.update(phoneDB, phoneNew.getNumber()));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.repository.PhoneRepository;
@@ -12,21 +13,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PhoneService {
     private final PhoneRepository phoneRepository;
-    private final ValidationPhone validationPhone = new ValidationPhone();
 
     public Phone save(Phone phone) {
-        Phone newPhone = new Phone(phone.getNumber());
-        validationPhone.accept(newPhone);
+        String number = prepareNumber(phone.getNumber());
+        ValidationPhone.validNumber(number);
+        Phone newPhone = new Phone(number);
         phoneRepository.save(newPhone);
         return newPhone;
     }
 
-    public Phone update(Phone phone) {
-        validationPhone.accept(phone);
-        Phone phoneUpdate = findById(phone.getId());
-        phoneUpdate.setNumber(phone.getNumber());
-        phoneRepository.save(phoneUpdate);
-        return phoneUpdate;
+    public Phone update(Phone phone, String newPhoneNumber) {
+        newPhoneNumber = prepareNumber(newPhoneNumber);
+        ValidationPhone.validNumber(newPhoneNumber);
+        phone.setNumber(newPhoneNumber);
+        phoneRepository.save(phone);
+        return phone;
     }
 
     public List<Phone> findAll() {
@@ -52,5 +53,16 @@ public class PhoneService {
 
     public void deleteById(Long id) {
         phoneRepository.deleteById(id);
+    }
+
+    private String prepareNumber(String number) {
+        if (StringUtils.isNotBlank(number)) {
+            number = number.replace(" ", "");
+            number = number.replace("-", "");
+            number = number.replace("+", "");
+            number = number.replace("(", "");
+            number = number.replace(")", "");
+        }
+        return number;
     }
 }

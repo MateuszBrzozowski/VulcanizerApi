@@ -1,28 +1,18 @@
 package pl.mbrzozowski.vulcanizer.validation;
 
-import pl.mbrzozowski.vulcanizer.entity.Phone;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.function.Consumer;
+public class ValidationPhone {
 
-public class ValidationPhone implements Consumer<Phone> {
-
-    @Override
-    public void accept(Phone phone) {
-        if (phone.getNumber() == null) {
-            throw new IllegalArgumentException("Phone can not be null");
-        } else {
-            if (phone.getNumber().equalsIgnoreCase("")) {
-                throw new IllegalArgumentException("Phone can not be empty");
-            }
-            phone.setNumber(phone.getNumber().replace(" ", ""));
-            phone.setNumber(phone.getNumber().replace("-", ""));
-            phone.setNumber(phone.getNumber().replace("+", "00"));
-            if (!phone.getNumber().matches("\\d+")) {
-                throw new IllegalArgumentException("Wrong input phone number");
-            }
-            if (phone.getNumber().length() > 13) {
-                throw new IllegalArgumentException("Phone number to long");
-            }
+    public static void validNumber(String phoneNumber) {
+        if (StringUtils.isBlank(phoneNumber)) {
+            throw new IllegalArgumentException("Phone can not be blank");
+        }
+        if (!phoneNumber.matches("\\d+")) {
+            throw new IllegalArgumentException("Wrong input phone number");
+        }
+        if (phoneNumber.length() > 11) {
+            throw new IllegalArgumentException("Phone number to long");
         }
     }
 }
