@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Service
-public class BusinessService implements ServiceLayer<BusinessRequest, BusinessResponse, Business> {
+public class BusinessService {
     private final BusinessRepository businessRepository;
     private final PhotoService photoService;
     private final PhoneService phoneService;
@@ -62,7 +62,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         this.employeeService = employeeService;
     }
 
-    @Override
     public Business save(BusinessRequest businessRequest) {
         Address address = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
         userService.findById(businessRequest.getUserId());
@@ -99,7 +98,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         return business;
     }
 
-    @Override
     public BusinessResponse update(BusinessRequest businessRequest) {
         Address addressNewData = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
         ValidationBusiness.validBeforeEdit(businessRequest, stateRepository, addressNewData);
@@ -128,12 +126,10 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
         return new BusinessToBusinessResponse().apply(business);
     }
 
-    @Override
     public List<BusinessResponse> findAll() {
         return null;
     }
 
-    @Override
     public Business findById(Long id) {
         return businessRepository
                 .findById(id)
@@ -142,7 +138,6 @@ public class BusinessService implements ServiceLayer<BusinessRequest, BusinessRe
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
 
     }

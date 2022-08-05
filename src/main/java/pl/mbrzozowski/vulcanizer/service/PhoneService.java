@@ -10,12 +10,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PhoneService implements ServiceLayer<Phone, Phone, Phone> {
+public class PhoneService {
     private final PhoneRepository phoneRepository;
     private final ValidationPhone validationPhone = new ValidationPhone();
 
-
-    @Override
     public Phone save(Phone phone) {
         Phone newPhone = new Phone(phone.getNumber());
         validationPhone.accept(newPhone);
@@ -23,7 +21,6 @@ public class PhoneService implements ServiceLayer<Phone, Phone, Phone> {
         return newPhone;
     }
 
-    @Override
     public Phone update(Phone phone) {
         validationPhone.accept(phone);
         Phone phoneUpdate = findById(phone.getId());
@@ -32,12 +29,10 @@ public class PhoneService implements ServiceLayer<Phone, Phone, Phone> {
         return phoneUpdate;
     }
 
-    @Override
     public List<Phone> findAll() {
         return phoneRepository.findAll();
     }
 
-    @Override
     public Phone findById(Long id) {
         return phoneRepository
                 .findById(id)
@@ -55,7 +50,6 @@ public class PhoneService implements ServiceLayer<Phone, Phone, Phone> {
 
     }
 
-    @Override
     public void deleteById(Long id) {
         phoneRepository.deleteById(id);
     }

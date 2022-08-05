@@ -16,12 +16,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BusinessServicesService implements ServiceLayer<BusinessServicesRequest, BusinessServicesResponse, BusinessServices> {
+public class BusinessServicesService {
     private final BusinessServicesRepository businessServicesRepository;
     private final VisitService visitService;
     private final BusinessService businessService;
 
-    @Override
     public BusinessServices save(BusinessServicesRequest serviceRequest) {
         ValidationService.validBeforeCreated(serviceRequest);
         Business business = businessService.findById(serviceRequest.getBusiness());
@@ -35,7 +34,6 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
         return businessServicesRepository.save(service);
     }
 
-    @Override
     public BusinessServicesResponse update(BusinessServicesRequest serviceRequest) {
         BusinessServices service = findById(serviceRequest.getId());
         boolean activeVisit = visitService.isActiveVisit(service);
@@ -55,7 +53,6 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
         service.setPrice(serviceRequest.getPrice());
     }
 
-    @Override
     public List<BusinessServicesResponse> findAll() {
         return businessServicesRepository
                 .findAll()
@@ -67,7 +64,6 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
                 .collect(Collectors.toList());
     }
 
-    @Override
     public BusinessServices findById(Long id) {
         return businessServicesRepository
                 .findById(id)
@@ -76,7 +72,6 @@ public class BusinessServicesService implements ServiceLayer<BusinessServicesReq
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
         businessServicesRepository.deleteById(id);
     }

@@ -52,7 +52,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final TokenCheckSumService tokenCheckSumService;
     protected static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Override
     public User save(UserRequest userRequest) {
         if (findByEmail(userRequest.getEmail()).isPresent()) {
             throw new EmailExistException("Email is ready exist.");
@@ -75,11 +74,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return passwordEncoder.encode(password);
     }
 
-    @Override
-    public UserResponse update(UserRequest userRequest) {
-        if (userRequest.getId() == null) {
-            throw new IllegalArgumentException("[id] can not be null.");
-        }
 
         User user = findById(userRequest.getId());
         if (!user.getEmail().equalsIgnoreCase(userRequest.getEmail())) {
@@ -99,7 +93,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new UserToUserResponse().convert(user);
     }
 
-    @Override
     public List<UserResponse> findAll() {
         List<User> users = userRepository.findAll();
         return users.stream()
@@ -107,7 +100,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public User findById(Long id) {
         return userRepository
                 .findById(id)
@@ -116,7 +108,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
         findById(id);
         userRepository.deleteById(id);

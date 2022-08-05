@@ -15,7 +15,7 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationVisit;
 import java.util.List;
 
 @Service
-public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
+public class VisitService {
     private final VisitRepository visitRepository;
     private final UserServiceImpl userService;
     private final BusinessServicesService serviceService;
@@ -30,7 +30,6 @@ public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
         this.serviceService = serviceService;
     }
 
-    @Override
     public Visit save(VisitRequest visitRequest) {
         ValidationVisit.validBeforeCreated(visitRequest);
         User user = userService.findById(visitRequest.getUser());
@@ -39,7 +38,6 @@ public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
         return visitRepository.save(visit);
     }
 
-    @Override
     public Visit update(VisitRequest visitRequest) {
         Visit visit = findById(visitRequest.getId());
         ValidationVisit.validBeforeEditing(visitRequest);
@@ -52,12 +50,10 @@ public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
         visit.setStartTime(visitRequest.getStartTime());
     }
 
-    @Override
     public List<Visit> findAll() {
         return visitRepository.findAll();
     }
 
-    @Override
     public Visit findById(Long id) {
         return visitRepository
                 .findById(id)
@@ -66,7 +62,6 @@ public class VisitService implements ServiceLayer<VisitRequest, Visit, Visit> {
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
         visitRepository.deleteById(id);
     }

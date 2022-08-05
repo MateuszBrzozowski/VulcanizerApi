@@ -10,18 +10,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
+public class PhotoService {
     private final PhotoRepository photoRepository;
     private final ValidationPhoto validationPhoto = new ValidationPhoto();
 
-    @Override
     public Photo save(Photo photo) {
         photo.setId(null);
         validationPhoto.accept(photo);
         return photoRepository.save(photo);
     }
 
-    @Override
     public Photo update(Photo photo) {
         validationPhoto.accept(photo);
         Photo photoUpdate = findById(photo.getId());
@@ -30,12 +28,10 @@ public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
         return photoUpdate;
     }
 
-    @Override
     public List<Photo> findAll() {
         return photoRepository.findAll();
     }
 
-    @Override
     public Photo findById(Long id) {
         return photoRepository
                 .findById(id)
@@ -44,7 +40,6 @@ public class PhotoService implements ServiceLayer<Photo, Photo, Photo> {
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
         photoRepository.deleteById(id);
     }

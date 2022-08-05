@@ -16,13 +16,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OpinionService implements ServiceLayer<OpinionRequest, OpinionResponse, Opinion> {
+public class OpinionService {
     private final OpinionRepository opinionRepository;
     private final UserServiceImpl userService;
     private final BusinessService businessService;
     private final VisitService visitService;
 
-    @Override
     public Opinion save(OpinionRequest opinionRequest) {
         ValidationOpinion.validBeforeCreated(opinionRequest);
         User user = userService.findById(opinionRequest.getUser());
@@ -36,7 +35,6 @@ public class OpinionService implements ServiceLayer<OpinionRequest, OpinionRespo
         return savedOpinion;
     }
 
-    @Override
     public OpinionResponse update(OpinionRequest opinionRequest) {
         Opinion opinion = findById(opinionRequest.getId());
         ValidationOpinion.validBeforeEdit(opinionRequest);
@@ -46,7 +44,6 @@ public class OpinionService implements ServiceLayer<OpinionRequest, OpinionRespo
         return new OpinionToOpinionResponse().convert(save);
     }
 
-    @Override
     public List<OpinionResponse> findAll() {
         List<Opinion> all = opinionRepository.findAll();
         return all
@@ -55,7 +52,6 @@ public class OpinionService implements ServiceLayer<OpinionRequest, OpinionRespo
                 .collect(Collectors.toList());
     }
 
-    @Override
     public Opinion findById(Long id) {
         return opinionRepository.findById(id)
                 .orElseThrow(() -> {
@@ -63,7 +59,6 @@ public class OpinionService implements ServiceLayer<OpinionRequest, OpinionRespo
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
         opinionRepository.deleteById(id);
     }

@@ -15,10 +15,9 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StateService implements ServiceLayer<StateRequest, StateResponse, State> {
+public class StateService {
     private final StateRepository stateRepository;
 
-    @Override
     public State save(StateRequest stateRequest) {
         State state = new StateRequestToState().apply(stateRequest);
         ValidationState.valid(state, stateRepository);
@@ -26,7 +25,6 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
         return state;
     }
 
-    @Override
     public StateResponse update(StateRequest stateRequest) {
         State state = new StateRequestToState().apply(stateRequest);
         if (state.getId() == null) {
@@ -38,7 +36,6 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
         return new StateToStateResponse().apply(state);
     }
 
-    @Override
     public List<StateResponse> findAll() {
         return stateRepository.findAll()
                 .stream()
@@ -46,7 +43,6 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
                 .collect(Collectors.toList());
     }
 
-    @Override
     public State findById(Long id) {
         return stateRepository
                 .findById(id)
@@ -55,7 +51,6 @@ public class StateService implements ServiceLayer<StateRequest, StateResponse, S
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
     }
 

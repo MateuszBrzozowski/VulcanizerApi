@@ -10,27 +10,23 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FavoriteService implements ServiceLayer<Favorites, Favorites, Favorites> {
+public class FavoriteService {
     private final FavoritesRepository favoritesRepository;
 
-    @Override
     public Favorites save(Favorites favorites) {
         ValidationFavorites.validBeforeSave(favorites);
         Favorites newFavorite = new Favorites(favorites.getUser(), favorites.getBusiness());
         return favoritesRepository.save(newFavorite);
     }
 
-    @Override
     public Favorites update(Favorites favorites) {
         return findById(favorites.getId()); //Cant edit favorites
     }
 
-    @Override
     public List<Favorites> findAll() {
         return favoritesRepository.findAll();
     }
 
-    @Override
     public Favorites findById(Long id) {
         return favoritesRepository
                 .findById(id)
@@ -39,7 +35,6 @@ public class FavoriteService implements ServiceLayer<Favorites, Favorites, Favor
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
         favoritesRepository.deleteById(id);
     }

@@ -15,11 +15,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AddressService implements ServiceLayer<AddressRequest, AddressResponse, Address> {
+public class AddressService {
     private final AddressRepository addressRepository;
     private final StateService stateService;
 
-    @Override
     public Address save(AddressRequest addressRequest) {
         addressRequest.setId(null);
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
@@ -27,7 +26,6 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
         return addressRepository.save(address);
     }
 
-    @Override
     public AddressResponse update(AddressRequest addressRequest) {
         Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
         if (addressRequest != null) {
@@ -46,8 +44,6 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
         addressRepository.deleteStateByAddressId(addressId);
     }
 
-
-    @Override
     public List<AddressResponse> findAll() {
         return addressRepository
                 .findAll()
@@ -56,7 +52,6 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
                 .collect(Collectors.toList());
     }
 
-    @Override
     public Address findById(Long id) {
         return addressRepository
                 .findById(id)
@@ -65,7 +60,6 @@ public class AddressService implements ServiceLayer<AddressRequest, AddressRespo
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
         findById(id);
         addressRepository.deleteById(id);

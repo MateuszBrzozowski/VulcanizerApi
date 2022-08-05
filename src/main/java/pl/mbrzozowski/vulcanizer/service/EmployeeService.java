@@ -15,11 +15,10 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class EmployeeService implements ServiceLayer<EmployeeRequest, EmployeeResponse, Employee> {
+public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final UserServiceImpl userService;
 
-    @Override
     public Employee save(EmployeeRequest employeeRequest) {
         employeeRequest.setId(null);
         ValidationEmployee.valid(employeeRequest);
@@ -29,12 +28,10 @@ public class EmployeeService implements ServiceLayer<EmployeeRequest, EmployeeRe
         return employeeRepository.save(employee);
     }
 
-    @Override
     public EmployeeResponse update(EmployeeRequest employeeRequest) {
         return null;
     }
 
-    @Override
     public List<EmployeeResponse> findAll() {
         return employeeRepository
                 .findAll()
@@ -43,7 +40,6 @@ public class EmployeeService implements ServiceLayer<EmployeeRequest, EmployeeRe
                 .collect(Collectors.toList());
     }
 
-    @Override
     public Employee findById(Long id) {
         return employeeRepository
                 .findById(id)
@@ -52,7 +48,6 @@ public class EmployeeService implements ServiceLayer<EmployeeRequest, EmployeeRe
                 });
     }
 
-    @Override
     public void deleteById(Long id) {
         findById(id);
         employeeRepository.deleteById(id);

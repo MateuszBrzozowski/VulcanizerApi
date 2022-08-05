@@ -2,13 +2,12 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.entity.Business;
-import pl.mbrzozowski.vulcanizer.entity.TokenCheckSum;
 import pl.mbrzozowski.vulcanizer.entity.User;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-interface UserService extends ServiceLayer<UserRequest, UserResponse, User> {
+interface UserService {
 
     Optional<User> findByEmail(String email);
 
