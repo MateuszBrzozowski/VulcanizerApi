@@ -20,9 +20,28 @@ public class AddressService {
     private final StateService stateService;
 
     public Address save(AddressRequest addressRequest) {
-        addressRequest.setId(null);
-        Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
-        return addressRepository.save(address);
+        throw new Error("Method not implement");
+    }
+
+    public AddressResponse saveForUser(AddressRequest address) {
+//        ValidationAddress.validForUser(address);
+        return null;
+    }
+
+    public AddressResponse updateForUser(AddressRequest addressRequest) {
+        return null;
+    }
+
+    public void deleteForUser(AddressRequest addressRequest) {
+
+    }
+
+    public AddressResponse saveForBusiness(AddressRequest addressRequest) {
+        return null;
+    }
+
+    public AddressResponse updateForBusiness(AddressRequest addressRequest) {
+        return null;
     }
 
     public AddressResponse update(AddressRequest addressRequest) {

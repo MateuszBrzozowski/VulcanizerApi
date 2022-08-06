@@ -21,7 +21,7 @@ public class AddressResponseToAddress implements Function<AddressResponse, Addre
         }
         return Address.builder()
                 .id(addressResponse.getId())
-                .addressLine(addressResponse.getAddressLineOne())
+                .addressLine(addressResponse.getAddressLine())
                 .city(addressResponse.getCity())
                 .code(addressResponse.getCode())
                 .state(state)

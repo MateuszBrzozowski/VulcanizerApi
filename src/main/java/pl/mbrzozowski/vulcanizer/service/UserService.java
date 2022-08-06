@@ -32,4 +32,6 @@ interface UserService {
     TokenCheckSumResponse generateCheckSum(User user, String jwtToken);
 
     boolean isValidToken(User user, String token, String checkSumId, String checkSumProperties);
+
+    UserResponse saveAddress(User user, UserRequest userRequest);
 }

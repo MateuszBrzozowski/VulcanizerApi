@@ -243,6 +243,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return tokenCheckSumService.checkSum(id, md5Hex, tokenHashCode);
     }
 
+    @Override
+    public UserResponse saveAddress(User user, UserRequest userRequest) {
+        AddressResponse addressResponse = addressService.saveForUser(userRequest.getAddress());
+        return null;
+    }
+
     public void accountBlocked(String email) {
         Optional<User> optionalUser = findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -251,23 +257,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-    public UserResponse login(UserRegisterBody userRequest) {
-        String email = userRequest.getEmail();
-        String password = userRequest.getPassword();
-        ValidationUser.validLogin(email, password);
-        Optional<User> byEmail = findByEmail(email);
-        if (byEmail.isPresent()) {
-            User user = byEmail.get();
-            if (user.getPassword().equals(password)) {
-                return new UserToUserResponse().convert(user);
-            } else {
-                throw new LoginException("Email or password is not correct.");
-            }
-        } else {
-            throw new LoginException("Email is not correct.");
-        }
 
-    }
 
 //    private void updateAddress(UserRequest userRequest, User user) {
 //        if (user.getAddress() == null && userRequest.getAddress() != null) {

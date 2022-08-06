@@ -112,6 +112,17 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(userResponse, httpHeaders, HttpStatus.OK);
     }
 
+    @PutMapping("/address")
+    public ResponseEntity<UserResponse> saveAddress(@RequestBody UserRequest userRequest,
+                                                    @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                    @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                    @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = authenticate();
+        validToken(user, token, checkSumId, checkSumProperties);
+        UserResponse userResponse = userService.saveAddress(user, userRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 //    //only for tests - remove or change this method
 //    @GetMapping()

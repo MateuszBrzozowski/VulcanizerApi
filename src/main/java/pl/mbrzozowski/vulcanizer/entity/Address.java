@@ -25,6 +25,7 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "id_state")
     private State state;
+    @Column(length = 60)
     private String country;
 
 }
