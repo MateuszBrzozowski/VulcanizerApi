@@ -22,7 +22,6 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.LinkHasExpiredException;
-import pl.mbrzozowski.vulcanizer.exceptions.LoginException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserHasBanException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
@@ -245,8 +244,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserResponse saveAddress(User user, UserRequest userRequest) {
-        AddressResponse addressResponse = addressService.saveForUser(userRequest.getAddress());
-        return null;
+        if (user.getAddress() == null && userRequest.getAddress() != null) { // dodawanie nowego adresu
+            Address address = addressService.saveForUser(userRequest.getAddress());
+            user.setAddress(address);
+        } else if (user.getAddress() != null && userRequest.getAddress() != null) { // update
+            Address address = addressService.updateForUser(user.getAddress(), userRequest.getAddress());
+            user.setAddress(address);
+        } else if (user.getAddress() != null && userRequest.getAddress() == null) { //remove
+            Long id = user.getAddress().getId();
+            user.setAddress(null);
+            addressService.deleteById(id);
+        }
+        return new UserToUserResponse().convert(userRepository.save(user));
     }
 
     public void accountBlocked(String email) {
@@ -256,22 +265,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             sentMailAccountBlockedService.checkAndSendEmail(user);
         }
     }
-
-
-
-//    private void updateAddress(UserRequest userRequest, User user) {
-//        if (user.getAddress() == null && userRequest.getAddress() != null) {
-//            Address address = addressService.save(userRequest.getAddress());
-//            user.setAddress(address);
-//        } else if (user.getAddress() != null && userRequest.getAddress() != null) {
-//            userRequest.getAddress().setId(user.getAddress().getId());
-//            addressService.update(user, userRequest.getAddress());
-//        } else if (user.getAddress() != null && userRequest.getAddress() == null) {
-//            Long id = user.getAddress().getId();
-//            user.setAddress(null);
-//            addressService.deleteById(id);
-//        }
-//    }
 
     private void updateBirthDate(User user, UserRequest userRequest) {
         if (StringUtils.isNotEmpty(userRequest.getBirthDate())) {

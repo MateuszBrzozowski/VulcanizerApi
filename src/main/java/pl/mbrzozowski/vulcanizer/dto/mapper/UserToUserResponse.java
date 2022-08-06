@@ -14,7 +14,7 @@ public class UserToUserResponse implements Converter<User, UserResponse> {
                 .lastName(user.getLastName())
                 .birthDate(user.getBirthDate())
                 .createAccountTime(user.getCreateAccountTime())
-                .address(new AddressToAddressResponse().apply(user.getAddress()))
+                .address(new AddressToAddressResponse().convert(user.getAddress()))
                 .build();
         if (user.getPhone() != null) {
             userResponse.setPhone(user.getPhone().getNumber());

@@ -8,25 +8,6 @@ import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 class ValidationAddressTest {
 
     @Test
-    void validForUser_AllFieldsEmpty_DoesNotThrow() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .addressLine("")
-                .city("")
-                .code("")
-                .state("")
-                .country("")
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> ValidationAddress.validForUser(addressRequest));
-    }
-
-    @Test
-    void validForUser_AlleFieldsEmpty_DoesNotThrow() {
-        AddressRequest addressRequest = AddressRequest.builder()
-                .build();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> ValidationAddress.validForUser(addressRequest));
-    }
-
-    @Test
     void validForUser_AddressLineCorrect_DoesNotThrow() {
         AddressRequest addressRequest = AddressRequest.builder()
                 .addressLine(RandomStringUtils.randomAlphabetic(255))

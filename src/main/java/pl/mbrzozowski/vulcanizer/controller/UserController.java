@@ -120,7 +120,7 @@ public class UserController extends ExceptionHandling {
         User user = authenticate();
         validToken(user, token, checkSumId, checkSumProperties);
         UserResponse userResponse = userService.saveAddress(user, userRequest);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
 

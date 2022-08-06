@@ -19,7 +19,7 @@ public class BusinessToBusinessPublicResponse implements Converter<Business, Bus
                         .stream()
                         .map(Phone::getNumber)
                         .collect(Collectors.toSet()))
-                .address(new AddressToAddressResponse().apply(source.getAddress()))
+                .address(new AddressToAddressResponse().convert(source.getAddress()))
                 .build();
         if (source.getPhoto() != null) {
             result.setPhoto(source.getPhoto().getUrl());

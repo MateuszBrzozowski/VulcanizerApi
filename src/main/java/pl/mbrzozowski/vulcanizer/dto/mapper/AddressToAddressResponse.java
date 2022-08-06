@@ -1,14 +1,15 @@
 package pl.mbrzozowski.vulcanizer.dto.mapper;
 
+import org.springframework.core.convert.converter.Converter;
 import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 
 import java.util.function.Function;
 
-public class AddressToAddressResponse implements Function<Address, AddressResponse> {
+public class AddressToAddressResponse implements Converter<Address, AddressResponse> {
 
     @Override
-    public AddressResponse apply(Address address) {
+    public AddressResponse convert(Address address) {
         if (address == null) {
             return null;
         }

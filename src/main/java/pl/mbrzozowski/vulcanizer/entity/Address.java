@@ -28,4 +28,15 @@ public class Address {
     @Column(length = 60)
     private String country;
 
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", addressLine='" + addressLine + '\'' +
+                ", city='" + city + '\'' +
+                ", code='" + code + '\'' +
+                ", state=" + state.getName() +
+                ", country='" + country + '\'' +
+                '}';
+    }
 }

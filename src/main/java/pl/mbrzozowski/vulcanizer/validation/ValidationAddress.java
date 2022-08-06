@@ -17,12 +17,11 @@ public class ValidationAddress {
 
     public static void validForUser(AddressRequest addressRequest) {
         if (addressRequest != null) {
-            allFieldNotBlank(addressRequest);
             validFields(addressRequest);
         }
     }
 
-    private static void allFieldNotBlank(AddressRequest addressRequest){
+    public static void allFieldsBlank(AddressRequest addressRequest) {
         if (StringUtils.isBlank(addressRequest.getAddressLine()) &&
                 StringUtils.isBlank(addressRequest.getCity()) &&
                 StringUtils.isBlank(addressRequest.getCode()) &&
@@ -99,7 +98,6 @@ public class ValidationAddress {
                 throw new IllegalArgumentException(String.format("State %s is not exist", state.toUpperCase()));
             }
         }
-
     }
 
     private static void validCountry(String country) {

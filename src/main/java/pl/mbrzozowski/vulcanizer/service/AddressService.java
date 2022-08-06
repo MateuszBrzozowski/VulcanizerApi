@@ -1,12 +1,13 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.dto.AddressResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
+import pl.mbrzozowski.vulcanizer.entity.State;
 import pl.mbrzozowski.vulcanizer.repository.AddressRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationAddress;
 
@@ -23,38 +24,80 @@ public class AddressService {
         throw new Error("Method not implement");
     }
 
-    public AddressResponse saveForUser(AddressRequest address) {
-//        ValidationAddress.validForUser(address);
+    /**
+     * Validate fields and saving new address to DB for user. All fields can not be blank.
+     *
+     * @param addressRequest which save
+     * @return {@link Address} which saved in DB or <b>NULL</b> when all fields are blank.
+     * @throws IllegalArgumentException - when data in address request is not valid.
+     */
+    public Address saveForUser(AddressRequest addressRequest) {
+        try {
+            ValidationAddress.allFieldsBlank(addressRequest);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+        ValidationAddress.validForUser(addressRequest);
+        State state = getState(addressRequest.getState());
+        Address address = Address.builder()
+                .addressLine(addressRequest.getAddressLine())
+                .city(addressRequest.getCity())
+                .code(addressRequest.getCode())
+                .country(addressRequest.getCountry())
+                .state(state)
+                .build();
+        return addressRepository.save(address);
+    }
+
+    /**
+     * Validate fields from request and saving new data to old record. When All fields in request are blank,
+     * address will be deleted from DB and return null.
+     *
+     * @param address        which update
+     * @param addressRequest new data to save
+     * @return {@link Address} which saved in DB with new data or <b>NULL</b> when all fields in addressRequest
+     * are blank because this address is deleting from DB.
+     * @throws IllegalArgumentException when new data is not valid.
+     */
+    public Address updateForUser(Address address, AddressRequest addressRequest) {
+        try {
+            ValidationAddress.allFieldsBlank(addressRequest);
+        } catch (IllegalArgumentException e) {
+            deleteForUser(address);
+            return null;
+        }
+        ValidationAddress.validForUser(addressRequest);
+        State state = getState(addressRequest.getState());
+        address.setState(state);
+        address.setAddressLine(addressRequest.getAddressLine());
+        address.setCity(addressRequest.getCity());
+        address.setCode(addressRequest.getCode());
+        address.setCountry(addressRequest.getCountry());
+        return addressRepository.save(address);
+    }
+
+    private void deleteForUser(Address address) {
+        addressRepository.deleteById(address.getId());
+    }
+
+    public Address saveForBusiness(AddressRequest addressRequest) {
         return null;
     }
 
-    public AddressResponse updateForUser(AddressRequest addressRequest) {
+    public Address updateForBusiness(AddressRequest addressRequest) {
         return null;
     }
 
-    public void deleteForUser(AddressRequest addressRequest) {
-
-    }
-
-    public AddressResponse saveForBusiness(AddressRequest addressRequest) {
-        return null;
-    }
-
-    public AddressResponse updateForBusiness(AddressRequest addressRequest) {
-        return null;
-    }
-
-    public AddressResponse update(AddressRequest addressRequest) {
-        Address address = new AddressRequestToAddress(stateService).apply(addressRequest);
-        if (addressRequest != null) {
-            findById(address.getId());
-            if (address.getState() == null) {
-                deleteStateFromAddress(address.getId());
-            }
-            addressRepository.save(address);
-            return new AddressToAddressResponse().apply(address);
+    private State getState(String state) {
+        if (StringUtils.isNotBlank(state)) {
+            return stateService.findByName(state);
         }
         return null;
+    }
+
+
+    public AddressResponse update(AddressRequest addressRequest) {
+        throw new Error("Method Not implement -");
     }
 
     private void deleteStateFromAddress(Long addressId) {
@@ -65,7 +108,7 @@ public class AddressService {
         return addressRepository
                 .findAll()
                 .stream()
-                .map(address -> new AddressToAddressResponse().apply(address))
+                .map(address -> new AddressToAddressResponse().convert(address))
                 .collect(Collectors.toList());
     }
 

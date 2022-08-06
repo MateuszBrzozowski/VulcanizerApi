@@ -9,24 +9,14 @@ import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.BusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
-import pl.mbrzozowski.vulcanizer.dto.EmployeeRequest;
-import pl.mbrzozowski.vulcanizer.dto.mapper.AddressRequestToAddress;
-import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessRequestToBusiness;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessPublicResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Business;
-import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
-import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.StateRepository;
-import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -63,67 +53,11 @@ public class BusinessService {
     }
 
     public Business save(BusinessRequest businessRequest) {
-        Address address = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
-        userService.findById(businessRequest.getUserId());
-        ValidationBusiness.validCreateRequest(businessRequest, stateRepository, address);
-        Business business =
-                new BusinessRequestToBusiness()
-                        .apply(businessRequest);
-
-        business.setPhones(
-                businessRequest
-                        .getPhones()
-                        .stream()
-                        .map(phoneService::save)
-                        .collect(Collectors.toSet())
-        );
-
-        if (businessRequest.getPhoto() != null) {
-            Photo photo = new Photo(businessRequest.getPhoto());
-            Photo photoReady = photoService.save(photo);
-            business.setPhoto(photoReady);
-        }
-        Address savedAddress = addressService.save(businessRequest.getAddress());
-        business.setAddress(savedAddress);
-        business.setStatus(BusinessStatus.NOT_ACTIVATED);
-        business.setCreatedDate(LocalDateTime.now());
-        Business businessSaved = businessRepository.save(business);
-
-        EmployeeRequest employeeRequest = EmployeeRequest.builder()
-                .business(businessSaved)
-                .userId(businessRequest.getUserId())
-                .build();
-
-        employeeService.save(employeeRequest);
-        return business;
+        throw new Error("Method Not implement -");
     }
 
     public BusinessResponse update(BusinessRequest businessRequest) {
-        Address addressNewData = new AddressRequestToAddress(stateService).apply(businessRequest.getAddress());
-        ValidationBusiness.validBeforeEdit(businessRequest, stateRepository, addressNewData);
-        Business business = findById(businessRequest.getId());
-        Address address = business.getAddress();
-        addressToAddressTransferNewData(address, addressNewData);
-        Business businessNewData =
-                new BusinessRequestToBusiness()
-                        .apply(businessRequest);
-        businessNewData.setPhoto(business.getPhoto());
-        businessToBusinessTransferNewData(business, businessNewData);
-        updatePhoto(businessRequest, business);
-
-        Set<Phone> phones = business.getPhones();
-        Set<Phone> phonesToDelete = new HashSet<>(phones);
-        business.deletePhones();
-        phonesToDelete.forEach(phone -> phoneService.deleteById(phone.getId()));
-        business.setPhones(
-                businessRequest.getPhones()
-                        .stream()
-                        .map(phoneService::save)
-                        .collect(Collectors.toSet())
-        );
-
-        businessRepository.save(business);
-        return new BusinessToBusinessResponse().apply(business);
+        throw new Error("Method Not implement -");
     }
 
     public List<BusinessResponse> findAll() {

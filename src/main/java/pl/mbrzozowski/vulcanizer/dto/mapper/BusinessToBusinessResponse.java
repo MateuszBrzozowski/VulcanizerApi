@@ -13,7 +13,7 @@ public class BusinessToBusinessResponse {
                 .createdDate(business.getCreatedDate())
                 .description(business.getDescription())
                 .status(business.getStatus())
-                .address(new AddressToAddressResponse().apply(business.getAddress()))
+                .address(new AddressToAddressResponse().convert(business.getAddress()))
                 .build();
 
         if (business.getPhoto() != null) {
