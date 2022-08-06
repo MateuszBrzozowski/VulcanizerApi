@@ -38,6 +38,7 @@ public class AddressService {
             return null;
         }
         ValidationAddress.validForUser(addressRequest);
+        prepareAddressRequest(addressRequest);
         State state = getState(addressRequest.getState());
         Address address = Address.builder()
                 .addressLine(addressRequest.getAddressLine())
@@ -67,6 +68,7 @@ public class AddressService {
             return null;
         }
         ValidationAddress.validForUser(addressRequest);
+        prepareAddressRequest(addressRequest);
         State state = getState(addressRequest.getState());
         address.setState(state);
         address.setAddressLine(addressRequest.getAddressLine());
@@ -76,8 +78,19 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    private void deleteForUser(Address address) {
-        addressRepository.deleteById(address.getId());
+    private void prepareAddressRequest(AddressRequest addressRequest) {
+        if (StringUtils.isBlank(addressRequest.getAddressLine())) {
+            addressRequest.setAddressLine(null);
+        }
+        if (StringUtils.isBlank(addressRequest.getCity())) {
+            addressRequest.setCity(null);
+        }
+        if (StringUtils.isBlank(addressRequest.getCode())) {
+            addressRequest.setCode(null);
+        }
+        if (StringUtils.isBlank(addressRequest.getCountry())) {
+            addressRequest.setCountry(null);
+        }
     }
 
     public Address saveForBusiness(AddressRequest addressRequest) {
@@ -86,6 +99,10 @@ public class AddressService {
 
     public Address updateForBusiness(AddressRequest addressRequest) {
         return null;
+    }
+
+    private void deleteForUser(Address address) {
+        addressRepository.deleteById(address.getId());
     }
 
     private State getState(String state) {

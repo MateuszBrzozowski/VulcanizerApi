@@ -243,14 +243,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserResponse saveAddress(User user, UserRequest userRequest) {
-        if (user.getAddress() == null && userRequest.getAddress() != null) { // dodawanie nowego adresu
-            Address address = addressService.saveForUser(userRequest.getAddress());
+    public UserResponse saveAddress(User user, AddressRequest addressRequest) {
+        if (user.getAddress() == null && addressRequest != null) { // dodawanie nowego adresu
+            Address address = addressService.saveForUser(addressRequest);
             user.setAddress(address);
-        } else if (user.getAddress() != null && userRequest.getAddress() != null) { // update
-            Address address = addressService.updateForUser(user.getAddress(), userRequest.getAddress());
+        } else if (user.getAddress() != null && addressRequest != null) { // update
+            Address address = addressService.updateForUser(user.getAddress(), addressRequest);
             user.setAddress(address);
-        } else if (user.getAddress() != null && userRequest.getAddress() == null) { //remove
+        } else if (user.getAddress() != null && addressRequest == null) { //remove
             Long id = user.getAddress().getId();
             user.setAddress(null);
             addressService.deleteById(id);

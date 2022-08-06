@@ -33,5 +33,5 @@ interface UserService {
 
     boolean isValidToken(User user, String token, String checkSumId, String checkSumProperties);
 
-    UserResponse saveAddress(User user, UserRequest userRequest);
+    UserResponse saveAddress(User user, AddressRequest addressRequest);
 }
