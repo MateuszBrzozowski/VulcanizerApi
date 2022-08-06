@@ -1,0 +1,16 @@
+insert into state (name) values ('Dolnośląskie');
+insert into state (name) values ('Kujawsko-pomorskie');
+insert into state (name) values ('Lubelskie');
+insert into state (name) values ('Lubuskie');
+insert into state (name) values ('Łódzkie');
+insert into state (name) values ('Małopolskie');
+insert into state (name) values ('Mazowieckie');
+insert into state (name) values ('Opolskie');
+insert into state (name) values ('Podkarpackie');
+insert into state (name) values ('Podlaskie');
+insert into state (name) values ('Pomorskie');
+insert into state (name) values ('Śląskie');
+insert into state (name) values ('Świętokrzyskie');
+insert into state (name) values ('Warmińsko-mazurskie');
+insert into state (name) values ('Wielkopolskie');
+insert into state (name) values ('Zachodniopomorskie');
