@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mbrzozowski.vulcanizer.enums.BusinessRole;
 
 import javax.persistence.*;
 
@@ -22,9 +23,6 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "id_business")
     private Business businessId;
-//    @ManyToOne
-//    @JoinColumn(name = "id_role")
-//    private EmployeeRole roleId;
-
-
+    @Enumerated(EnumType.STRING)
+    private BusinessRole role;
 }

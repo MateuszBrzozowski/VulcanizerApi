@@ -9,12 +9,10 @@ import pl.mbrzozowski.vulcanizer.dto.UserRequest;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Favorites;
 import pl.mbrzozowski.vulcanizer.entity.User;
-import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -289,6 +287,7 @@ class UserServiceImplTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         Assertions.assertThrows(EmailExistException.class, () -> userService.save(userSecond));
     }
+
     @Test
     void saveFavorites_Success() {
         FavoritesRequest favoritesRequest = new FavoritesRequest(1L, 1L);

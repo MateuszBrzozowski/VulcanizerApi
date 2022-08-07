@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.mbrzozowski.vulcanizer.enums.Gender;
-import pl.mbrzozowski.vulcanizer.enums.UserStatusAccount;
 import pl.mbrzozowski.vulcanizer.enums.converter.Converter;
-
-import java.time.LocalDate;
 
 @Data
 @Builder
@@ -22,7 +19,6 @@ public class UserRequest {
     private String lastName;
     private Gender gender;
     private String birthDate;
-    private UserStatusAccount statusAccount;
     private AddressRequest address;
     private String avatar;
     private String phone;
@@ -38,7 +34,4 @@ public class UserRequest {
         this.gender = Converter.convertStringToGender(gender);
     }
 
-    public void setStatusAccount(int statusAccount) {
-        this.statusAccount = Converter.convertIntToUserStatusAccount(statusAccount);
-    }
 }

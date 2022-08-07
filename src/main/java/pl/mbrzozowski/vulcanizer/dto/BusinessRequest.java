@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.entity.Phone;
 
 import java.util.Set;
 
@@ -14,11 +13,11 @@ import java.util.Set;
 @NoArgsConstructor
 public class BusinessRequest {
     private Long id;
-    private Long userId;
     private String name;
+    private String displayName;
     private String nip;
     private String description;
     private AddressRequest address;
     private String photo;
-    private Set<Phone> phones;
+    private Set<String> phones;
 }

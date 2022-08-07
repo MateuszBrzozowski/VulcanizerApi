@@ -1,8 +1,7 @@
 package pl.mbrzozowski.vulcanizer.enums;
 
 public enum Authorities {
-    USER("user"),
-    USER_READ("user:read");
+    USER("user");
 
     private final String authority;
 

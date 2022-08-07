@@ -52,7 +52,7 @@ public class BusinessService {
         this.employeeService = employeeService;
     }
 
-    public Business save(BusinessRequest businessRequest) {
+    public BusinessResponse save(BusinessRequest businessRequest) {
         throw new Error("Method Not implement -");
     }
 

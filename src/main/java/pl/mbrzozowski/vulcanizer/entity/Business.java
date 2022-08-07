@@ -22,6 +22,7 @@ public class Business {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String displayName;
     private String nip;
     @Column(name = "created_date")
     private LocalDateTime createdDate;
