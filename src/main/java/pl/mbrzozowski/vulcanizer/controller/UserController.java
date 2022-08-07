@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.ExceptionHandling;
 import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
+import pl.mbrzozowski.vulcanizer.util.JWTTokenAuthenticate;
 import pl.mbrzozowski.vulcanizer.util.JWTTokenProvider;
 
 import java.util.Optional;
@@ -31,22 +33,14 @@ import static pl.mbrzozowski.vulcanizer.constant.SecurityConstant.JWT_TOKEN_HEAD
 
 @Controller
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 @RequestMapping(path = {"/", "/users"})
 public class UserController extends ExceptionHandling {
     private final UserServiceImpl userService;
-    private final AuthenticationManager authenticationManager;
     private final JWTTokenProvider jwtTokenProvider;
+    private final JWTTokenAuthenticate jwtTokenAuthenticate;
     protected final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    @Autowired
-    public UserController(UserServiceImpl userService,
-                          AuthenticationManager authenticationManager,
-                          JWTTokenProvider jwtTokenProvider) {
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody UserRegisterBody userRegisterBody) {
@@ -56,7 +50,7 @@ public class UserController extends ExceptionHandling {
 
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody UserLoginBody userLoginBody) {
-        authenticate(userLoginBody.getEmail(), userLoginBody.getPassword());
+        jwtTokenAuthenticate.authenticate(userLoginBody.getEmail(), userLoginBody.getPassword());
         User user = userService.login(userLoginBody);
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders httpHeaders = getHeaders(user, userPrincipal);
@@ -89,8 +83,8 @@ public class UserController extends ExceptionHandling {
                                                        @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
 
 
-        User user = authenticate();
-        validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
         userService.setNewPassword(user, newPassword);
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders httpHeaders = getHeaders(user, userPrincipal);
@@ -104,8 +98,8 @@ public class UserController extends ExceptionHandling {
                                                              @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                              @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                              @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = authenticate();
-        validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
         UserResponse userResponse = userService.update(user, userRequest);
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders httpHeaders = getHeaders(user, userPrincipal);
@@ -117,8 +111,8 @@ public class UserController extends ExceptionHandling {
                                                     @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                     @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                     @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = authenticate();
-        validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
         UserResponse userResponse = userService.saveAddress(user, addressRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
@@ -151,31 +145,7 @@ public class UserController extends ExceptionHandling {
         return httpHeaders;
     }
 
-    private void authenticate(String email, String password) {
-        try {
-            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            Object principal = authenticate.getPrincipal();
-            if (principal instanceof UserPrincipal userPrincipal) {
-                userService.checkBans(userPrincipal.getUser());
-            }
-        } catch (LockedException exception) {
-            userService.accountBlocked(email);
-            throw new LockedException(exception.getMessage());
-        }
-    }
 
-    private User authenticate() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<User> optionalUser = userService.findByEmail(authentication.getName());
-        return optionalUser.orElse(null);
-    }
-
-    private void validToken(User user, String token, String checkSumId, String checkSumProperties) {
-        boolean isValidToken = userService.isValidToken(user, token, checkSumId, checkSumProperties);
-        if (!isValidToken) {
-            throw new BadCredentialsException("Token is not valid");
-        }
-    }
 
 
 //

@@ -17,15 +17,17 @@ import pl.mbrzozowski.vulcanizer.service.BusinessService;
 public class BusinessController extends ExceptionHandling {
     private final BusinessService businessService;
 
-    @PostMapping
-    public ResponseEntity<?> create(@RequestBody BusinessRequest businessRequest) {
-        businessService.save(businessRequest);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
 
-    @PutMapping
-    public ResponseEntity<BusinessResponse> update(@RequestBody BusinessRequest businessRequest) {
-        BusinessResponse businessResponse = businessService.update(businessRequest);
-        return new ResponseEntity<>(businessResponse, HttpStatus.OK);
-    }
+
+//    @PostMapping
+//    public ResponseEntity<?> create(@RequestBody BusinessRequest businessRequest) {
+//        businessService.save(businessRequest);
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    }
+//
+//    @PutMapping
+//    public ResponseEntity<BusinessResponse> update(@RequestBody BusinessRequest businessRequest) {
+//        BusinessResponse businessResponse = businessService.update(businessRequest);
+//        return new ResponseEntity<>(businessResponse, HttpStatus.OK);
+//    }
 }
