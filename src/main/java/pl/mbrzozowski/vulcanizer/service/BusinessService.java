@@ -13,8 +13,8 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
+import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
-import pl.mbrzozowski.vulcanizer.repository.StateRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,10 +25,7 @@ public class BusinessService {
     private final BusinessRepository businessRepository;
     private final PhotoService photoService;
     private final PhoneService phoneService;
-    private final StateRepository stateRepository;
-    private final StateService stateService;
     private final AddressService addressService;
-    private final UserServiceImpl userService;
     private final EmployeeService employeeService;
     protected Logger logger = LoggerFactory.getLogger(BusinessService.class);
 
@@ -37,22 +34,16 @@ public class BusinessService {
     public BusinessService(BusinessRepository businessRepository,
                            PhotoService photoService,
                            PhoneService phoneService,
-                           StateRepository stateRepository,
-                           StateService stateService,
                            AddressService addressService,
-                           UserServiceImpl userService,
                            EmployeeService employeeService) {
         this.businessRepository = businessRepository;
         this.photoService = photoService;
         this.phoneService = phoneService;
-        this.stateRepository = stateRepository;
-        this.stateService = stateService;
         this.addressService = addressService;
-        this.userService = userService;
         this.employeeService = employeeService;
     }
 
-    public BusinessResponse save(BusinessRequest businessRequest) {
+    public BusinessResponse save(User user, BusinessRequest businessRequest) {
         throw new Error("Method Not implement -");
     }
 

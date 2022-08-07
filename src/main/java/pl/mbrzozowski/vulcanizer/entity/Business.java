@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,24 +20,24 @@ public class Business {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(name = "display_name")
     private String displayName;
+    @Column(length = 10, nullable = false, unique = true)
     private String nip;
-    @Column(name = "created_date")
+    @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
+    @Column(length = 1000)
     private String description;
-    private String status;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_address")
+    @OneToOne
+    @JoinColumn(name = "id_address", nullable = false)
     private Address address;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_photo")
     private Photo photo;
-
-    @Transient
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
     private List<Employee> employees = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(
             name = "business_phone",
@@ -47,28 +46,11 @@ public class Business {
     )
     private Set<Phone> phones;
 
-    public void deletePhones(){
+    private boolean isActive;
+    private boolean isLocked;
+    private boolean isClosed;
+
+    public void deletePhones() {
         phones.clear();
-    }
-
-
-    public void setStatus(BusinessStatus status) {
-        this.status = status.name();
-    }
-
-    @Override
-    public String toString() {
-        return "Business{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", nip='" + nip + '\'' +
-                ", createdDate=" + createdDate +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", address=" + address +
-                ", photo=" + photo +
-                ", employees=" + employees +
-                ", phones=" + phones +
-                '}';
     }
 }
