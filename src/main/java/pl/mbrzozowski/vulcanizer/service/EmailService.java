@@ -13,7 +13,7 @@ public class EmailService {
     public static final String SUBJECT_CONFIRM_EMAIL = "Please confirm your email";
     public static final String SUBJECT_YOUR_ACCOUNT_WAS_BLOCKED = "Your account was blocked";
     public static final String SUBJECT_PASSWORD_CHANGED_CORRECTLY = "Password changed";
-    public static final String SUBJECT_BUSINESS_APPLICATION = "Password changed";
+    public static final String SUBJECT_BUSINESS_APPLICATION = "Business register successfully";
 
     public void confirmYourEmail(String to, String token) {
         //TODO
