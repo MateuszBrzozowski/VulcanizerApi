@@ -15,6 +15,7 @@ public class Phone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 13)
     private String number;
 
     @Transient

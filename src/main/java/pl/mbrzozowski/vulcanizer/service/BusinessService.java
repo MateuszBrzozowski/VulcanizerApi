@@ -2,6 +2,7 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,17 +12,17 @@ import pl.mbrzozowski.vulcanizer.dto.BusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessPublicResponse;
-import pl.mbrzozowski.vulcanizer.entity.Address;
-import pl.mbrzozowski.vulcanizer.entity.Business;
-import pl.mbrzozowski.vulcanizer.entity.Photo;
-import pl.mbrzozowski.vulcanizer.entity.User;
+import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static pl.mbrzozowski.vulcanizer.enums.BusinessRole.OWNER;
 
 @Data
 @Slf4j
@@ -61,13 +62,21 @@ public class BusinessService {
                 .createdDate(LocalDateTime.now())
                 .description(businessRequest.getDescription())
                 .employees(new ArrayList<>())
+                .phones(new HashSet<>())
                 .address(address)
                 .isActive(false)
                 .isLocked(false)
                 .isClosed(false)
                 .build();
-        Business businessSaved = businessRepository.save(business);
-        employeeService.createBusiness(user, businessSaved);
+        Phone phoneFirst = phoneService.save(new Phone(businessRequest.getPhoneFirst()));
+        business.getPhones().add(phoneFirst);
+        if (StringUtils.isNotBlank(businessRequest.getPhoneSecond())) {
+            Phone phoneSecond = phoneService.save(new Phone(businessRequest.getPhoneSecond()));
+            business.getPhones().add(phoneSecond);
+        }
+        Employee employee = new Employee(null, user, business, OWNER);
+        business.getEmployees().add(employee);
+        businessRepository.save(business);
         emailService.businessApplicationAccepted(user.getEmail());
     }
 

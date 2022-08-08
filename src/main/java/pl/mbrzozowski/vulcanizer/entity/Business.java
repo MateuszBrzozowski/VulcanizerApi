@@ -36,9 +36,9 @@ public class Business {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_photo")
     private Photo photo;
-    @OneToMany(mappedBy = "businessId",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "businessId",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Employee> employees;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "business_phone",
             joinColumns = @JoinColumn(name = "id_business"),

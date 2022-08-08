@@ -8,6 +8,7 @@ import pl.mbrzozowski.vulcanizer.repository.PhoneRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationPhone;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,13 +43,8 @@ public class PhoneService {
                 });
     }
 
-    public Phone findByNumber(String number) {
-        return phoneRepository
-                .findByNumber(number)
-                .orElseThrow(() -> {
-                    throw new IllegalArgumentException(String.format("Not found phone number [%s]", number));
-                });
-
+    public Optional<Phone> findByNumber(String number) {
+        return phoneRepository.findByNumber(number);
     }
 
     public void deleteById(Long id) {
