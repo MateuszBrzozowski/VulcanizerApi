@@ -13,7 +13,7 @@ public class ValidationBusiness {
         ValidationAddress.validForBusiness(businessRequest.getAddress());
     }
 
-    private static void validPhones(BusinessRequest businessRequest) {
+    static void validPhones(BusinessRequest businessRequest) {
         if (StringUtils.isBlank(businessRequest.getPhoneFirst())) {
             throw new IllegalArgumentException("Business must have at least one number.");
         } else {
@@ -26,7 +26,7 @@ public class ValidationBusiness {
         }
     }
 
-    private static String preparePhoneNumber(String number) {
+    static String preparePhoneNumber(String number) {
         number = number.replace(" ", "");
         number = number.replace("-", "");
         number = number.replace("+", "");
@@ -35,21 +35,21 @@ public class ValidationBusiness {
         return number;
     }
 
-    private static void validName(String name) {
+    static void validName(String name) {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Name can not be blank.");
         }
     }
 
-    private static void validDisplayName(String name) {
+    static void validDisplayName(String name) {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Display name can not be blank.");
         }
     }
 
-    private static void validNip(String nip) {
+    static void validNip(String nip) {
         if (StringUtils.isBlank(nip)) {
-            throw new IllegalArgumentException("Nip can not be blank");
+            throw new IllegalArgumentException("Nip can not be blank.");
         } else {
             nip = nip.replace("-", "");
             nip = nip.replace(" ", "");
@@ -65,7 +65,7 @@ public class ValidationBusiness {
         }
     }
 
-    private static void nipControl(String nip) {
+    static void nipControl(String nip) {
         int[] weights = {6, 5, 7, 2, 3, 4, 5, 6, 7};
         int sum = 0;
         for (int i = 0; i < weights.length; i++) {
@@ -78,7 +78,7 @@ public class ValidationBusiness {
         }
     }
 
-    private static void validDescription(String description) {
+    static void validDescription(String description) {
         if (StringUtils.isNotBlank(description)) {
             if (description.length() > 1000) {
                 throw new IllegalArgumentException("Description to Long. Max 1000 length.");
