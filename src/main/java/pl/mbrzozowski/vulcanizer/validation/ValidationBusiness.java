@@ -38,12 +38,20 @@ public class ValidationBusiness {
     static void validName(String name) {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Name can not be blank.");
+        } else {
+            if (name.length() > 255) {
+                throw new IllegalArgumentException("Name to long");
+            }
         }
     }
 
     static void validDisplayName(String name) {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Display name can not be blank.");
+        } else {
+            if (name.length() > 255) {
+                throw new IllegalArgumentException("Display name to long");
+            }
         }
     }
 
