@@ -2,43 +2,14 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.mbrzozowski.vulcanizer.dto.EmployeeRequest;
-import pl.mbrzozowski.vulcanizer.dto.EmployeeResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.EmployeeRequestToEmployee;
-import pl.mbrzozowski.vulcanizer.dto.mapper.EmployeeToEmployeeResponse;
 import pl.mbrzozowski.vulcanizer.entity.Employee;
 import pl.mbrzozowski.vulcanizer.repository.EmployeeRepository;
-import pl.mbrzozowski.vulcanizer.validation.ValidationEmployee;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
-    private final UserServiceImpl userService;
 
-    public Employee save(EmployeeRequest employeeRequest) {
-        employeeRequest.setId(null);
-        ValidationEmployee.valid(employeeRequest);
-        Employee employee =
-                new EmployeeRequestToEmployee(userService)
-                        .convert(employeeRequest);
-        return employeeRepository.save(employee);
-    }
-
-    public EmployeeResponse update(EmployeeRequest employeeRequest) {
-        return null;
-    }
-
-    public List<EmployeeResponse> findAll() {
-        return employeeRepository
-                .findAll()
-                .stream()
-                .map(EmployeeToEmployeeResponse::convert)
-                .collect(Collectors.toList());
-    }
 
     public Employee findById(Long id) {
         return employeeRepository

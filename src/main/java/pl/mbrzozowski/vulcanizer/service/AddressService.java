@@ -20,10 +20,6 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final StateService stateService;
 
-    public Address save(AddressRequest addressRequest) {
-        throw new Error("Method not implement");
-    }
-
     /**
      * Validate fields and saving new address to DB for user. All fields can not be blank.
      *
@@ -38,16 +34,7 @@ public class AddressService {
             return null;
         }
         ValidationAddress.validForUser(addressRequest);
-        prepareAddressRequest(addressRequest);
-        State state = getState(addressRequest.getState());
-        Address address = Address.builder()
-                .addressLine(addressRequest.getAddressLine())
-                .city(addressRequest.getCity())
-                .code(addressRequest.getCode())
-                .country(addressRequest.getCountry())
-                .state(state)
-                .build();
-        return addressRepository.save(address);
+        return save(addressRequest);
     }
 
     /**
@@ -94,11 +81,25 @@ public class AddressService {
     }
 
     public Address saveForBusiness(AddressRequest addressRequest) {
-        return null;
+        ValidationAddress.validForBusiness(addressRequest);
+        return save(addressRequest);
     }
 
     public Address updateForBusiness(AddressRequest addressRequest) {
         return null;
+    }
+
+    private Address save(AddressRequest addressRequest) {
+        prepareAddressRequest(addressRequest);
+        State state = getState(addressRequest.getState());
+        Address address = Address.builder()
+                .addressLine(addressRequest.getAddressLine())
+                .city(addressRequest.getCity())
+                .code(addressRequest.getCode())
+                .country(addressRequest.getCountry())
+                .state(state)
+                .build();
+        return addressRepository.save(address);
     }
 
     private void deleteForUser(Address address) {

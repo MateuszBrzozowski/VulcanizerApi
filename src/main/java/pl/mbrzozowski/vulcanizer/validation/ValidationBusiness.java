@@ -10,7 +10,6 @@ public class ValidationBusiness {
         validNip(businessRequest.getNip());
         validDescription(businessRequest.getDescription());
         validPhones(businessRequest);
-        ValidationAddress.validForBusiness(businessRequest.getAddress());
     }
 
     static void validPhones(BusinessRequest businessRequest) {
