@@ -24,7 +24,7 @@ public class Business {
     private String name;
     @Column(name = "display_name")
     private String displayName;
-    @Column(length = 10, nullable = false, unique = true)
+    @Column(length = 10, nullable = false)
     private String nip;
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;

@@ -1,6 +1,5 @@
 package pl.mbrzozowski.vulcanizer.util;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,7 +43,11 @@ public class JWTTokenAuthenticate {
     public User authenticate() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> optionalUser = userService.findByEmail(authentication.getName());
-        return optionalUser.orElse(null);
+        User user = optionalUser.orElse(null);
+        if (user != null) {
+            userService.checkBans(user);
+        }
+        return user;
     }
 
     public void validToken(User user, String token, String checkSumId, String checkSumProperties) {

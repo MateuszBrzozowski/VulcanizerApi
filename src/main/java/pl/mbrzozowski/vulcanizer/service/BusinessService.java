@@ -15,6 +15,7 @@ import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.Photo;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
+import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +45,7 @@ public class BusinessService {
     }
 
     public BusinessResponse save(User user, BusinessRequest businessRequest) {
+        ValidationBusiness.validBeforeCreate(businessRequest);
         throw new Error("Method Not implement -");
     }
 
