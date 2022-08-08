@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +20,6 @@ public class State {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Transient
-    @OneToMany(mappedBy = "state")
-    private List<Address> addresses;
 
     public State(String name) {
         this.name = name;

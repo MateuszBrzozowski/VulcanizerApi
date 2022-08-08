@@ -36,8 +36,8 @@ public class Business {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_photo")
     private Photo photo;
-    @OneToMany
-    private List<Employee> employees = new ArrayList<>();
+    @OneToMany(mappedBy = "businessId",fetch = FetchType.EAGER)
+    private List<Employee> employees;
     @ManyToMany
     @JoinTable(
             name = "business_phone",

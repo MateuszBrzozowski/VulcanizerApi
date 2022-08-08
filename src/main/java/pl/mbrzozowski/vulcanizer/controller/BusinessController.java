@@ -8,10 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
+import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.ExceptionHandling;
 import pl.mbrzozowski.vulcanizer.service.BusinessService;
 import pl.mbrzozowski.vulcanizer.util.JWTTokenAuthenticate;
+
+import java.util.List;
 
 import static pl.mbrzozowski.vulcanizer.constant.AppHttpHeaders.SUM_CONTROL_ID;
 import static pl.mbrzozowski.vulcanizer.constant.AppHttpHeaders.SUM_CONTROL_PROPERTIES;
@@ -31,7 +34,7 @@ public class BusinessController extends ExceptionHandling {
                                                    @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        BusinessResponse businessResponse = businessService.save(user, businessRequest);
+        businessService.save(user, businessRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

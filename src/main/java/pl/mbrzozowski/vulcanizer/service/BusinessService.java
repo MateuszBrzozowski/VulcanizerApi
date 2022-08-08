@@ -1,6 +1,7 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,13 @@ import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationBusiness;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@Slf4j
 @Service
 public class BusinessService {
     private final BusinessRepository businessRepository;
@@ -28,6 +32,7 @@ public class BusinessService {
     private final PhoneService phoneService;
     private final AddressService addressService;
     private final EmployeeService employeeService;
+    private final EmailService emailService;
     protected Logger logger = LoggerFactory.getLogger(BusinessService.class);
 
     @Lazy
@@ -36,25 +41,42 @@ public class BusinessService {
                            PhotoService photoService,
                            PhoneService phoneService,
                            AddressService addressService,
-                           EmployeeService employeeService) {
+                           EmployeeService employeeService,
+                           EmailService emailService) {
         this.businessRepository = businessRepository;
         this.photoService = photoService;
         this.phoneService = phoneService;
         this.addressService = addressService;
         this.employeeService = employeeService;
+        this.emailService = emailService;
     }
 
-    public BusinessResponse save(User user, BusinessRequest businessRequest) {
+    public void save(User user, BusinessRequest businessRequest) {
         ValidationBusiness.validBeforeCreate(businessRequest);
-        throw new Error("Method Not implement -");
+        Address address = addressService.saveForBusiness(businessRequest.getAddress());
+        Business business = Business.builder()
+                .name(businessRequest.getName())
+                .displayName(businessRequest.getDisplayName())
+                .nip(businessRequest.getNip())
+                .createdDate(LocalDateTime.now())
+                .description(businessRequest.getDescription())
+                .employees(new ArrayList<>())
+                .address(address)
+                .isActive(false)
+                .isLocked(false)
+                .isClosed(false)
+                .build();
+        Business businessSaved = businessRepository.save(business);
+        employeeService.createBusiness(user, businessSaved);
+        emailService.businessApplicationAccepted(user.getEmail());
     }
 
     public BusinessResponse update(BusinessRequest businessRequest) {
         throw new Error("Method Not implement -");
     }
 
-    public List<BusinessResponse> findAll() {
-        return null;
+    public List<Business> findAll() {
+        return businessRepository.findAll();
     }
 
     public Business findById(Long id) {
