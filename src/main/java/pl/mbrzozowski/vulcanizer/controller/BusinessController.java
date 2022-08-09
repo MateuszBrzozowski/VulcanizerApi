@@ -39,9 +39,9 @@ public class BusinessController extends ExceptionHandling {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Business>> findAll(){
+    public ResponseEntity<List<Business>> findAll() {
         List<Business> businessList = businessService.findAll();
-        return new ResponseEntity<>(businessList,HttpStatus.OK);
+        return new ResponseEntity<>(businessList, HttpStatus.OK);
     }
 
 //    @PutMapping

@@ -11,4 +11,8 @@ public class Converter {
     public static Gender convertStringToGender(String gender) {
         return new GenderConverterFromStringToEnum().convert(gender);
     }
+
+    public static String getBusinessStatus(boolean isActive, boolean isLocked, boolean isClosed) {
+        return new BusinessStatusString().convert(isActive, isLocked, isClosed);
+    }
 }
