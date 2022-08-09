@@ -20,6 +20,7 @@ import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
+import pl.mbrzozowski.vulcanizer.enums.converter.Converter;
 import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.LinkHasExpiredException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserHasBanException;
@@ -256,6 +257,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             addressService.deleteById(id);
         }
         return new UserToUserResponse().convert(userRepository.save(user));
+    }
+
+    @Override
+    public List<UserBusinessesResponse> findAllBusiness(User user) {
+        log.info(String.valueOf(user.getEmployees().size()));
+        if (user.getEmployees().size() == 0) {
+            return null;
+        } else {
+            List<UserBusinessesResponse> userBusinessesResponseList = new ArrayList<>();
+            user.getEmployees().forEach(employee -> {
+                Business business = employee.getBusinessId();
+                String status = Converter.getBusinessStatus(business.isActive(), business.isLocked(), business.isClosed());
+                UserBusinessesResponse userBusinessesResponse = new UserBusinessesResponse(
+                        employee.getRole().name(),
+                        business.getId().toString(),
+                        business.getDisplayName(),
+                        status);
+                userBusinessesResponseList.add(userBusinessesResponse);
+            });
+            return userBusinessesResponseList;
+        }
     }
 
     public void accountBlocked(String email) {

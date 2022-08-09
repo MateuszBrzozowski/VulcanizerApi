@@ -5,6 +5,7 @@ import pl.mbrzozowski.vulcanizer.entity.Business;
 import pl.mbrzozowski.vulcanizer.entity.User;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 interface UserService {
@@ -34,4 +35,6 @@ interface UserService {
     boolean isValidToken(User user, String token, String checkSumId, String checkSumProperties);
 
     UserResponse saveAddress(User user, AddressRequest addressRequest);
+
+    List<UserBusinessesResponse> findAllBusiness(User user);
 }

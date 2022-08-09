@@ -4,16 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
@@ -25,7 +18,7 @@ import pl.mbrzozowski.vulcanizer.service.UserServiceImpl;
 import pl.mbrzozowski.vulcanizer.util.JWTTokenAuthenticate;
 import pl.mbrzozowski.vulcanizer.util.JWTTokenProvider;
 
-import java.util.Optional;
+import java.util.List;
 
 import static pl.mbrzozowski.vulcanizer.constant.AppHttpHeaders.SUM_CONTROL_ID;
 import static pl.mbrzozowski.vulcanizer.constant.AppHttpHeaders.SUM_CONTROL_PROPERTIES;
@@ -117,6 +110,16 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/business/get")
+    public ResponseEntity<List<UserBusinessesResponse>> findAllForUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                                       @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                                       @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        List<UserBusinessesResponse> userBusinessesResponse = userService.findAllBusiness(user);
+        return new ResponseEntity<>(userBusinessesResponse, HttpStatus.OK);
+    }
+
 
 //    //only for tests - remove or change this method
 //    @GetMapping()
@@ -144,8 +147,6 @@ public class UserController extends ExceptionHandling {
         httpHeaders.add(SUM_CONTROL_PROPERTIES, tokenCheckSum.getSum());
         return httpHeaders;
     }
-
-
 
 
 //
