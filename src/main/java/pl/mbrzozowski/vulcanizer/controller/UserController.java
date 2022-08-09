@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
@@ -34,6 +35,8 @@ public class UserController extends ExceptionHandling {
     private final JWTTokenProvider jwtTokenProvider;
     private final JWTTokenAuthenticate jwtTokenAuthenticate;
     protected final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+//    @PreAuthorize("hasAuthority('user')")
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody UserRegisterBody userRegisterBody) {
