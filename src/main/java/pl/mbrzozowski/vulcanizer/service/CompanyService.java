@@ -18,6 +18,7 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationCompany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.mbrzozowski.vulcanizer.enums.BusinessRole.OWNER;
@@ -55,6 +56,7 @@ public class CompanyService {
 
     public void save(User user, CompanyRequest companyRequest) {
         ValidationCompany.validBeforeCreate(companyRequest);
+        isExist(companyRequest.getNip());
         Address addressCompany = addressService.saveForBusiness(companyRequest.getAddress());
         Address addressCompanyBranch = null;
         if (!companyRequest.getAddress().equals(companyRequest.getAddressCB())) {
@@ -86,8 +88,14 @@ public class CompanyService {
         Company companySaved = companyRepository.save(company);
         companyBranch.setCompany(companySaved);
         companyBranchService.save(companyBranch);
-//        company.getCompanyBranch().add(companyBranch);
         emailService.businessApplicationAccepted(user.getEmail());
+    }
+
+    private void isExist(String nip) {
+        Optional<Company> company = companyRepository.findByNip(nip);
+        if (company.isPresent()) {
+            throw new IllegalArgumentException("Company is exist");
+        }
     }
 
     public BusinessResponse update(CompanyRequest businessRequest) {
