@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,10 +32,25 @@ public class Company {
     @OneToOne
     @JoinColumn(name = "phone", nullable = false)
     private Phone phone;
+    @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<CompanyBranch> companyBranch;
 
     private boolean isActive;
     private boolean isLocked;
     private boolean isClosed;
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", nip='" + nip + '\'' +
+                ", createdDate=" + createdDate +
+                ", phone=" + phone +
+                ", isActive=" + isActive +
+                ", isLocked=" + isLocked +
+                ", isClosed=" + isClosed +
+                '}';
+    }
 }

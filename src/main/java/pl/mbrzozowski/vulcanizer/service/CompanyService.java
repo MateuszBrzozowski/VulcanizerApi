@@ -75,7 +75,7 @@ public class CompanyService {
                 .companyBranch(new ArrayList<>())
                 .phone(phoneCompany)
                 .address(addressCompany)
-                .isActive(false)
+                .isActive(true)
                 .isLocked(false)
                 .isClosed(false)
                 .build();
