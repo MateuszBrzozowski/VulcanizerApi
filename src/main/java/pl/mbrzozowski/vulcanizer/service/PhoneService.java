@@ -23,6 +23,14 @@ public class PhoneService {
         return newPhone;
     }
 
+    public Phone saveForBusiness(String number) {
+        number = prepareNumber(number);
+        ValidationPhone.validNumberForBusiness(number);
+        Phone phone = new Phone(number);
+        return phoneRepository.save(phone);
+    }
+
+
     public Phone update(Phone phone, String newPhoneNumber) {
         newPhoneNumber = prepareNumber(newPhoneNumber);
         ValidationPhone.validNumber(newPhoneNumber);

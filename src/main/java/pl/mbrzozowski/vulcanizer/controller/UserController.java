@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
@@ -119,7 +118,7 @@ public class UserController extends ExceptionHandling {
                                                                        @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        List<UserBusinessesResponse> userBusinessesResponse = userService.findAllBusiness(user);
+        List<UserBusinessesResponse> userBusinessesResponse = userService.findAllBusinessByUser(user);
         return new ResponseEntity<>(userBusinessesResponse, HttpStatus.OK);
     }
 

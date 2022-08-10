@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.OpinionRequest;
 import pl.mbrzozowski.vulcanizer.dto.OpinionResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.OpinionToOpinionResponse;
-import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.Company;
 import pl.mbrzozowski.vulcanizer.entity.Opinion;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.repository.OpinionRepository;
@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 public class OpinionService {
     private final OpinionRepository opinionRepository;
     private final UserServiceImpl userService;
-    private final BusinessService businessService;
+    private final CompanyService businessService;
     private final VisitService visitService;
 
     public Opinion save(OpinionRequest opinionRequest) {
         ValidationOpinion.validBeforeCreated(opinionRequest);
         User user = userService.findById(opinionRequest.getUser());
-        Business business = businessService.findById(opinionRequest.getBusiness());
+        Company business = businessService.findById(opinionRequest.getBusiness());
         Opinion opinion = new Opinion(user,
                 business,
                 opinionRequest.getStars(),
@@ -63,7 +63,7 @@ public class OpinionService {
         opinionRepository.deleteById(id);
     }
 
-    public List<OpinionResponse> findByBusiness(Business business) {
+    public List<OpinionResponse> findByBusiness(Company business) {
         List<Opinion> opinions = opinionRepository
                 .findByBusiness(business)
                 .stream()

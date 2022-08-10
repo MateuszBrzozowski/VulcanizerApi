@@ -12,7 +12,7 @@ public class Converter {
         return new GenderConverterFromStringToEnum().convert(gender);
     }
 
-    public static String getBusinessStatus(boolean isActive, boolean isLocked, boolean isClosed) {
+    public static String getCopanyBranchStatus(boolean isActive, boolean isLocked, boolean isClosed) {
         return new BusinessStatusString().convert(isActive, isLocked, isClosed);
     }
 }

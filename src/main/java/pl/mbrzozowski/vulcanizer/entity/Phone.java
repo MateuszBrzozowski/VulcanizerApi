@@ -18,10 +18,6 @@ public class Phone {
     @Column(length = 13)
     private String number;
 
-    @Transient
-    @ManyToMany(mappedBy = "phones")
-    private Set<Business> businesses;
-
     @Builder
     public Phone(Long id, String number) {
         this.id = id;

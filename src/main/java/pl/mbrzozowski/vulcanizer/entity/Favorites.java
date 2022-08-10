@@ -1,6 +1,5 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,9 +18,9 @@ public class Favorites {
     private User user;
     @ManyToOne
     @JoinColumn(name = "id_business")
-    private Business business;
+    private Company business;
 
-    public Favorites(User user, Business business) {
+    public Favorites(User user, Company business) {
         this.user = user;
         this.business = business;
     }

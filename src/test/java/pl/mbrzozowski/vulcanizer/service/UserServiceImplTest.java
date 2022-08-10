@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.mbrzozowski.vulcanizer.dto.FavoritesRequest;
 import pl.mbrzozowski.vulcanizer.dto.UserRequest;
-import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.Company;
 import pl.mbrzozowski.vulcanizer.entity.Favorites;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
-import pl.mbrzozowski.vulcanizer.repository.BusinessRepository;
+import pl.mbrzozowski.vulcanizer.repository.CompanyRepository;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -30,8 +30,8 @@ class UserServiceImplTest {
     private final LocalDateTime createAccountTime = LocalDateTime.now();
     private UserServiceImpl userService;
     private UserRepository userRepository;
-    private BusinessService businessService;
-    private BusinessRepository businessRepository;
+    private CompanyService businessService;
+    private CompanyRepository businessRepository;
     private final int USER_AGE = 6;
 
     @BeforeEach
@@ -47,8 +47,8 @@ class UserServiceImplTest {
         FavoriteService favoriteService = mock(FavoriteService.class);
         ConfirmationTokenService confirmationTokenService = mock(ConfirmationTokenService.class);
         ResetPasswordTokenService resetPasswordTokenService = mock(ResetPasswordTokenService.class);
-        businessService = mock(BusinessService.class);
-        businessRepository = mock(BusinessRepository.class);
+        businessService = mock(CompanyService.class);
+        businessRepository = mock(CompanyRepository.class);
         SentMailAccountBlockedService sentMailAccountBlockedService = mock(SentMailAccountBlockedService.class);
         TokenCheckSumService tokenCheckSumService = mock(TokenCheckSumService.class);
         userService = new UserServiceImpl(userRepository,
@@ -292,7 +292,7 @@ class UserServiceImplTest {
     void saveFavorites_Success() {
         FavoritesRequest favoritesRequest = new FavoritesRequest(1L, 1L);
         User user = new User();
-        Business business = new Business();
+        Company business = new Company();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(businessRepository.findById(1L)).thenReturn(Optional.of(business));
         boolean b = userService.saveFavorite(favoritesRequest);
@@ -311,7 +311,7 @@ class UserServiceImplTest {
     @Test
     void saveFavorites_UserIDNotNull_ThrowIllegalArgumentException() {
         FavoritesRequest favoritesRequest = new FavoritesRequest(null, 1L);
-        Business business = new Business();
+        Company business = new Company();
         when(userRepository.findById(1L)).thenThrow(IllegalArgumentException.class);
         when(businessService.findById(null)).thenReturn(business);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveFavorite(favoritesRequest));
@@ -329,7 +329,7 @@ class UserServiceImplTest {
     @Test
     void saveFavorites_UserIDNoTfOUND_ThrowIllegalArgumentException() {
         FavoritesRequest favoritesRequest = new FavoritesRequest(1L, 1L);
-        Business business = new Business();
+        Company business = new Company();
         when(userRepository.findById(1L)).thenThrow(IllegalArgumentException.class);
         when(businessService.findById(1L)).thenReturn(business);
         Assertions.assertThrows(IllegalArgumentException.class, () -> userService.saveFavorite(favoritesRequest));
@@ -339,7 +339,7 @@ class UserServiceImplTest {
     void isBusinessFavoriteForUser_True() {
         User user = new User();
         user.setId(1L);
-        Business business = new Business();
+        Company business = new Company();
         business.setId(1L);
         List<Favorites> favorites = new ArrayList<>();
         favorites.add(new Favorites(user, business));
@@ -353,7 +353,7 @@ class UserServiceImplTest {
     void isBusinessFavoriteForUser_False() {
         User user = new User();
         user.setId(1L);
-        Business business = new Business();
+        Company business = new Company();
         business.setId(1L);
         List<Favorites> favorites = new ArrayList<>();
         favorites.add(new Favorites(user, business));
@@ -367,7 +367,7 @@ class UserServiceImplTest {
     void deleteFavorite_True() {
         User user = new User();
         user.setId(1L);
-        Business business = new Business();
+        Company business = new Company();
         business.setId(1L);
         List<Favorites> favorites = new ArrayList<>();
         favorites.add(new Favorites(user, business));
@@ -381,7 +381,7 @@ class UserServiceImplTest {
     void deleteFavorite_False() {
         User user = new User();
         user.setId(1L);
-        Business business = new Business();
+        Company business = new Company();
         business.setId(1L);
         List<Favorites> favorites = new ArrayList<>();
         favorites.add(new Favorites(user, business));

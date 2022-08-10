@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BusinessRequest {
+public class CompanyRequest {
     private Long id;
     private String name;
-    private String displayName;
     private String nip;
-    private String description;
     private AddressRequest address;
-    private String photo;
-    private String phoneFirst;
-    private String phoneSecond;
+    private String phone;
+    private String nameCB;
+    private String descriptionCB;
+    private AddressRequest addressCB;
+    private String phoneCB;
 }

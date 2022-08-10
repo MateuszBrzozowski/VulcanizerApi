@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PhoneService phoneService;
     private final PhotoService photoService;
     private final FavoriteService favoriteService;
-    private final BusinessService businessService;
+    private final CompanyService businessService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
     private final ConfirmationTokenService confirmationTokenService;
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean saveFavorite(FavoritesRequest favoritesRequest) {
         User user = findById(favoritesRequest.getUserId());
-        Business business = businessService.findById(favoritesRequest.getBusinessId());
+        Company business = businessService.findById(favoritesRequest.getBusinessId());
         Favorites favorites = new Favorites(user, business);
         favoriteService.save(favorites);
         return true;
@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public ArrayList<Business> findAllFavoriteForUser(Long userId) {
+    public ArrayList<Company> findAllFavoriteForUser(Long userId) {
         return null;
     }
 
@@ -260,20 +260,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<UserBusinessesResponse> findAllBusiness(User user) {
-        log.info(String.valueOf(user.getEmployees().size()));
-        if (user.getEmployees().size() == 0) {
+    public List<UserBusinessesResponse> findAllBusinessByUser(User user) {
+        if (user.getEmployees() != null && user.getEmployees().size() == 0) {
             return null;
         } else {
             List<UserBusinessesResponse> userBusinessesResponseList = new ArrayList<>();
             user.getEmployees().forEach(employee -> {
-                Business business = employee.getBusinessId();
-                String status = Converter.getBusinessStatus(business.isActive(), business.isLocked(), business.isClosed());
-                UserBusinessesResponse userBusinessesResponse = new UserBusinessesResponse(
-                        employee.getRole().name(),
-                        business.getId().toString(),
-                        business.getDisplayName(),
-                        status);
+                UserBusinessesResponse userBusinessesResponse = new UserBusinessesResponse();
+                Company company = employee.getBusinessId();
+                company.getCompanyBranch().forEach(companyBranch -> {
+                    String status = Converter.getCopanyBranchStatus(companyBranch.isActive(), companyBranch.isLocked(), companyBranch.isClosed());
+                    userBusinessesResponse.setCompanyBranchStatus(status);
+                    userBusinessesResponse.setCompanyBranchName(companyBranch.getName());
+                    userBusinessesResponse.setCompanyId(String.valueOf(companyBranch.getId()));
+                });
+                userBusinessesResponse.setPosition(employee.getRole().name());
+                userBusinessesResponse.setCompanyId(String.valueOf(employee.getBusinessId().getId()));
                 userBusinessesResponseList.add(userBusinessesResponse);
             });
             return userBusinessesResponseList;

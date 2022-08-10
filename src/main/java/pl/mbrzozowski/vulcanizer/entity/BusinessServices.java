@@ -19,7 +19,7 @@ public class BusinessServices {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "id_business")
-    private Business business;
+    private Company business;
     @Column(name = "name_one")
     private String nameOne;
     @Column(name = "name_two")
@@ -28,7 +28,7 @@ public class BusinessServices {
     private LocalTime executionTime;
     private double price;
 
-    public BusinessServices(Business business,
+    public BusinessServices(Company business,
                             String nameOne,
                             String nameTwo,
                             LocalTime executionTime,

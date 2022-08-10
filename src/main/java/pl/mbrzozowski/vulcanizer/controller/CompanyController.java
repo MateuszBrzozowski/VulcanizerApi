@@ -6,12 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.mbrzozowski.vulcanizer.dto.BusinessRequest;
+import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
-import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.Company;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.exceptions.ExceptionHandling;
-import pl.mbrzozowski.vulcanizer.service.BusinessService;
+import pl.mbrzozowski.vulcanizer.service.CompanyService;
 import pl.mbrzozowski.vulcanizer.util.JWTTokenAuthenticate;
 
 import java.util.List;
@@ -21,14 +21,14 @@ import static pl.mbrzozowski.vulcanizer.constant.AppHttpHeaders.SUM_CONTROL_PROP
 
 @Controller
 @RestController
-@RequestMapping("/api/v1/business")
+@RequestMapping("/api/v1/company")
 @RequiredArgsConstructor
-public class BusinessController extends ExceptionHandling {
-    private final BusinessService businessService;
+public class CompanyController extends ExceptionHandling {
+    private final CompanyService businessService;
     private final JWTTokenAuthenticate jwtTokenAuthenticate;
 
     @PostMapping("/create")
-    public ResponseEntity<BusinessResponse> create(@RequestBody BusinessRequest businessRequest,
+    public ResponseEntity<BusinessResponse> create(@RequestBody CompanyRequest businessRequest,
                                                    @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                    @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                    @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
@@ -39,8 +39,8 @@ public class BusinessController extends ExceptionHandling {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Business>> findAll() {
-        List<Business> businessList = businessService.findAll();
+    public ResponseEntity<List<Company>> findAll() {
+        List<Company> businessList = businessService.findAll();
         return new ResponseEntity<>(businessList, HttpStatus.OK);
     }
 

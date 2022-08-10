@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.OpinionRequest;
-import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.Company;
 import pl.mbrzozowski.vulcanizer.entity.Opinion;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.entity.Visit;
@@ -20,7 +20,7 @@ class OpinionServiceTest {
     private final String DESCRIPTION = "Its test. Lets go";
     private OpinionService opinionService;
     private UserServiceImpl userService;
-    private BusinessService businessService;
+    private CompanyService businessService;
     private final OpinionRequest opinionRequest = new OpinionRequest();
     private final Opinion opinion = new Opinion();
 
@@ -28,7 +28,7 @@ class OpinionServiceTest {
     public void beforeEach() {
         OpinionRepository opinionRepository = mock(OpinionRepository.class);
         userService = mock(UserServiceImpl.class);
-        businessService = mock(BusinessService.class);
+        businessService = mock(CompanyService.class);
         VisitService visitService = mock(VisitService.class);
         opinionService = new OpinionService(opinionRepository,
                 userService,
@@ -49,7 +49,7 @@ class OpinionServiceTest {
         User user = new User();
         user.setFirstName("First Name");
         user.setLastName("Last name");
-        Business business = new Business();
+        Company business = new Company();
         business.setId(id);
         Visit visit = new Visit();
         when(userService.findById(id)).thenReturn(user);
@@ -126,7 +126,7 @@ class OpinionServiceTest {
         User user = new User();
         user.setFirstName("First Name");
         user.setLastName("Last name");
-        Business business = new Business();
+        Company business = new Company();
         business.setId(id);
         Visit visit = new Visit();
         when(userService.findById(id)).thenReturn(user);

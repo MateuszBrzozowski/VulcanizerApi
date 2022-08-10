@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.BusinessServicesRequest;
 import pl.mbrzozowski.vulcanizer.dto.BusinessServicesResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.ServicesBusinessToServicesBusinessResponse;
-import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.Company;
 import pl.mbrzozowski.vulcanizer.entity.BusinessServices;
 import pl.mbrzozowski.vulcanizer.exceptions.EditingNotAllowedException;
 import pl.mbrzozowski.vulcanizer.repository.BusinessServicesRepository;
@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 public class BusinessServicesService {
     private final BusinessServicesRepository businessServicesRepository;
     private final VisitService visitService;
-    private final BusinessService businessService;
+    private final CompanyService businessService;
 
     public BusinessServices save(BusinessServicesRequest serviceRequest) {
         ValidationService.validBeforeCreated(serviceRequest);
-        Business business = businessService.findById(serviceRequest.getBusiness());
+        Company business = businessService.findById(serviceRequest.getBusiness());
         BusinessServices service =
                 new BusinessServices(business,
                         serviceRequest.getNameOne(),

@@ -19,7 +19,7 @@ public class Opinion {
     private User user;
     @ManyToOne
     @JoinColumn(name = "id_business")
-    private Business business;
+    private Company business;
     private int stars;
     private String description;
     private boolean visibility = true;
@@ -32,7 +32,7 @@ public class Opinion {
 
     @Builder
     public Opinion(User user,
-                   Business business,
+                   Company business,
                    int stars,
                    String description) {
         this.user = user;

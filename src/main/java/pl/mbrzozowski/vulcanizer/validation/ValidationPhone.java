@@ -15,4 +15,12 @@ public class ValidationPhone {
             throw new IllegalArgumentException("Phone number to long");
         }
     }
+
+    public static void validNumberForBusiness(String number) {
+        if (StringUtils.isBlank(number)) {
+            throw new IllegalArgumentException("Business must have phone number.");
+        } else {
+            ValidationPhone.validNumber(number);
+        }
+    }
 }

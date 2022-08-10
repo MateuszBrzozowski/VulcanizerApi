@@ -1,7 +1,7 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import pl.mbrzozowski.vulcanizer.dto.*;
-import pl.mbrzozowski.vulcanizer.entity.Business;
+import pl.mbrzozowski.vulcanizer.entity.Company;
 import pl.mbrzozowski.vulcanizer.entity.User;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ interface UserService {
 
     boolean isBusinessFavoriteForUser(Long userId, Long businessId);
 
-    ArrayList<Business> findAllFavoriteForUser(Long userId);
+    ArrayList<Company> findAllFavoriteForUser(Long userId);
 
     UserResponse register(UserRegisterBody userRegisterBody);
 
@@ -36,5 +36,5 @@ interface UserService {
 
     UserResponse saveAddress(User user, AddressRequest addressRequest);
 
-    List<UserBusinessesResponse> findAllBusiness(User user);
+    List<UserBusinessesResponse> findAllBusinessByUser(User user);
 }

@@ -1,13 +1,14 @@
 package pl.mbrzozowski.vulcanizer.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
-@AllArgsConstructor
+@Setter
 @Getter
 public class UserBusinessesResponse {
     private String position;
-    private String businessId;
-    private String businessName;
-    private String businessStatus;
+    private String companyId;
+    private String companyBranchId;
+    private String companyBranchName;
+    private String companyBranchStatus;
 }

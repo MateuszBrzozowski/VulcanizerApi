@@ -2,12 +2,28 @@ package pl.mbrzozowski.vulcanizer.validation;
 
 import org.apache.commons.lang3.StringUtils;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
+import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.enums.StatesPL;
 
 public class ValidationAddress {
 
     public static void validForBusiness(AddressRequest addressRequest) {
         if (addressRequest != null) {
+            allFieldsRequired(addressRequest);
+            validFields(addressRequest);
+        } else {
+            throw new IllegalArgumentException("Address is required");
+        }
+    }
+
+    public static void validForBusiness(Address address) {
+        if (address != null) {
+            AddressRequest addressRequest =
+                    new AddressRequest(address.getId(),
+                            address.getAddressLine(),
+                            address.getCity(), address.getCode(),
+                            address.getState().getName(),
+                            address.getCountry());
             allFieldsRequired(addressRequest);
             validFields(addressRequest);
         } else {
