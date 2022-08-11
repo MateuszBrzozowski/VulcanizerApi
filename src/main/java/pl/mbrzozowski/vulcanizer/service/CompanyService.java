@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.BusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
@@ -101,6 +102,11 @@ public class CompanyService {
         ValidationCompany.validBeforeCreateCompanyBranch(companyRequest);
         if (company == null) {
             company = getCompanyByNip(companyRequest.getNip());
+            if (company != null) {
+                if (!checkIsUserCompany(user, company)) {
+                    throw new BadCredentialsException("The company is not a user");
+                }
+            }
         }
         if (company == null) {
             throw new IllegalArgumentException("Company is not exist");
@@ -124,6 +130,15 @@ public class CompanyService {
             companyBranchService.save(companyBranch);
             emailService.companyApplicationAccepted(user.getEmail());
         }
+    }
+
+    private boolean checkIsUserCompany(User user, Company company) {
+        for (Employee employee : user.getEmployees()) {
+            if (employee.getBusinessId().getId().equals(company.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Company getCompanyByNip(String nip) {

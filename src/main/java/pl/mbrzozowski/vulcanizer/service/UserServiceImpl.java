@@ -270,17 +270,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             List<UserCompanyBranchResponse> userBusinessesResponseList = new ArrayList<>();
             user.getEmployees().forEach(employee -> {
-                UserCompanyBranchResponse userBusinessesResponse = new UserCompanyBranchResponse();
                 Company company = employee.getBusinessId();
                 company.getCompanyBranch().forEach(companyBranch -> {
+                    UserCompanyBranchResponse userBusinessesResponse = new UserCompanyBranchResponse();
                     String status = Converter.getCompanyBranchStatus(companyBranch.isActive(), companyBranch.isLocked(), companyBranch.isClosed());
                     userBusinessesResponse.setCompanyBranchStatus(status);
                     userBusinessesResponse.setCompanyBranchName(companyBranch.getName());
-                    userBusinessesResponse.setCompanyId(String.valueOf(companyBranch.getId()));
+                    userBusinessesResponse.setCompanyBranchId(String.valueOf(companyBranch.getId()));
+                    userBusinessesResponse.setPosition(employee.getRole().name());
+                    userBusinessesResponse.setCompanyId(String.valueOf(employee.getBusinessId().getId()));
+                    userBusinessesResponseList.add(userBusinessesResponse);
                 });
-                userBusinessesResponse.setPosition(employee.getRole().name());
-                userBusinessesResponse.setCompanyId(String.valueOf(employee.getBusinessId().getId()));
-                userBusinessesResponseList.add(userBusinessesResponse);
             });
             return userBusinessesResponseList;
         }
