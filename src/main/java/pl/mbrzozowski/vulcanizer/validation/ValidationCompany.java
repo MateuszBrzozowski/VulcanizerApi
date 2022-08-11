@@ -6,10 +6,10 @@ import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 public class ValidationCompany {
     public static void validBeforeCreate(CompanyRequest companyRequest) {
         validName(companyRequest.getName());
-        validNip(companyRequest.getNip());
+        companyRequest.setNip(validNip(companyRequest.getNip()));
     }
 
-    public static void validBeforeCreateCompanyBranch(CompanyRequest companyRequest){
+    public static void validBeforeCreateCompanyBranch(CompanyRequest companyRequest) {
         validNip(companyRequest.getNip());
     }
 
@@ -23,7 +23,7 @@ public class ValidationCompany {
         }
     }
 
-    public static void validNip(String nip) {
+    static String validNip(String nip) {
         if (StringUtils.isBlank(nip)) {
             throw new IllegalArgumentException("Nip can not be blank.");
         } else {
@@ -38,6 +38,7 @@ public class ValidationCompany {
                 throw new IllegalArgumentException("NIP is not valid. Illegal characters.");
             }
             nipControl(nip);
+            return nip;
         }
     }
 
