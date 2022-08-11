@@ -19,5 +19,4 @@ public class CompanyRequest {
     private String descriptionCB;
     private AddressRequest addressCB;
     private String phoneCB;
-    private String companyId;
 }
