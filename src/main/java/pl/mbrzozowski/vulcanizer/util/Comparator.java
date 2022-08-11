@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.util;
 
+import org.apache.commons.lang3.StringUtils;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Phone;
@@ -50,8 +51,22 @@ public class Comparator {
     }
 
     public static boolean compare(Phone phone, String phoneNumber) {
-        if (phone != null && phoneNumber != null) {
-            return phoneNumber.equalsIgnoreCase(phone.getNumber());
+        if (phone != null && phoneNumber == null) {
+            return false;
+        }
+        if (phone == null && phoneNumber != null) {
+            return false;
+        }
+        if (phone != null) {
+            if (StringUtils.isBlank(phone.getNumber()) && StringUtils.isBlank(phoneNumber)) {
+                return true;
+            }
+            String phoneNumberInstance = null;
+            if (phone.getNumber() != null) {
+                phoneNumberInstance = removeBlank(phone.getNumber());
+            }
+            String phoneNumberWithoutBlank = removeBlank(phoneNumber);
+            return phoneNumberWithoutBlank.equalsIgnoreCase(phoneNumberInstance);
         }
         return true;
     }

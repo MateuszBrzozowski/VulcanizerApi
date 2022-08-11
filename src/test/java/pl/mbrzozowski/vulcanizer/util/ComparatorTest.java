@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.entity.Address;
+import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.entity.State;
 
 class ComparatorTest {
@@ -221,4 +222,37 @@ class ComparatorTest {
         boolean compare = Comparator.compare(address, addressRequest);
         Assertions.assertTrue(compare);
     }
+
+    @Test
+    void comparePhoneAndPhoneNumber_Same() {
+        Phone phone = new Phone();
+        String phoneNumber = " ";
+        boolean compare = Comparator.compare(phone, phoneNumber);
+        Assertions.assertTrue(compare);
+    }
+
+    @Test
+    void comparePhoneAndPhoneNumber_SameNumber() {
+        Phone phone = new Phone("789456123");
+        String phoneNumber = "789456123";
+        boolean compare = Comparator.compare(phone, phoneNumber);
+        Assertions.assertTrue(compare);
+    }
+
+    @Test
+    void comparePhoneAndPhoneNumber_SameNumberWithBlank() {
+        Phone phone = new Phone("789456123");
+        String phoneNumber = "789456123 ";
+        boolean compare = Comparator.compare(phone, phoneNumber);
+        Assertions.assertTrue(compare);
+    }
+
+    @Test
+    void comparePhoneAndPhoneNumber_NotSameNumber() {
+        Phone phone = new Phone("789456123");
+        String phoneNumber = "789456122";
+        boolean compare = Comparator.compare(phone, phoneNumber);
+        Assertions.assertFalse(compare);
+    }
+
 }
