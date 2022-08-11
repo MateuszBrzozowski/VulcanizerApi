@@ -269,7 +269,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 UserBusinessesResponse userBusinessesResponse = new UserBusinessesResponse();
                 Company company = employee.getBusinessId();
                 company.getCompanyBranch().forEach(companyBranch -> {
-                    String status = Converter.getCopanyBranchStatus(companyBranch.isActive(), companyBranch.isLocked(), companyBranch.isClosed());
+                    String status = Converter.getCompanyBranchStatus(companyBranch.isActive(), companyBranch.isLocked(), companyBranch.isClosed());
                     userBusinessesResponse.setCompanyBranchStatus(status);
                     userBusinessesResponse.setCompanyBranchName(companyBranch.getName());
                     userBusinessesResponse.setCompanyId(String.valueOf(companyBranch.getId()));

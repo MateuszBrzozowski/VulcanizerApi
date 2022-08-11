@@ -11,7 +11,7 @@ public class ValidationCompanyBranch {
 
     public static void validBeforeCreate(CompanyRequest companyRequest) {
         validDisplayName(companyRequest.getNameCB());
-        validDescription(companyRequest.getDescriptionCB());
+        companyRequest.setDescriptionCB(validDescription(companyRequest.getDescriptionCB()));
     }
 
     public static void valid(CompanyBranch companyBranch) {
@@ -55,11 +55,17 @@ public class ValidationCompanyBranch {
     }
 
 
-    static void validDescription(String description) {
+    static String validDescription(String description) {
         if (StringUtils.isNotBlank(description)) {
             if (description.length() > 1000) {
                 throw new IllegalArgumentException("Description to Long. Max 1000 length.");
+            } else {
+                if (description.equalsIgnoreCase("-")) {
+                    return null;
+                }
+                return description;
             }
         }
+        return null;
     }
 }

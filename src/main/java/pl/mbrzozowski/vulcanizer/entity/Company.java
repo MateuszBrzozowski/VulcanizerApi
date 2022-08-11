@@ -21,6 +21,7 @@ public class Company {
     private Long id;
     @Column(nullable = false)
     private String name;
+    @Column(unique = true)
     private String nip;
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
