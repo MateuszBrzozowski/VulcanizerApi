@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class UserBusinessesResponse {
+public class UserCompanyBranchResponse {
     private String position;
     private String companyId;
     private String companyBranchId;

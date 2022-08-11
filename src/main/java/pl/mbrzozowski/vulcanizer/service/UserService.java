@@ -36,5 +36,7 @@ interface UserService {
 
     UserResponse saveAddress(User user, AddressRequest addressRequest);
 
-    List<UserBusinessesResponse> findAllBusinessByUser(User user);
+    List<UserCompanyBranchResponse> findAllCompanyBranchForUser(User user);
+
+    List<UserCompanyResponse> findAllCompanyForUser(User user);
 }

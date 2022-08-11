@@ -260,13 +260,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<UserBusinessesResponse> findAllBusinessByUser(User user) {
+    public List<UserCompanyBranchResponse> findAllCompanyBranchForUser(User user) {
+        if (user.getEmployees() == null) {
+            return null;
+        }
         if (user.getEmployees() != null && user.getEmployees().size() == 0) {
             return null;
         } else {
-            List<UserBusinessesResponse> userBusinessesResponseList = new ArrayList<>();
+            List<UserCompanyBranchResponse> userBusinessesResponseList = new ArrayList<>();
             user.getEmployees().forEach(employee -> {
-                UserBusinessesResponse userBusinessesResponse = new UserBusinessesResponse();
+                UserCompanyBranchResponse userBusinessesResponse = new UserCompanyBranchResponse();
                 Company company = employee.getBusinessId();
                 company.getCompanyBranch().forEach(companyBranch -> {
                     String status = Converter.getCompanyBranchStatus(companyBranch.isActive(), companyBranch.isLocked(), companyBranch.isClosed());
@@ -279,6 +282,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 userBusinessesResponseList.add(userBusinessesResponse);
             });
             return userBusinessesResponseList;
+        }
+    }
+
+    @Override
+    public List<UserCompanyResponse> findAllCompanyForUser(User user) {
+        if (user.getEmployees() == null) {
+            return null;
+        }
+        if (user.getEmployees() != null && user.getEmployees().size() == 0) {
+            return null;
+        } else {
+            List<UserCompanyResponse> userCompanyResponseList = new ArrayList<>();
+            user.getEmployees().forEach(employee -> {
+                UserCompanyResponse userCompanyResponse = new UserCompanyResponse();
+                userCompanyResponse.setId(employee.getBusinessId().getId());
+                userCompanyResponse.setName(employee.getBusinessId().getName());
+                userCompanyResponse.setNip(employee.getBusinessId().getNip());
+                userCompanyResponseList.add(userCompanyResponse);
+            });
+            return userCompanyResponseList;
         }
     }
 

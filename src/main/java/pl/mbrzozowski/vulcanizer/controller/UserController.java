@@ -112,13 +112,23 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/business/get")
-    public ResponseEntity<List<UserBusinessesResponse>> findAllForUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                                       @RequestHeader(SUM_CONTROL_ID) String checkSumId,
-                                                                       @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+    @GetMapping("/company/branch")
+    public ResponseEntity<List<UserCompanyBranchResponse>> findAllCompanyBranchForUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                                                       @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                                                       @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        List<UserBusinessesResponse> userBusinessesResponse = userService.findAllBusinessByUser(user);
+        List<UserCompanyBranchResponse> userBusinessesResponse = userService.findAllCompanyBranchForUser(user);
+        return new ResponseEntity<>(userBusinessesResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/company")
+    public ResponseEntity<List<UserCompanyResponse>> findAllCompanyForUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                                                 @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                                                 @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        List<UserCompanyResponse> userBusinessesResponse = userService.findAllCompanyForUser(user);
         return new ResponseEntity<>(userBusinessesResponse, HttpStatus.OK);
     }
 
