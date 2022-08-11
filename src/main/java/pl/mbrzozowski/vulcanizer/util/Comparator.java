@@ -2,6 +2,7 @@ package pl.mbrzozowski.vulcanizer.util;
 
 import pl.mbrzozowski.vulcanizer.dto.AddressRequest;
 import pl.mbrzozowski.vulcanizer.entity.Address;
+import pl.mbrzozowski.vulcanizer.entity.Phone;
 
 public class Comparator {
 
@@ -30,6 +31,13 @@ public class Comparator {
             if (address.getCountry() != null && addressRequest.getCountry() != null) {
                 return address.getCountry().equalsIgnoreCase(addressRequest.getCountry());
             }
+        }
+        return true;
+    }
+
+    public static boolean compare(Phone phone, String phoneNumber) {
+        if (phone != null && phoneNumber != null) {
+            return phoneNumber.equalsIgnoreCase(phone.getNumber());
         }
         return true;
     }

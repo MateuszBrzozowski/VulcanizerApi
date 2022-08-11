@@ -4,9 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 
 public class ValidationCompany {
-    public static void validBeforeCreate(CompanyRequest businessRequest) {
-        validName(businessRequest.getName());
-        validNip(businessRequest.getNip());
+    public static void validBeforeCreate(CompanyRequest companyRequest) {
+        validName(companyRequest.getName());
+        validNip(companyRequest.getNip());
+    }
+
+    public static void validBeforeCreateCompanyBranch(CompanyRequest companyRequest){
+        validNip(companyRequest.getNip());
     }
 
     static void validName(String name) {
@@ -19,7 +23,7 @@ public class ValidationCompany {
         }
     }
 
-    static void validNip(String nip) {
+    public static void validNip(String nip) {
         if (StringUtils.isBlank(nip)) {
             throw new IllegalArgumentException("Nip can not be blank.");
         } else {

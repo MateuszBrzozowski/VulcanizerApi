@@ -13,6 +13,7 @@ import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.repository.CompanyRepository;
+import pl.mbrzozowski.vulcanizer.util.Comparator;
 import pl.mbrzozowski.vulcanizer.validation.ValidationCompany;
 
 import java.time.LocalDateTime;
@@ -54,19 +55,18 @@ public class CompanyService {
         this.companyBranchService = companyBranchService;
     }
 
+    /**
+     * Creating Company and company branch for user {@link User}
+     *
+     * @param user           which create company and company branch
+     * @param companyRequest {@link  CompanyRequest} data for create company and company branch.
+     * @throws IllegalArgumentException when required data is blank or not valid.
+     */
     public void save(User user, CompanyRequest companyRequest) {
         ValidationCompany.validBeforeCreate(companyRequest);
-        isExist(companyRequest.getNip());
+        isExistByNip(companyRequest.getNip());
         Address addressCompany = addressService.saveForBusiness(companyRequest.getAddress());
-        Address addressCompanyBranch = null;
-        if (!companyRequest.getAddress().equals(companyRequest.getAddressCB())) {
-            addressCompanyBranch = addressService.saveForBusiness(companyRequest.getAddressCB());
-        }
         Phone phoneCompany = phoneService.saveForBusiness(companyRequest.getPhone());
-        Phone phoneCompanyBranch = null;
-        if (!companyRequest.getPhone().equalsIgnoreCase(companyRequest.getPhoneCB())) {
-            phoneCompanyBranch = phoneService.saveForBusiness(companyRequest.getPhoneCB());
-        }
         Company company = Company.builder()
                 .name(companyRequest.getName())
                 .nip(companyRequest.getNip())
@@ -79,22 +79,62 @@ public class CompanyService {
                 .isLocked(false)
                 .isClosed(false)
                 .build();
-
-        CompanyBranch companyBranch = companyBranchService.createWhileCreatingCompany(companyRequest);
-        companyBranchService.setAddressForCompanyBranch(addressCompany, addressCompanyBranch, companyBranch);
-        companyBranchService.setPhoneForCompanyBranch(phoneCompany, phoneCompanyBranch, companyBranch);
         Employee employee = new Employee(null, user, company, OWNER);
         company.getEmployees().add(employee);
         Company companySaved = companyRepository.save(company);
-        companyBranch.setCompany(companySaved);
-        companyBranchService.save(companyBranch);
-        emailService.businessApplicationAccepted(user.getEmail());
+        saveForExistCompany(user, companyRequest, companySaved);
+        emailService.companyApplicationAccepted(user.getEmail());
     }
 
-    private void isExist(String nip) {
-        Optional<Company> company = companyRepository.findByNip(nip);
-        if (company.isPresent()) {
-            throw new IllegalArgumentException("Company is exist");
+    /**
+     * Creating company branch for exist company. NameCB, addressCB, phoneCB can not be blank.
+     *
+     * @param user           {@link User} which create company branch
+     * @param companyRequest {@link CompanyRequest} specific data for create company branch
+     * @param company        {@link Company} parent for company branch, can be null. But if is not exist in DB
+     *                       method throw Exception
+     * @throws IllegalArgumentException when company is not exist in DB or when name is blank or
+     *                                  not valid, address is null or not valid
+     *                                  Phone is null or not valid
+     */
+    public void saveForExistCompany(User user, CompanyRequest companyRequest, Company company) {
+        ValidationCompany.validBeforeCreateCompanyBranch(companyRequest);
+        if (company == null) {
+            company = getCompanyByNip(companyRequest.getNip());
+        }
+        if (company == null) {
+            throw new IllegalArgumentException("Company is not exist");
+        } else {
+            CompanyBranch companyBranch = new CompanyBranch();
+            companyBranch.setName(companyRequest.getNameCB());
+            companyBranch.setDescription(companyRequest.getDescriptionCB());
+            Address addressCompany = company.getAddress();
+            if (Comparator.compare(addressCompany, companyRequest.getAddressCB())) {
+                companyBranch.setAddress(addressCompany);
+            } else {
+                companyBranch.setAddress(addressService.saveForBusiness(companyRequest.getAddressCB()));
+            }
+            Phone phoneCompany = company.getPhone();
+            if (Comparator.compare(phoneCompany, companyRequest.getPhoneCB())) {
+                companyBranch.setPhone(phoneCompany);
+            } else {
+                companyBranch.setPhone(phoneService.saveForBusiness(companyRequest.getPhoneCB()));
+            }
+            companyBranch.setCompany(company);
+            companyBranchService.save(companyBranch);
+            emailService.companyApplicationAccepted(user.getEmail());
+        }
+    }
+
+    private Company getCompanyByNip(String nip) {
+        Optional<Company> companyOptional = companyRepository.findByNip(nip);
+        return companyOptional.orElse(null);
+    }
+
+    private void isExistByNip(String nip) {
+        Optional<Company> companyOptional = companyRepository.findByNip(nip);
+        if (companyOptional.isPresent()) {
+            throw new IllegalArgumentException("Company by nip is exist");
         }
     }
 

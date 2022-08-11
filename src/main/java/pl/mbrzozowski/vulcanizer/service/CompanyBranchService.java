@@ -2,10 +2,7 @@ package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
-import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.CompanyBranch;
-import pl.mbrzozowski.vulcanizer.entity.Phone;
 import pl.mbrzozowski.vulcanizer.repository.CompanyBranchRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationCompanyBranch;
 
@@ -30,29 +27,5 @@ public class CompanyBranchService {
         companyBranch.setLocked(false);
         companyBranch.setClosed(false);
         return companyBranchRepository.save(companyBranch);
-    }
-
-    public CompanyBranch createWhileCreatingCompany(CompanyRequest companyRequest) {
-        ValidationCompanyBranch.validBeforeCreate(companyRequest);
-        return CompanyBranch.builder()
-                .name(companyRequest.getNameCB())
-                .description(companyRequest.getDescriptionCB())
-                .build();
-    }
-
-    public void setAddressForCompanyBranch(Address addressCompany, Address addressCompanyBranch, CompanyBranch companyBranch) {
-        if (addressCompanyBranch != null) {
-            companyBranch.setAddress(addressCompanyBranch);
-        } else {
-            companyBranch.setAddress(addressCompany);
-        }
-    }
-
-    public void setPhoneForCompanyBranch(Phone phoneCompany, Phone phoneCompanyBranch, CompanyBranch companyBranch) {
-        if (phoneCompanyBranch != null) {
-            companyBranch.setPhone(phoneCompanyBranch);
-        } else {
-            companyBranch.setPhone(phoneCompany);
-        }
     }
 }

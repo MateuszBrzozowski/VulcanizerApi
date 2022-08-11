@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.mbrzozowski.vulcanizer.constant.SecurityConstant;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
 import pl.mbrzozowski.vulcanizer.dto.*;
+import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
@@ -299,6 +300,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 userCompanyResponse.setId(employee.getBusinessId().getId());
                 userCompanyResponse.setName(employee.getBusinessId().getName());
                 userCompanyResponse.setNip(employee.getBusinessId().getNip());
+                userCompanyResponse.setAddress(new AddressToAddressResponse().convert(employee.getBusinessId().getAddress()));
+                userCompanyResponse.setPhone(employee.getBusinessId().getPhone().getNumber());
                 userCompanyResponseList.add(userCompanyResponse);
             });
             return userCompanyResponseList;

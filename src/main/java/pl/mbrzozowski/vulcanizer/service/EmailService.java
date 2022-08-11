@@ -53,12 +53,21 @@ public class EmailService {
         //send(to,subject,body);
     }
 
-    public void businessApplicationAccepted(String to) {
+    public void companyApplicationAccepted(String to) {
         //TODO
         // Config and testing, maybe user can blocked account if this change has not made by him
         log.info("EMAIL: ");
         log.info("SUBJECT: {}", SUBJECT_BUSINESS_APPLICATION);
-        log.info("TEXT: Przyjeliśmy zgłoszenie rejestracji biznesu. Wynik werfikacji prześlemy w osobnym mailu.");
+        log.info("TEXT: Przyjeliśmy zgłoszenie rejestracji biznesu. To jest sam biznes");
+        //send(to,subject,body);
+    }
+
+    public void companyBranchApplicationAccepted(String to) {
+        //TODO
+        // Config and testing, maybe user can blocked account if this change has not made by him
+        log.info("EMAIL: ");
+        log.info("SUBJECT: {}", SUBJECT_BUSINESS_APPLICATION);
+        log.info("TEXT: Przyjeliśmy zgłoszenie rejestracji biznesu. To jest sam oddział biznesu");
         //send(to,subject,body);
     }
 
