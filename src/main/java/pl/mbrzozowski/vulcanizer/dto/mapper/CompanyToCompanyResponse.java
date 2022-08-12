@@ -18,6 +18,7 @@ public class CompanyToCompanyResponse implements Converter<Company, CompanyRespo
                 .createdDate(source.getCreatedDate())
                 .status(status)
                 .address(new AddressToAddressResponse().convert(source.getAddress()))
+                .phone(source.getPhone().getNumber())
                 .build();
     }
 }

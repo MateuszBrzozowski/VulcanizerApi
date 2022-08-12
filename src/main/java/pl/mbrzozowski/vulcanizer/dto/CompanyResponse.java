@@ -15,5 +15,5 @@ public class CompanyResponse {
     private LocalDateTime createdDate;
     private String status;
     private AddressResponse address;
-    private String photo;
+    private String phone;
 }

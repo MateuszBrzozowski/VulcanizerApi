@@ -24,7 +24,7 @@ import static pl.mbrzozowski.vulcanizer.constant.AppHttpHeaders.SUM_CONTROL_PROP
 @RequestMapping("/api/v1/company")
 @RequiredArgsConstructor
 public class CompanyController extends ExceptionHandling {
-    private final CompanyService businessService;
+    private final CompanyService companyService;
     private final JWTTokenAuthenticate jwtTokenAuthenticate;
 
     @PostMapping("/create")
@@ -34,24 +34,13 @@ public class CompanyController extends ExceptionHandling {
                                                   @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        businessService.save(user, businessRequest);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PostMapping("/branch/create")
-    public ResponseEntity<CompanyResponse> createCompanyBranch(@RequestBody CompanyRequest businessRequest,
-                                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                               @RequestHeader(SUM_CONTROL_ID) String checkSumId,
-                                                               @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate();
-        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        businessService.saveForExistCompany(user, businessRequest, null);
+        companyService.save(user, businessRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping()
     public ResponseEntity<List<Company>> findAll() {
-        List<Company> businessList = businessService.findAll();
+        List<Company> businessList = companyService.findAll();
         return new ResponseEntity<>(businessList, HttpStatus.OK);
     }
 
