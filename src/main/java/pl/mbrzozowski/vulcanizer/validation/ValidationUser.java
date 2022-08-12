@@ -53,14 +53,11 @@ public class ValidationUser {
      */
     public static boolean isAnyFieldBlankForPersonalUpdate(UserRequest userRequest) {
         if (userRequest != null) {
-            if (StringUtils.isBlank(userRequest.getEmail()) ||
+            return StringUtils.isBlank(userRequest.getEmail()) ||
                     StringUtils.isBlank(userRequest.getFirstName()) ||
                     StringUtils.isBlank(userRequest.getLastName()) ||
                     StringUtils.isBlank(userRequest.getPhone()) ||
-                    StringUtils.isBlank(userRequest.getBirthDate())) {
-                return true;
-            }
-            return false;
+                    StringUtils.isBlank(userRequest.getBirthDate());
         } else {
             return true;
         }

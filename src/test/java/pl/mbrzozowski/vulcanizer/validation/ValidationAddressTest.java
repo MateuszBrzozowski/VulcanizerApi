@@ -259,4 +259,131 @@ class ValidationAddressTest {
         Assertions.assertDoesNotThrow(() -> ValidationAddress.validForBusiness(addressRequest));
     }
 
+    @Test
+    void isAddressAnyFieldBlank_AllFieldsNotBlank_False() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .city("City")
+                .code("99-999")
+                .state("State")
+                .country("Polska")
+                .build();
+        Assertions.assertFalse(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_LineNull_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .city("City")
+                .code("99-999")
+                .state("State")
+                .country("Polska")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_LineBlank_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine(" ")
+                .city("City")
+                .code("99-999")
+                .state("State")
+                .country("Polska")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_CityNull_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .code("99-999")
+                .state("State")
+                .country("Polska")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_CityBlank_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .city(" ")
+                .code("99-999")
+                .state("State")
+                .country("Polska")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_CodeNull_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .city("City")
+                .state("State")
+                .country("Polska")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_CodeBlank_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .city("City")
+                .code(" ")
+                .state("State")
+                .country("Polska")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_StateNull_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .city("City")
+                .code("99-999")
+                .country("Polska")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_StateBlank_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .city("City")
+                .code("99-999")
+                .state(" ")
+                .country("Polska")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_CountryNull_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .city("City")
+                .code("99-999")
+                .state("State")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
+    @Test
+    void isAddressAnyFieldBlank_CountryBlank_True() {
+        AddressRequest addressRequest = AddressRequest.builder()
+                .addressLine("Line")
+                .city("City")
+                .code("99-999")
+                .state("State")
+                .country(" ")
+                .build();
+        Assertions.assertTrue(ValidationAddress.isAddressAnyFieldBlank(addressRequest));
+    }
+
 }

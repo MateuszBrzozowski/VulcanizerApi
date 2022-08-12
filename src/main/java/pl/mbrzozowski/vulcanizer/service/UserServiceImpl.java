@@ -27,6 +27,7 @@ import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.LinkHasExpiredException;
 import pl.mbrzozowski.vulcanizer.exceptions.UserHasBanException;
 import pl.mbrzozowski.vulcanizer.repository.UserRepository;
+import pl.mbrzozowski.vulcanizer.validation.ValidationAddress;
 import pl.mbrzozowski.vulcanizer.validation.ValidationUser;
 
 import java.time.LocalDate;
@@ -84,7 +85,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserResponse update(User user, UserRequest userRequest) {
         if (ValidationUser.isAnyFieldBlankForPersonalUpdate(userRequest)) {
             if (isUserOwner(user)) {
-                throw new IllegalArgumentException("User can not delete personal data because has Company");
+                throw new IllegalArgumentException("User can not this data because has company");
             }
         }
         updateEmail(user, userRequest);
@@ -97,7 +98,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new UserToUserResponse().convert(userRepository.save(user));
     }
 
-    private boolean isUserOwner(User user) {
+    public boolean isUserOwner(User user) {
         if (user.getEmployees() != null) {
             for (Employee employee : user.getEmployees()) {
                 if (employee.getRole() == BusinessRole.OWNER) {
@@ -263,6 +264,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserResponse saveAddress(User user, AddressRequest addressRequest) {
+        if (ValidationAddress.isAddressAnyFieldBlank(addressRequest)) {
+            if (isUserOwner(user)) {
+                throw new IllegalArgumentException("User can not this data because has company");
+            }
+        }
         if (user.getAddress() == null && addressRequest != null) { // dodawanie nowego adresu
             Address address = addressService.saveForUser(addressRequest);
             user.setAddress(address);

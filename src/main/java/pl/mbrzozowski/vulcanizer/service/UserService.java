@@ -32,6 +32,8 @@ interface UserService {
 
     UserResponse update(User user, UserRequest userRequest);
 
+    boolean isUserOwner(User user);
+
     TokenCheckSumResponse generateCheckSum(User user, String jwtToken);
 
     boolean isValidToken(User user, String token, String checkSumId, String checkSumProperties);

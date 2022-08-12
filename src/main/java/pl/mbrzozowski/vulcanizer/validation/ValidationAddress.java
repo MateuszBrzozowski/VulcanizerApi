@@ -47,6 +47,18 @@ public class ValidationAddress {
         }
     }
 
+    public static boolean isAddressAnyFieldBlank(AddressRequest addressRequest) {
+        if (addressRequest != null) {
+            return StringUtils.isBlank(addressRequest.getAddressLine()) ||
+                    StringUtils.isBlank(addressRequest.getCity()) ||
+                    StringUtils.isBlank(addressRequest.getCode()) ||
+                    StringUtils.isBlank(addressRequest.getState()) ||
+                    StringUtils.isBlank(addressRequest.getCountry());
+        } else {
+            return true;
+        }
+    }
+
     private static void allFieldsRequired(AddressRequest addressRequest) {
         if (StringUtils.isBlank(addressRequest.getAddressLine()) ||
                 StringUtils.isBlank(addressRequest.getCity()) ||
