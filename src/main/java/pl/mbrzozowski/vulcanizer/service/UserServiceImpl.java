@@ -21,6 +21,7 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
+import pl.mbrzozowski.vulcanizer.enums.BusinessRole;
 import pl.mbrzozowski.vulcanizer.enums.converter.Converter;
 import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.LinkHasExpiredException;
@@ -81,6 +82,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     public UserResponse update(User user, UserRequest userRequest) {
+        if (ValidationUser.isAnyFieldBlankForPersonalUpdate(userRequest)) {
+            if (isUserOwner(user)) {
+                throw new IllegalArgumentException("User can not delete personal data because has Company");
+            }
+        }
         updateEmail(user, userRequest);
         updateFirstName(user, userRequest);
         updateLastName(user, userRequest);
@@ -89,6 +95,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         updateBirthDate(user, userRequest);
         resetTokenCheckSum(user);
         return new UserToUserResponse().convert(userRepository.save(user));
+    }
+
+    private boolean isUserOwner(User user) {
+        if (user.getEmployees() != null) {
+            for (Employee employee : user.getEmployees()) {
+                if (employee.getRole() == BusinessRole.OWNER) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public List<UserResponse> findAll() {

@@ -128,7 +128,7 @@ public class CompanyService {
             }
             companyBranch.setCompany(company);
             companyBranchService.save(companyBranch);
-            emailService.companyApplicationAccepted(user.getEmail());
+            emailService.companyBranchApplicationAccepted(user.getEmail());
         }
     }
 

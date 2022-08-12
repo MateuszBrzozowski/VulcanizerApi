@@ -30,6 +30,8 @@ interface UserService {
 
     void setNewPassword(User user, String newPassword);
 
+    UserResponse update(User user, UserRequest userRequest);
+
     TokenCheckSumResponse generateCheckSum(User user, String jwtToken);
 
     boolean isValidToken(User user, String token, String checkSumId, String checkSumProperties);

@@ -45,6 +45,27 @@ public class ValidationUser {
         validPassword(userResetPasswordBody.getPassword());
     }
 
+    /**
+     * Method checks if the email, firstName, lastName, phone, BirthDate is blank
+     *
+     * @param userRequest which check
+     * @return true if any field is blank, else return false
+     */
+    public static boolean isAnyFieldBlankForPersonalUpdate(UserRequest userRequest) {
+        if (userRequest != null) {
+            if (StringUtils.isBlank(userRequest.getEmail()) ||
+                    StringUtils.isBlank(userRequest.getFirstName()) ||
+                    StringUtils.isBlank(userRequest.getLastName()) ||
+                    StringUtils.isBlank(userRequest.getPhone()) ||
+                    StringUtils.isBlank(userRequest.getBirthDate())) {
+                return true;
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private static void validToken(String token) {
         if (StringUtils.isBlank(token)) {
             throw new IllegalArgumentException("Token is not valid");
