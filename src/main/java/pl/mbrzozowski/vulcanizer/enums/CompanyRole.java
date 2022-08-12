@@ -1,5 +1,5 @@
 package pl.mbrzozowski.vulcanizer.enums;
 
-public enum BusinessRole {
+public enum CompanyRole {
     OWNER, EMPLOYEE, MODERATOR
 }

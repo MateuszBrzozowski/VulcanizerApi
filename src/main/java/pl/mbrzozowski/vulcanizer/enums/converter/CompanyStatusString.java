@@ -2,7 +2,7 @@ package pl.mbrzozowski.vulcanizer.enums.converter;
 
 import static pl.mbrzozowski.vulcanizer.enums.BusinessStatus.*;
 
-public class BusinessStatusString {
+public class CompanyStatusString {
 
     public String convert(boolean isActive, boolean isLocked, boolean isClosed) {
         if (!isClosed) {

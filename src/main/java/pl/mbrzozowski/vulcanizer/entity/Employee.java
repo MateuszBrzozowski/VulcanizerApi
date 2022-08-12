@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.enums.BusinessRole;
+import pl.mbrzozowski.vulcanizer.enums.CompanyRole;
 
 import javax.persistence.*;
 
@@ -27,7 +27,7 @@ public class Employee {
     @JoinColumn(name = "id_business", nullable = false)
     private Company businessId;
     @Enumerated(EnumType.STRING)
-    private BusinessRole role;
+    private CompanyRole role;
 
     @Override
     public String toString() {

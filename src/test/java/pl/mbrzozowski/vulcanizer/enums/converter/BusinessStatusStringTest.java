@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import pl.mbrzozowski.vulcanizer.enums.BusinessStatus;
 
 class BusinessStatusStringTest {
-    private BusinessStatusString businessStatusString = new BusinessStatusString();
+    private final CompanyStatusString businessStatusString = new CompanyStatusString();
 
     @Test
     void convert_returnActive() {

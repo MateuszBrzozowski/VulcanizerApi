@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.BusinessPublicResponse;
-import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
+import pl.mbrzozowski.vulcanizer.dto.CompanyResponse;
 import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.BusinessToBusinessPublicResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static pl.mbrzozowski.vulcanizer.enums.BusinessRole.OWNER;
+import static pl.mbrzozowski.vulcanizer.enums.CompanyRole.OWNER;
 
 @Data
 @Slf4j
@@ -153,7 +153,7 @@ public class CompanyService {
         }
     }
 
-    public BusinessResponse update(CompanyRequest businessRequest) {
+    public CompanyResponse update(CompanyRequest businessRequest) {
         throw new Error("Method Not implement -");
     }
 
@@ -198,7 +198,7 @@ public class CompanyService {
         address.setCountry(addressNewData.getCountry());
     }
 
-    public BusinessResponse updateStatus(CompanyRequest businessRequest) {
+    public CompanyResponse updateStatus(CompanyRequest businessRequest) {
         return null;
     }
 }

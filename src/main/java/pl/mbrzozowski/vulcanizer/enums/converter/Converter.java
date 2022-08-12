@@ -13,6 +13,6 @@ public class Converter {
     }
 
     public static String getCompanyBranchStatus(boolean isActive, boolean isLocked, boolean isClosed) {
-        return new BusinessStatusString().convert(isActive, isLocked, isClosed);
+        return new CompanyStatusString().convert(isActive, isLocked, isClosed);
     }
 }

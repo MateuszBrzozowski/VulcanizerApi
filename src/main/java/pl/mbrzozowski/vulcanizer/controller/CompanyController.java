@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.mbrzozowski.vulcanizer.dto.BusinessResponse;
+import pl.mbrzozowski.vulcanizer.dto.CompanyResponse;
 import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 import pl.mbrzozowski.vulcanizer.entity.Company;
 import pl.mbrzozowski.vulcanizer.entity.User;
@@ -28,10 +28,10 @@ public class CompanyController extends ExceptionHandling {
     private final JWTTokenAuthenticate jwtTokenAuthenticate;
 
     @PostMapping("/create")
-    public ResponseEntity<BusinessResponse> create(@RequestBody CompanyRequest businessRequest,
-                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                   @RequestHeader(SUM_CONTROL_ID) String checkSumId,
-                                                   @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+    public ResponseEntity<CompanyResponse> create(@RequestBody CompanyRequest businessRequest,
+                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                  @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                  @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
         businessService.save(user, businessRequest);
@@ -39,10 +39,10 @@ public class CompanyController extends ExceptionHandling {
     }
 
     @PostMapping("/branch/create")
-    public ResponseEntity<BusinessResponse> createCompanyBranch(@RequestBody CompanyRequest businessRequest,
-                                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                                @RequestHeader(SUM_CONTROL_ID) String checkSumId,
-                                                                @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+    public ResponseEntity<CompanyResponse> createCompanyBranch(@RequestBody CompanyRequest businessRequest,
+                                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                               @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                               @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
         businessService.saveForExistCompany(user, businessRequest, null);

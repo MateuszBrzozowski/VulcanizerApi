@@ -21,7 +21,7 @@ import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
-import pl.mbrzozowski.vulcanizer.enums.BusinessRole;
+import pl.mbrzozowski.vulcanizer.enums.CompanyRole;
 import pl.mbrzozowski.vulcanizer.enums.converter.Converter;
 import pl.mbrzozowski.vulcanizer.exceptions.EmailExistException;
 import pl.mbrzozowski.vulcanizer.exceptions.LinkHasExpiredException;
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public boolean isUserOwner(User user) {
         if (user.getEmployees() != null) {
             for (Employee employee : user.getEmployees()) {
-                if (employee.getRole() == BusinessRole.OWNER) {
+                if (employee.getRole() == CompanyRole.OWNER) {
                     return true;
                 }
             }
