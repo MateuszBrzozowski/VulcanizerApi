@@ -40,7 +40,7 @@ interface UserService {
 
     UserResponse saveAddress(User user, AddressRequest addressRequest);
 
-    List<UserCompanyBranchResponse> findAllCompanyBranchForUser(User user);
+    List<CompanyBranchResponse> findAllCompanyBranchForUser(User user);
 
     List<UserCompanyResponse> findAllCompanyForUser(User user);
 }

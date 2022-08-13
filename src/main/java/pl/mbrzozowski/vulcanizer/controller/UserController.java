@@ -113,12 +113,12 @@ public class UserController extends ExceptionHandling {
     }
 
     @GetMapping("/company/branch")
-    public ResponseEntity<List<UserCompanyBranchResponse>> findAllCompanyBranchForUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public ResponseEntity<List<CompanyBranchResponse>> findAllCompanyBranchForUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                                                        @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                                                        @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        List<UserCompanyBranchResponse> userBusinessesResponse = userService.findAllCompanyBranchForUser(user);
+        List<CompanyBranchResponse> userBusinessesResponse = userService.findAllCompanyBranchForUser(user);
         return new ResponseEntity<>(userBusinessesResponse, HttpStatus.OK);
     }
 

@@ -13,6 +13,7 @@ public class CompanyBranchResponse {
     private Long id;
     private String name;
     private String description;
+    private String companyBranchStatus;
     private AddressResponse address;
     private String createdDate;
     private String phone;

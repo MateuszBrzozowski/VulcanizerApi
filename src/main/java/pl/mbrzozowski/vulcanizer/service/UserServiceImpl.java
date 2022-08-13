@@ -18,6 +18,7 @@ import pl.mbrzozowski.vulcanizer.constant.SecurityConstant;
 import pl.mbrzozowski.vulcanizer.domain.UserPrincipal;
 import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
+import pl.mbrzozowski.vulcanizer.dto.mapper.CompanyToCompanyResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserRegisterBodyToUserRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
@@ -284,28 +285,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<UserCompanyBranchResponse> findAllCompanyBranchForUser(User user) {
+    public List<CompanyBranchResponse> findAllCompanyBranchForUser(User user) {
         if (user.getEmployees() == null) {
             return null;
         }
         if (user.getEmployees() != null && user.getEmployees().size() == 0) {
             return null;
         } else {
-            List<UserCompanyBranchResponse> userBusinessesResponseList = new ArrayList<>();
+            List<CompanyBranchResponse> companyBranchResponseList = new ArrayList<>();
             user.getEmployees().forEach(employee -> {
                 Company company = employee.getCompany();
                 company.getCompanyBranch().forEach(companyBranch -> {
-                    UserCompanyBranchResponse userBusinessesResponse = new UserCompanyBranchResponse();
+                    CompanyBranchResponse userBusinessesResponse = new CompanyBranchResponse();
                     String status = Converter.getCompanyBranchStatus(companyBranch.isActive(), companyBranch.isLocked(), companyBranch.isClosed());
                     userBusinessesResponse.setCompanyBranchStatus(status);
-                    userBusinessesResponse.setCompanyBranchName(companyBranch.getName());
-                    userBusinessesResponse.setCompanyBranchId(String.valueOf(companyBranch.getId()));
-                    userBusinessesResponse.setPosition(employee.getRole().name());
-                    userBusinessesResponse.setCompanyId(String.valueOf(employee.getCompany().getId()));
-                    userBusinessesResponseList.add(userBusinessesResponse);
+                    userBusinessesResponse.setName(companyBranch.getName());
+                    userBusinessesResponse.setId(companyBranch.getId());
+                    userBusinessesResponse.setCompany(new CompanyToCompanyResponse().convert(employee.getCompany()));
+                    companyBranchResponseList.add(userBusinessesResponse);
                 });
             });
-            return userBusinessesResponseList;
+            return companyBranchResponseList;
         }
     }
 
