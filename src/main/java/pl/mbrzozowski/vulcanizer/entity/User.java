@@ -50,7 +50,7 @@ public class User implements Serializable {
     @JoinColumn(name = "id_phone")
     private Phone phone;
 
-    @OneToMany(mappedBy = "userId")
+    @OneToMany(mappedBy = "user")
     private List<Employee> employees;
     @OneToMany(mappedBy = "user")
     private List<Favorites> favorites;

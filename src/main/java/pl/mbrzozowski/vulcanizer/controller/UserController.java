@@ -124,12 +124,22 @@ public class UserController extends ExceptionHandling {
 
     @GetMapping("/company")
     public ResponseEntity<List<UserCompanyResponse>> findAllCompanyForUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                                                 @RequestHeader(SUM_CONTROL_ID) String checkSumId,
-                                                                                 @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+                                                                           @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                                           @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
         List<UserCompanyResponse> userBusinessesResponse = userService.findAllCompanyForUser(user);
         return new ResponseEntity<>(userBusinessesResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/company/branch/hasActive")
+    public ResponseEntity<Boolean> hasActiveCompanyBranch(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                          @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                          @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        boolean hasActive = userService.hasActiveCompanyBranch(user);
+        return new ResponseEntity<>(hasActive, HttpStatus.OK);
     }
 
 

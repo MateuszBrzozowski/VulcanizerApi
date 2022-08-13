@@ -21,11 +21,11 @@ public class Employee {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
-    private User userId;
+    private User user;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_business", nullable = false)
-    private Company businessId;
+    @JoinColumn(name = "id_company", nullable = false)
+    private Company company;
     @Enumerated(EnumType.STRING)
     private CompanyRole role;
 
@@ -33,8 +33,8 @@ public class Employee {
     public String toString() {
         return "Employee{" +
                 "id=" + id +
-                ", userId=" + userId.getId() +
-                ", businessId=" + businessId.getId() +
+                ", userId=" + user.getId() +
+                ", businessId=" + company.getId() +
                 ", role=" + role.name() +
                 '}';
     }

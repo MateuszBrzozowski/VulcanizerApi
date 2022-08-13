@@ -293,7 +293,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             List<UserCompanyBranchResponse> userBusinessesResponseList = new ArrayList<>();
             user.getEmployees().forEach(employee -> {
-                Company company = employee.getBusinessId();
+                Company company = employee.getCompany();
                 company.getCompanyBranch().forEach(companyBranch -> {
                     UserCompanyBranchResponse userBusinessesResponse = new UserCompanyBranchResponse();
                     String status = Converter.getCompanyBranchStatus(companyBranch.isActive(), companyBranch.isLocked(), companyBranch.isClosed());
@@ -301,7 +301,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     userBusinessesResponse.setCompanyBranchName(companyBranch.getName());
                     userBusinessesResponse.setCompanyBranchId(String.valueOf(companyBranch.getId()));
                     userBusinessesResponse.setPosition(employee.getRole().name());
-                    userBusinessesResponse.setCompanyId(String.valueOf(employee.getBusinessId().getId()));
+                    userBusinessesResponse.setCompanyId(String.valueOf(employee.getCompany().getId()));
                     userBusinessesResponseList.add(userBusinessesResponse);
                 });
             });
@@ -320,11 +320,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             List<UserCompanyResponse> userCompanyResponseList = new ArrayList<>();
             user.getEmployees().forEach(employee -> {
                 UserCompanyResponse userCompanyResponse = new UserCompanyResponse();
-                userCompanyResponse.setId(employee.getBusinessId().getId());
-                userCompanyResponse.setName(employee.getBusinessId().getName());
-                userCompanyResponse.setNip(employee.getBusinessId().getNip());
-                userCompanyResponse.setAddress(new AddressToAddressResponse().convert(employee.getBusinessId().getAddress()));
-                userCompanyResponse.setPhone(employee.getBusinessId().getPhone().getNumber());
+                userCompanyResponse.setId(employee.getCompany().getId());
+                userCompanyResponse.setName(employee.getCompany().getName());
+                userCompanyResponse.setNip(employee.getCompany().getNip());
+                userCompanyResponse.setAddress(new AddressToAddressResponse().convert(employee.getCompany().getAddress()));
+                userCompanyResponse.setPhone(employee.getCompany().getPhone().getNumber());
                 userCompanyResponseList.add(userCompanyResponse);
             });
             return userCompanyResponseList;
@@ -468,5 +468,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         List<TokenCheckSum> tokenCheckSums = user.getTokenCheckSums();
         tokenCheckSumService.deleteAllSumsForUser(user);
         tokenCheckSums.clear();
+    }
+
+    public boolean hasActiveCompanyBranch(User user) {
+        for (Employee employee : user.getEmployees()) {
+            for (CompanyBranch companyBranch : employee.getCompany().getCompanyBranch()) {
+                if (companyBranch.isActive()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

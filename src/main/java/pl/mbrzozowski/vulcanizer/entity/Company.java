@@ -28,7 +28,7 @@ public class Company {
     @OneToOne
     @JoinColumn(name = "id_address", nullable = false)
     private Address address;
-    @OneToMany(mappedBy = "businessId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Employee> employees;
     @OneToOne
     @JoinColumn(name = "phone", nullable = false)

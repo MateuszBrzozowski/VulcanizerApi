@@ -70,7 +70,7 @@ public class CompanyBranchService {
         List<Employee> employees = company.getEmployees();
         for (Employee employee : employees) {
             if (employee.getRole() == CompanyRole.OWNER) {
-                return employee.getUserId();
+                return employee.getUser();
             }
         }
         return null;

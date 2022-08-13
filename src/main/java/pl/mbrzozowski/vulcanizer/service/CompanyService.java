@@ -134,7 +134,7 @@ public class CompanyService {
 
     private boolean checkIsUserCompany(User user, Company company) {
         for (Employee employee : user.getEmployees()) {
-            if (employee.getBusinessId().getId().equals(company.getId())) {
+            if (employee.getCompany().getId().equals(company.getId())) {
                 return true;
             }
         }
