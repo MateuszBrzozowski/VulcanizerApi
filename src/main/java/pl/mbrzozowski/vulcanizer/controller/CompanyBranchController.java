@@ -50,4 +50,28 @@ public class CompanyBranchController {
         companyService.saveForExistCompany(user, businessRequest, null);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}/accept")
+    @PreAuthorize("hasAuthority('super:admin')")
+    public ResponseEntity<?> acceptCompanyBranch(@PathVariable("id") String companyBranchId,
+                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                 @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                 @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        companyBranchService.accept(companyBranchId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/decline")
+    @PreAuthorize("hasAuthority('super:admin')")
+    public ResponseEntity<?> declineCompanyBranch(@PathVariable("id") String companyBranchId,
+                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                  @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                  @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        companyBranchService.decline(companyBranchId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

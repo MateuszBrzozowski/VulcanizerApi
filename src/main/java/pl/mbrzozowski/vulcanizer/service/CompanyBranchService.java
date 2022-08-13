@@ -18,6 +18,7 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationCompanyBranch;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -73,5 +74,39 @@ public class CompanyBranchService {
             }
         }
         return null;
+    }
+
+    public void accept(String companyBranchId) {
+        Optional<CompanyBranch> branchOptional = findById(getLongIdFromString(companyBranchId));
+        if (branchOptional.isEmpty()) {
+            throw new IllegalArgumentException("Company Branch is not exist");
+        } else {
+            CompanyBranch companyBranch = branchOptional.get();
+            companyBranch.setActive(true);
+            companyBranchRepository.save(companyBranch);
+        }
+    }
+
+    public void decline(String companyBranchId) {
+        Optional<CompanyBranch> branchOptional = findById(getLongIdFromString(companyBranchId));
+        if (branchOptional.isEmpty()) {
+            throw new IllegalArgumentException("Company Branch is not exist");
+        } else {
+            CompanyBranch companyBranch = branchOptional.get();
+            companyBranch.setLocked(true);
+            companyBranchRepository.save(companyBranch);
+        }
+    }
+
+    private Long getLongIdFromString(String companyBranchId) {
+        try {
+            return Long.parseLong(companyBranchId);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Id is not a number (Long)");
+        }
+    }
+
+    public Optional<CompanyBranch> findById(Long id) {
+        return companyBranchRepository.findById(id);
     }
 }
