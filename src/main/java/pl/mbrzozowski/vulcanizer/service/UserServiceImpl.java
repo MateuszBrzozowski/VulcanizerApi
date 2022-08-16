@@ -300,6 +300,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     String status = Converter.getCompanyBranchStatus(companyBranch.isActive(), companyBranch.isLocked(), companyBranch.isClosed());
                     userBusinessesResponse.setCompanyBranchStatus(status);
                     userBusinessesResponse.setName(companyBranch.getName());
+                    userBusinessesResponse.setDescription(companyBranch.getDescription());
+                    userBusinessesResponse.setCreatedDate(companyBranch.getCreatedDate().toString());
+                    userBusinessesResponse.setPhone(companyBranch.getPhone().getNumber());
+                    userBusinessesResponse.setUser(new UserToUserResponse().convert(employee.getUser()));
+                    userBusinessesResponse.setAddress(new AddressToAddressResponse().convert(companyBranch.getAddress()));
                     userBusinessesResponse.setId(companyBranch.getId());
                     userBusinessesResponse.setCompany(new CompanyToCompanyResponse().convert(employee.getCompany()));
                     companyBranchResponseList.add(userBusinessesResponse);
