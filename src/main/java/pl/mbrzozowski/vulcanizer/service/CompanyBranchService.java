@@ -103,7 +103,7 @@ public class CompanyBranchService {
         return companyBranchRepository.findById(id);
     }
 
-    public void standAdd(User user, String branchId, String count) {
+    public List<Stand> standAdd(User user, String branchId, String count) {
         ValidationCompanyBranch.validStandAdd(branchId, count);
         long companyBranchId = getLongIdFromString(branchId);
         int countOfStands = getIntIdFromString(count);
@@ -122,13 +122,14 @@ public class CompanyBranchService {
             }
             companyBranch.setStands(stands);
             companyBranchRepository.save(companyBranch);
+            return stands;
         } else {
             throw new IllegalArgumentException("Company branch not exist");
         }
 
     }
 
-    public void standRemove(User user, String branchId, String number) {
+    public List<Stand> standRemove(User user, String branchId, String number) {
         ValidationCompanyBranch.validStandRemove(branchId, number);
         long companyBranchId = getLongIdFromString(branchId);
         int numberOfStand = getIntIdFromString(number);
@@ -143,12 +144,13 @@ public class CompanyBranchService {
                 removeStandAndUpdateNumbersOfAnotherStand(stands, indexToRemove);
                 companyBranch.setStands(stands);
                 companyBranchRepository.save(companyBranch);
+                return stands;
             } else {
                 throw new IllegalArgumentException("Stands are not exist");
             }
-
+        }else {
+            throw new IllegalArgumentException("Company branch not exist");
         }
-
     }
 
     public List<Stand> findAllStandsForBranch(User user, String branchId) {
@@ -158,6 +160,7 @@ public class CompanyBranchService {
         if (branchOptional.isPresent()) {
             CompanyBranch companyBranch = branchOptional.get();
             checkBranchIsUser(user, companyBranch);
+            companyBranch.getStands().sort(Comparator.comparing(Stand::getNumber));
             return companyBranch.getStands();
         } else {
             return null;

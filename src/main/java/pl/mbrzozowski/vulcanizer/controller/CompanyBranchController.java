@@ -88,26 +88,26 @@ public class CompanyBranchController {
     }
 
     @PostMapping("/{id}/stand/{count}")
-    public ResponseEntity<?> standAdd(@PathVariable("id") String branchId,
-                                      @PathVariable("count") String count,
-                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                      @RequestHeader(SUM_CONTROL_ID) String checkSumId,
-                                      @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+    public ResponseEntity<List<Stand>> standAdd(@PathVariable("id") String branchId,
+                                                @PathVariable("count") String count,
+                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        companyBranchService.standAdd(user, branchId, count);
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<Stand> stands = companyBranchService.standAdd(user, branchId, count);
+        return new ResponseEntity<>(stands, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/stand/{number}")
-    public ResponseEntity<?> standRemove(@PathVariable("id") String branchId,
-                                         @PathVariable("number") String number,
-                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                         @RequestHeader(SUM_CONTROL_ID) String checkSumId,
-                                         @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+    public ResponseEntity<List<Stand>> standRemove(@PathVariable("id") String branchId,
+                                                   @PathVariable("number") String number,
+                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                   @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                   @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        companyBranchService.standRemove(user, branchId, number);
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<Stand> stands = companyBranchService.standRemove(user, branchId, number);
+        return new ResponseEntity<>(stands, HttpStatus.OK);
     }
 }
