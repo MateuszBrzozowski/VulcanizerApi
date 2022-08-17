@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.CompanyBranchResponse;
-import pl.mbrzozowski.vulcanizer.dto.StandRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.CompanyToCompanyResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
@@ -104,10 +103,10 @@ public class CompanyBranchService {
         return companyBranchRepository.findById(id);
     }
 
-    public void standAdd(User user, StandRequest standRequest) {
-        ValidationCompanyBranch.validStandAdd(standRequest);
-        long companyBranchId = getLongIdFromString(standRequest.getBranchId());
-        int countOfStands = getIntIdFromString(standRequest.getCount());
+    public void standAdd(User user, String branchId, String count) {
+        ValidationCompanyBranch.validStandAdd(branchId, count);
+        long companyBranchId = getLongIdFromString(branchId);
+        int countOfStands = getIntIdFromString(count);
         Optional<CompanyBranch> branchOptional = findById(companyBranchId);
         if (branchOptional.isPresent()) {
             CompanyBranch companyBranch = branchOptional.get();
@@ -129,10 +128,10 @@ public class CompanyBranchService {
 
     }
 
-    public void standRemove(User user, StandRequest standRequest) {
-        ValidationCompanyBranch.validStandRemove(standRequest);
-        long companyBranchId = getLongIdFromString(standRequest.getBranchId());
-        int numberOfStand = getIntIdFromString(standRequest.getNumber());
+    public void standRemove(User user, String branchId, String number) {
+        ValidationCompanyBranch.validStandRemove(branchId, number);
+        long companyBranchId = getLongIdFromString(branchId);
+        int numberOfStand = getIntIdFromString(number);
         Optional<CompanyBranch> branchOptional = findById(companyBranchId);
         if (branchOptional.isPresent()) {
             CompanyBranch companyBranch = branchOptional.get();
@@ -150,6 +149,19 @@ public class CompanyBranchService {
 
         }
 
+    }
+
+    public List<Stand> findAllStandsForBranch(User user, String branchId) {
+        ValidationCompanyBranch.validBranchId(branchId);
+        long companyBranchId = getLongIdFromString(branchId);
+        Optional<CompanyBranch> branchOptional = findById(companyBranchId);
+        if (branchOptional.isPresent()) {
+            CompanyBranch companyBranch = branchOptional.get();
+            checkBranchIsUser(user, companyBranch);
+            return companyBranch.getStands();
+        } else {
+            return null;
+        }
     }
 
     private @NotNull Long getLongIdFromString(String source) {
@@ -206,23 +218,10 @@ public class CompanyBranchService {
     }
 
     private int getNumber(@NotNull List<Stand> stands) {
-        int minNumber = MAX_STANDS;
         if (stands.size() == 0) {
-            minNumber = 1;
-        } else {
-            for (int j = 1; j < MAX_STANDS + 1; j++) {
-                int countOfNumber = 0;
-                for (Stand stand : stands) {
-                    if (stand.getNumber() == j) {
-                        countOfNumber++;
-                    }
-                }
-                if (countOfNumber == 0) {
-                    minNumber = j;
-                    break;
-                }
-            }
+            return 1;
         }
-        return minNumber;
+        stands.sort(Comparator.comparing(Stand::getNumber));
+        return stands.get(stands.size() - 1).getNumber() + 1;
     }
 }

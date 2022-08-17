@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.CompanyBranchResponse;
 import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 import pl.mbrzozowski.vulcanizer.dto.CompanyResponse;
-import pl.mbrzozowski.vulcanizer.dto.StandRequest;
+import pl.mbrzozowski.vulcanizer.entity.Stand;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.service.CompanyBranchService;
 import pl.mbrzozowski.vulcanizer.service.CompanyService;
@@ -76,25 +76,38 @@ public class CompanyBranchController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/stand")
-    public ResponseEntity<?> standAdd(@RequestBody StandRequest standRequest,
+    @GetMapping("/{id}/stand")
+    public ResponseEntity<List<Stand>> findAllStandsForBranch(@PathVariable("id") String branchId,
+                                                              @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                              @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                              @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        List<Stand> stands = companyBranchService.findAllStandsForBranch(user, branchId);
+        return new ResponseEntity<>(stands, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/stand/{count}")
+    public ResponseEntity<?> standAdd(@PathVariable("id") String branchId,
+                                      @PathVariable("count") String count,
                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                       @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                       @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        companyBranchService.standAdd(user, standRequest);
+        companyBranchService.standAdd(user, branchId, count);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/stand")
-    public ResponseEntity<?> standRemove(@RequestBody StandRequest standRequest,
+    @DeleteMapping("/{id}/stand/{number}")
+    public ResponseEntity<?> standRemove(@PathVariable("id") String branchId,
+                                         @PathVariable("number") String number,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                          @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                          @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
-        companyBranchService.standRemove(user, standRequest);
+        companyBranchService.standRemove(user, branchId, number);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
