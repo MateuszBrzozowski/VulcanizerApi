@@ -14,8 +14,18 @@ public class Stand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int number;
+    private Integer number;
     @ManyToOne
     @JoinColumn(name = "company_branch_id", nullable = false)
     private CompanyBranch companyBranch;
+
+    @Override
+    public String toString() {
+        return "Stand{" +
+                "id=" + id +
+                ", number=" + number +
+                ", companyBranchID=" + companyBranch.getId() +
+                ", companyBranchName=" + companyBranch.getName() +
+                '}';
+    }
 }

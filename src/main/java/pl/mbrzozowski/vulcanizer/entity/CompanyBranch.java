@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,6 +36,9 @@ public class CompanyBranch {
     @ManyToOne
     @JoinColumn(name = "company", nullable = false)
     private Company company;
+    @JsonIgnore
+    @OneToMany(mappedBy = "companyBranch", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Stand> stands;
     private boolean isActive;
     private boolean isLocked;
     private boolean isClosed;

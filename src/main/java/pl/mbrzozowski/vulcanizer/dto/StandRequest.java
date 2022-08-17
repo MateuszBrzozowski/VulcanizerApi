@@ -3,7 +3,8 @@ package pl.mbrzozowski.vulcanizer.dto;
 import lombok.Data;
 
 @Data
-public class StandAddRequest {
-    private Long branchId;
+public class StandRequest {
+    private String branchId;
     private String count;
+    private String number;
 }

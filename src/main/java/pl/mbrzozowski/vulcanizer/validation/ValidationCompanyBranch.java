@@ -2,6 +2,7 @@ package pl.mbrzozowski.vulcanizer.validation;
 
 import org.apache.commons.lang3.StringUtils;
 import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
+import pl.mbrzozowski.vulcanizer.dto.StandRequest;
 import pl.mbrzozowski.vulcanizer.entity.Address;
 import pl.mbrzozowski.vulcanizer.entity.Company;
 import pl.mbrzozowski.vulcanizer.entity.CompanyBranch;
@@ -20,6 +21,26 @@ public class ValidationCompanyBranch {
         validAddress(companyBranch.getAddress());
         validPhone(companyBranch.getPhone());
         validCompany(companyBranch.getCompany());
+    }
+
+    public static void validStandAdd(StandRequest standRequest) {
+        branchIdNotBlank(standRequest.getBranchId());
+        if (StringUtils.isBlank(standRequest.getCount())) {
+            throw new IllegalArgumentException("Count of stand can not be blank");
+        }
+    }
+
+    public static void validStandRemove(StandRequest standRequest) {
+        branchIdNotBlank(standRequest.getBranchId());
+        if (StringUtils.isBlank(standRequest.getNumber())) {
+            throw new IllegalArgumentException("Number of stand can not be blank");
+        }
+    }
+
+    private static void branchIdNotBlank(String branchId) {
+        if (StringUtils.isBlank(branchId)) {
+            throw new IllegalArgumentException("Company branch id can not be blank");
+        }
     }
 
     private static void validCompany(Company company) {

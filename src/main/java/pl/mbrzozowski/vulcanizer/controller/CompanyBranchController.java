@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.CompanyBranchResponse;
 import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 import pl.mbrzozowski.vulcanizer.dto.CompanyResponse;
+import pl.mbrzozowski.vulcanizer.dto.StandRequest;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.service.CompanyBranchService;
 import pl.mbrzozowski.vulcanizer.service.CompanyService;
@@ -72,6 +73,28 @@ public class CompanyBranchController {
         User user = jwtTokenAuthenticate.authenticate();
         jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
         companyBranchService.decline(companyBranchId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/stand")
+    public ResponseEntity<?> standAdd(@RequestBody StandRequest standRequest,
+                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                      @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                      @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        companyBranchService.standAdd(user, standRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/stand")
+    public ResponseEntity<?> standRemove(@RequestBody StandRequest standRequest,
+                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                         @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                         @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate();
+        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        companyBranchService.standRemove(user, standRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
