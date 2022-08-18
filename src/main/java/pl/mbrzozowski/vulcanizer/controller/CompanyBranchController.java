@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.CompanyBranchResponse;
 import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
 import pl.mbrzozowski.vulcanizer.dto.CompanyResponse;
+import pl.mbrzozowski.vulcanizer.dto.OpeningHoursRequest;
 import pl.mbrzozowski.vulcanizer.entity.Stand;
 import pl.mbrzozowski.vulcanizer.entity.User;
 import pl.mbrzozowski.vulcanizer.service.CompanyBranchService;
@@ -35,8 +36,7 @@ public class CompanyBranchController {
     public ResponseEntity<List<CompanyBranchResponse>> findAllCompanyBranch(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                                             @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                                             @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate();
-        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate(token,checkSumId,checkSumProperties);
         List<CompanyBranchResponse> allWaiting = companyBranchService.findAllWaiting();
         return new ResponseEntity<>(allWaiting, HttpStatus.OK);
     }
@@ -46,8 +46,7 @@ public class CompanyBranchController {
                                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                                @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                                @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate();
-        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate(token,checkSumId,checkSumProperties);
         companyService.saveForExistCompany(user, businessRequest, null);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -58,8 +57,7 @@ public class CompanyBranchController {
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                  @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                  @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate();
-        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate(token,checkSumId,checkSumProperties);
         companyBranchService.accept(companyBranchId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -70,8 +68,7 @@ public class CompanyBranchController {
                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                   @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                   @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate();
-        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate(token,checkSumId,checkSumProperties);
         companyBranchService.decline(companyBranchId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -81,8 +78,7 @@ public class CompanyBranchController {
                                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                               @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                               @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate();
-        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate(token,checkSumId,checkSumProperties);
         List<Stand> stands = companyBranchService.findAllStandsForBranch(user, branchId);
         return new ResponseEntity<>(stands, HttpStatus.OK);
     }
@@ -93,8 +89,7 @@ public class CompanyBranchController {
                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                 @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                 @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate();
-        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate(token,checkSumId,checkSumProperties);
         List<Stand> stands = companyBranchService.standAdd(user, branchId, count);
         return new ResponseEntity<>(stands, HttpStatus.OK);
     }
@@ -105,9 +100,19 @@ public class CompanyBranchController {
                                                    @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                    @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                    @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate();
-        jwtTokenAuthenticate.validToken(user, token, checkSumId, checkSumProperties);
+        User user = jwtTokenAuthenticate.authenticate(token,checkSumId,checkSumProperties);
         List<Stand> stands = companyBranchService.standRemove(user, branchId, number);
         return new ResponseEntity<>(stands, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/hours")
+    public ResponseEntity<?> updateHoursOpening(@PathVariable("id") String branchId,
+                                                @RequestBody List<OpeningHoursRequest> openingHoursRequestList,
+                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
+        companyBranchService.updateHoursOpening(user, branchId, openingHoursRequestList);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -6,15 +6,20 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.CompanyBranchResponse;
+import pl.mbrzozowski.vulcanizer.dto.OpeningHoursRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.CompanyToCompanyResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.enums.CompanyRole;
+import pl.mbrzozowski.vulcanizer.enums.converter.StringDayToDayOfWeek;
 import pl.mbrzozowski.vulcanizer.repository.CompanyBranchRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationCompanyBranch;
+import pl.mbrzozowski.vulcanizer.validation.ValidationOpeningHours;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -64,17 +69,6 @@ public class CompanyBranchService {
             companyBranchResponseList.add(companyBranchResponse);
         }
         return companyBranchResponseList;
-    }
-
-    private User getUser(CompanyBranch companyBranch) {
-        Company company = companyBranch.getCompany();
-        List<Employee> employees = company.getEmployees();
-        for (Employee employee : employees) {
-            if (employee.getRole() == CompanyRole.OWNER) {
-                return employee.getUser();
-            }
-        }
-        return null;
     }
 
     public void accept(String companyBranchId) {
@@ -148,7 +142,7 @@ public class CompanyBranchService {
             } else {
                 throw new IllegalArgumentException("Stands are not exist");
             }
-        }else {
+        } else {
             throw new IllegalArgumentException("Company branch not exist");
         }
     }
@@ -165,6 +159,65 @@ public class CompanyBranchService {
         } else {
             return null;
         }
+    }
+
+    public void updateHoursOpening(User user, String branchId, List<OpeningHoursRequest> openingHoursRequestList) {
+        long companyBranchId = getLongIdFromString(branchId);
+        Optional<CompanyBranch> branchOptional = findById(companyBranchId);
+        if (branchOptional.isPresent()) {
+            CompanyBranch companyBranch = branchOptional.get();
+            checkBranchIsUser(user, companyBranch);
+            ValidationOpeningHours.validRequest(openingHoursRequestList);
+            List<OpeningHours> openingHours = companyBranch.getOpeningHours();
+            if (openingHours.size() == 0) {
+                createNewListOpeningHours(openingHoursRequestList, companyBranch, openingHours);
+                companyBranch.setOpeningHours(openingHours);
+                companyBranchRepository.save(companyBranch);
+            } else if (openingHours.size() == 7) {
+                for (OpeningHours openingHour : openingHours) {
+                    for (OpeningHoursRequest openingHoursRequest : openingHoursRequestList) {
+                        if (openingHour.getDay().name().equalsIgnoreCase(openingHoursRequest.getDayOfWeek())) {
+                            openingHour.setOpenTime(LocalTime.parse(openingHoursRequest.getOpenTime()));
+                            openingHour.setCloseTime(LocalTime.parse(openingHoursRequest.getCloseTime()));
+                            break;
+                        }
+                    }
+                }
+                companyBranch.setOpeningHours(openingHours);
+                companyBranchRepository.save(companyBranch);
+            } else {
+                openingHours.clear();
+                createNewListOpeningHours(openingHoursRequestList, companyBranch, openingHours);
+                companyBranch.setOpeningHours(openingHours);
+                companyBranchRepository.save(companyBranch);
+            }
+        } else {
+            throw new IllegalArgumentException("Company branch doesn't exist");
+        }
+    }
+
+    private void createNewListOpeningHours(List<OpeningHoursRequest> openingHoursRequestList, CompanyBranch companyBranch, List<OpeningHours> openingHours) {
+        for (OpeningHoursRequest openingHoursRequest : openingHoursRequestList) {
+            String day = openingHoursRequest.getDayOfWeek().toUpperCase();
+            DayOfWeek dayOfWeek = new StringDayToDayOfWeek().convert(day);
+            OpeningHours openingHour = new OpeningHours(null,
+                    dayOfWeek,
+                    LocalTime.parse(openingHoursRequest.getOpenTime()),
+                    LocalTime.parse(openingHoursRequest.getCloseTime()),
+                    companyBranch);
+            openingHours.add(openingHour);
+        }
+    }
+
+    private User getUser(CompanyBranch companyBranch) {
+        Company company = companyBranch.getCompany();
+        List<Employee> employees = company.getEmployees();
+        for (Employee employee : employees) {
+            if (employee.getRole() == CompanyRole.OWNER) {
+                return employee.getUser();
+            }
+        }
+        return null;
     }
 
     private @NotNull Long getLongIdFromString(String source) {
