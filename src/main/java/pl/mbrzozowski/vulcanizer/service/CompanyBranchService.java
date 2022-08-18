@@ -178,6 +178,7 @@ public class CompanyBranchService {
                         if (openingHour.getDay().name().equalsIgnoreCase(openingHoursRequest.getDay())) {
                             LocalTime open = getLocalTimeFromString(openingHoursRequest.getOpenTime());
                             LocalTime close = getLocalTimeFromString(openingHoursRequest.getCloseTime());
+                            ValidationOpeningHours.isAnyNull(open,close);
                             ValidationOpeningHours.isCloseTimeAfterOpenTime(open, close);
                             openingHour.setOpenTime(open);
                             openingHour.setCloseTime(close);
@@ -214,6 +215,7 @@ public class CompanyBranchService {
             DayOfWeek dayOfWeek = new StringDayToDayOfWeek().convert(day);
             LocalTime open = getLocalTimeFromString(openingHoursRequest.getOpenTime());
             LocalTime close = getLocalTimeFromString(openingHoursRequest.getCloseTime());
+            ValidationOpeningHours.isAnyNull(open,close);
             ValidationOpeningHours.isCloseTimeAfterOpenTime(open, close);
             OpeningHours openingHour = new OpeningHours(null,
                     dayOfWeek,

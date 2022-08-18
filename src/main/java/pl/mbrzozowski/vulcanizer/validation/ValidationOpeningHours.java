@@ -20,6 +20,14 @@ public class ValidationOpeningHours {
         }
     }
 
+    public static void isAnyNull(LocalTime open, LocalTime close) {
+        if (open == null && close != null) {
+            throw new IllegalArgumentException("One time of day is not logic. Open time is null.");
+        } else if (open != null && close == null) {
+            throw new IllegalArgumentException("One time of day is not logic. Close time is null.");
+        }
+    }
+
     public static void isCloseTimeAfterOpenTime(LocalTime open, LocalTime close) {
         if (open != null && close != null) {
             if (open.isAfter(close)) {
