@@ -14,4 +14,7 @@ public interface PublicHolidaysRepository extends JpaRepository<PublicHolidays, 
 
     @Query("SELECT ph FROM public_holidays ph WHERE (ph.date between :start AND :end) OR ph.everyYear=true")
     List<PublicHolidays> findAllByDateBetweenDatesAndAllEveryYear(@Param("start") LocalDate start, @Param("end") LocalDate end);
+
+    @Query("SELECT ph FROM public_holidays ph WHERE ph.date between :start AND :end")
+    List<PublicHolidays> findAllByDateBetweenDates(LocalDate start, LocalDate end);
 }

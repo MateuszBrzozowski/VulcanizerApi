@@ -39,7 +39,9 @@ public class PublicHolidaysService {
     }
 
     public List<PublicHolidays> findNextTwoMonths() {
-        return null;
+        LocalDate start = LocalDate.now();
+        LocalDate end = start.plusMonths(2);
+        return publicHolidaysRepository.findAllByDateBetweenDates(start, end);
     }
 
     public List<PublicHolidays> findAllThisYear() {
@@ -49,8 +51,8 @@ public class PublicHolidaysService {
     }
 
     public List<PublicHolidays> findAllNextYear() {
-        LocalDate start = LocalDate.of(LocalDate.now().getYear()+1, 1, 1);
-        LocalDate end = LocalDate.of(LocalDate.now().getYear()+1, 12, 31);
+        LocalDate start = LocalDate.of(LocalDate.now().getYear() + 1, 1, 1);
+        LocalDate end = LocalDate.of(LocalDate.now().getYear() + 1, 12, 31);
         return publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
     }
 
