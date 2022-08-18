@@ -1,6 +1,7 @@
 package pl.mbrzozowski.vulcanizer.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.PublicHolidaysRequest;
 import pl.mbrzozowski.vulcanizer.entity.PublicHolidays;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PublicHolidaysService {
     private final PublicHolidaysRepository publicHolidaysRepository;
@@ -41,7 +43,9 @@ public class PublicHolidaysService {
     }
 
     public List<PublicHolidays> findAllThisYear() {
-        return null;
+        LocalDate start = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+        LocalDate end = LocalDate.of(LocalDate.now().getYear(), 12, 31);
+        return publicHolidaysRepository.findAllByDateThisYear(start, end);
     }
 
     public List<PublicHolidays> findAllNextYear() {
