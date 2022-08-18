@@ -36,6 +36,17 @@ public class PublicHolidaysController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('super:admin')")
+    public ResponseEntity<?> delete(@PathVariable String id,
+                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                 @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                 @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
+        publicHolidaysService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/currentYear")
     @PreAuthorize("hasAuthority('super:admin')")
     public ResponseEntity<List<PublicHolidays>> findAllThisYear(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,

@@ -63,6 +63,15 @@ public class PublicHolidaysService {
         return holidaysList;
     }
 
+    public void deleteById(String id) {
+        try {
+            Long longId = Long.parseLong(id);
+            deleteById(longId);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Id can not convert to Long");
+        }
+    }
+
     public void deleteById(Long id) {
         publicHolidaysRepository.deleteById(id);
     }
