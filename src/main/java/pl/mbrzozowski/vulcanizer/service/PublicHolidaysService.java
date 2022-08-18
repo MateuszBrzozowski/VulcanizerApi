@@ -9,6 +9,7 @@ import pl.mbrzozowski.vulcanizer.repository.PublicHolidaysRepository;
 import pl.mbrzozowski.vulcanizer.validation.ValidationPublicHolidays;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,19 +42,25 @@ public class PublicHolidaysService {
     public List<PublicHolidays> findNextTwoMonths() {
         LocalDate start = LocalDate.now();
         LocalDate end = start.plusMonths(2);
-        return publicHolidaysRepository.findAllByDateBetweenDates(start, end);
+        List<PublicHolidays> holidaysList = publicHolidaysRepository.findAllByDateBetweenDates(start, end);
+        holidaysList.sort(Comparator.comparing(PublicHolidays::getDate));
+        return holidaysList;
     }
 
     public List<PublicHolidays> findAllThisYear() {
         LocalDate start = LocalDate.of(LocalDate.now().getYear(), 1, 1);
         LocalDate end = LocalDate.of(LocalDate.now().getYear(), 12, 31);
-        return publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
+        List<PublicHolidays> holidaysList = publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
+        holidaysList.sort(Comparator.comparing(PublicHolidays::getDate));
+        return holidaysList;
     }
 
     public List<PublicHolidays> findAllNextYear() {
         LocalDate start = LocalDate.of(LocalDate.now().getYear() + 1, 1, 1);
         LocalDate end = LocalDate.of(LocalDate.now().getYear() + 1, 12, 31);
-        return publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
+        List<PublicHolidays> holidaysList = publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
+        holidaysList.sort(Comparator.comparing(PublicHolidays::getDate));
+        return holidaysList;
     }
 
     public void deleteById(Long id) {
