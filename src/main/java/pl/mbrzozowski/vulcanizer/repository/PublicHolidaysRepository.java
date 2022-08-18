@@ -13,5 +13,5 @@ import java.util.List;
 public interface PublicHolidaysRepository extends JpaRepository<PublicHolidays, Long> {
 
     @Query("SELECT ph FROM public_holidays ph WHERE (ph.date between :start AND :end) OR ph.everyYear=true")
-    List<PublicHolidays> findAllByDateThisYear(@Param("start") LocalDate start, @Param("end") LocalDate end);
+    List<PublicHolidays> findAllByDateBetweenDatesAndAllEveryYear(@Param("start") LocalDate start, @Param("end") LocalDate end);
 }

@@ -45,11 +45,13 @@ public class PublicHolidaysService {
     public List<PublicHolidays> findAllThisYear() {
         LocalDate start = LocalDate.of(LocalDate.now().getYear(), 1, 1);
         LocalDate end = LocalDate.of(LocalDate.now().getYear(), 12, 31);
-        return publicHolidaysRepository.findAllByDateThisYear(start, end);
+        return publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
     }
 
     public List<PublicHolidays> findAllNextYear() {
-        return null;
+        LocalDate start = LocalDate.of(LocalDate.now().getYear()+1, 1, 1);
+        LocalDate end = LocalDate.of(LocalDate.now().getYear()+1, 12, 31);
+        return publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
     }
 
     public void deleteById(Long id) {
