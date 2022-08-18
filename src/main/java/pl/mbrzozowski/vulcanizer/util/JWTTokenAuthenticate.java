@@ -50,6 +50,17 @@ public class JWTTokenAuthenticate {
         return user;
     }
 
+    public User authenticate(String token, String checkSumId, String checkSumProperties) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = userService.findByEmail(authentication.getName());
+        User user = optionalUser.orElse(null);
+        if (user != null) {
+            userService.checkBans(user);
+        }
+        validToken(user, token, checkSumId, checkSumProperties);
+        return user;
+    }
+
     public void validToken(User user, String token, String checkSumId, String checkSumProperties) {
         boolean isValidToken = userService.isValidToken(user, token, checkSumId, checkSumProperties);
         if (!isValidToken) {
