@@ -31,7 +31,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CompanyBranchService {
     private final CompanyBranchRepository companyBranchRepository;
-    private final int MAX_STANDS = 10;
+    private static final int MAX_STANDS = 10;
 
     /**
      * Saving new companyBranch in DB. Name, address, phone, Company can not be null/blank.
