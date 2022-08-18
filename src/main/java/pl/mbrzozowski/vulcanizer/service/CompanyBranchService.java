@@ -197,7 +197,15 @@ public class CompanyBranchService {
     }
 
     public List<OpeningHours> findHoursOpening(User user, String branchId) {
-        return null;
+        long companyBranchId = getLongIdFromString(branchId);
+        Optional<CompanyBranch> branchOptional = findById(companyBranchId);
+        if (branchOptional.isPresent()) {
+            CompanyBranch companyBranch = branchOptional.get();
+            checkBranchIsUser(user, companyBranch);
+            return companyBranch.getOpeningHours();
+        } else {
+            throw new IllegalArgumentException("Company branch doesn't exist");
+        }
     }
 
     private void createNewListOpeningHours(List<OpeningHoursRequest> openingHoursRequestList, CompanyBranch companyBranch, List<OpeningHours> openingHours) {
