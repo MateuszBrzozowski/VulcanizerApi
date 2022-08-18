@@ -20,10 +20,28 @@ public class ValidationOpeningHours {
         }
     }
 
+    public static void isCloseTimeAfterOpenTime(LocalTime open, LocalTime close) {
+        if (open != null && close != null) {
+            if (open.isAfter(close)) {
+                throw new IllegalArgumentException(String.format("Close time [%s] is before than open time [%s]. Not logic.", close, open));
+            }
+        }
+    }
+
     private static void checkTimes(List<OpeningHoursRequest> openingHoursRequestList) {
         for (OpeningHoursRequest openingHoursRequest : openingHoursRequestList) {
-            validTime(openingHoursRequest.getOpenTime());
-            validTime(openingHoursRequest.getCloseTime());
+            if (openingHoursRequest.getOpenTime() != null) {
+                if (openingHoursRequest.getOpenTime().length() == 4) {
+                    openingHoursRequest.setOpenTime("0" + openingHoursRequest.getOpenTime());
+                }
+                validTime(openingHoursRequest.getOpenTime());
+            }
+            if (openingHoursRequest.getCloseTime() != null) {
+                if (openingHoursRequest.getCloseTime().length() == 4) {
+                    openingHoursRequest.setCloseTime("0" + openingHoursRequest.getCloseTime());
+                }
+                validTime(openingHoursRequest.getCloseTime());
+            }
         }
     }
 
@@ -40,7 +58,7 @@ public class ValidationOpeningHours {
         for (DayOfWeek dayOfWeek : dayOfWeeks) {
             boolean isExist = false;
             for (OpeningHoursRequest openingHoursRequest : openingHoursRequestList) {
-                if (dayOfWeek.name().equalsIgnoreCase(openingHoursRequest.getDayOfWeek())) {
+                if (dayOfWeek.name().equalsIgnoreCase(openingHoursRequest.getDay())) {
                     isExist = true;
                     break;
                 }

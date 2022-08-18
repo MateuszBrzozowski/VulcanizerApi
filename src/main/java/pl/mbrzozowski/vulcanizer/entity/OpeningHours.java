@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,11 +18,13 @@ import java.time.LocalTime;
 public class OpeningHours {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     @Enumerated(EnumType.ORDINAL)
     private DayOfWeek day;
     private LocalTime openTime;
     private LocalTime closeTime;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "company_branch_id")
     private CompanyBranch companyBranch;

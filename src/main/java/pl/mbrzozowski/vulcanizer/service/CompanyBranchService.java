@@ -20,6 +20,7 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationOpeningHours;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -171,42 +172,63 @@ public class CompanyBranchService {
             List<OpeningHours> openingHours = companyBranch.getOpeningHours();
             if (openingHours.size() == 0) {
                 createNewListOpeningHours(openingHoursRequestList, companyBranch, openingHours);
-                companyBranch.setOpeningHours(openingHours);
-                companyBranchRepository.save(companyBranch);
             } else if (openingHours.size() == 7) {
                 for (OpeningHours openingHour : openingHours) {
                     for (OpeningHoursRequest openingHoursRequest : openingHoursRequestList) {
-                        if (openingHour.getDay().name().equalsIgnoreCase(openingHoursRequest.getDayOfWeek())) {
-                            openingHour.setOpenTime(LocalTime.parse(openingHoursRequest.getOpenTime()));
-                            openingHour.setCloseTime(LocalTime.parse(openingHoursRequest.getCloseTime()));
+                        if (openingHour.getDay().name().equalsIgnoreCase(openingHoursRequest.getDay())) {
+                            LocalTime open = getLocalTimeFromString(openingHoursRequest.getOpenTime());
+                            LocalTime close = getLocalTimeFromString(openingHoursRequest.getCloseTime());
+                            ValidationOpeningHours.isCloseTimeAfterOpenTime(open, close);
+                            openingHour.setOpenTime(open);
+                            openingHour.setCloseTime(close);
                             break;
                         }
                     }
                 }
-                companyBranch.setOpeningHours(openingHours);
-                companyBranchRepository.save(companyBranch);
             } else {
                 openingHours.clear();
                 createNewListOpeningHours(openingHoursRequestList, companyBranch, openingHours);
-                companyBranch.setOpeningHours(openingHours);
-                companyBranchRepository.save(companyBranch);
             }
+            companyBranch.setOpeningHours(openingHours);
+            companyBranchRepository.save(companyBranch);
         } else {
             throw new IllegalArgumentException("Company branch doesn't exist");
         }
     }
 
+    public List<OpeningHours> findHoursOpening(User user, String branchId) {
+        return null;
+    }
+
     private void createNewListOpeningHours(List<OpeningHoursRequest> openingHoursRequestList, CompanyBranch companyBranch, List<OpeningHours> openingHours) {
         for (OpeningHoursRequest openingHoursRequest : openingHoursRequestList) {
-            String day = openingHoursRequest.getDayOfWeek().toUpperCase();
+            String day = openingHoursRequest.getDay().toUpperCase();
             DayOfWeek dayOfWeek = new StringDayToDayOfWeek().convert(day);
+            LocalTime open = getLocalTimeFromString(openingHoursRequest.getOpenTime());
+            LocalTime close = getLocalTimeFromString(openingHoursRequest.getCloseTime());
+            ValidationOpeningHours.isCloseTimeAfterOpenTime(open, close);
             OpeningHours openingHour = new OpeningHours(null,
                     dayOfWeek,
-                    LocalTime.parse(openingHoursRequest.getOpenTime()),
-                    LocalTime.parse(openingHoursRequest.getCloseTime()),
+                    open,
+                    close,
                     companyBranch);
             openingHours.add(openingHour);
         }
+    }
+
+    /**
+     * Converting String to LocalTime. If source is null, method return null. If source can not convert to Local
+     *
+     * @param source String which convert to LocalTime. XX:XX
+     * @return time like {@link LocalTime}
+     * @throws DateTimeParseException when source can not to be converted to LocalTime.
+     */
+    private LocalTime getLocalTimeFromString(String source) {
+        LocalTime result = null;
+        if (source != null) {
+            result = LocalTime.parse(source);
+        }
+        return result;
     }
 
     private User getUser(CompanyBranch companyBranch) {

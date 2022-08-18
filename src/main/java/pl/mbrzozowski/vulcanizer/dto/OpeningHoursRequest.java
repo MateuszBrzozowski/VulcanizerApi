@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OpeningHoursRequest {
-    private String dayOfWeek;
+    private String day;
     private String openTime;
     private String closeTime;
 }
