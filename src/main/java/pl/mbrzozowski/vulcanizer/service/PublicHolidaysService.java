@@ -31,14 +31,6 @@ public class PublicHolidaysService {
         publicHolidaysRepository.save(publicHolidays);
     }
 
-    public void update(PublicHolidaysRequest publicHolidaysRequest) {
-
-    }
-
-    public List<PublicHolidays> findAll() {
-        return null;
-    }
-
     public List<PublicHolidays> findNextTwoMonths() {
         LocalDate start = LocalDate.now();
         LocalDate end = start.plusMonths(2);
@@ -59,6 +51,11 @@ public class PublicHolidaysService {
         LocalDate start = LocalDate.of(LocalDate.now().getYear() + 1, 1, 1);
         LocalDate end = LocalDate.of(LocalDate.now().getYear() + 1, 12, 31);
         List<PublicHolidays> holidaysList = publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
+        for (PublicHolidays publicHolidays : holidaysList) {
+            LocalDate date = publicHolidays.getDate();
+            LocalDate newDate = LocalDate.of(LocalDate.now().getYear()+1, date.getMonth(), date.getDayOfMonth());
+            publicHolidays.setDate(newDate);
+        }
         holidaysList.sort(Comparator.comparing(PublicHolidays::getDate));
         return holidaysList;
     }

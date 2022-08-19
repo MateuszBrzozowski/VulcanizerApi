@@ -67,4 +67,13 @@ public class PublicHolidaysController {
         return new ResponseEntity<>(holidaysList, HttpStatus.OK);
     }
 
+    @GetMapping("/nextMonths")
+    public ResponseEntity<List<PublicHolidays>> findAllNextTwoMonths(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                                @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                                @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
+        List<PublicHolidays> holidaysList = publicHolidaysService.findNextTwoMonths();
+        return new ResponseEntity<>(holidaysList, HttpStatus.OK);
+    }
+
 }
