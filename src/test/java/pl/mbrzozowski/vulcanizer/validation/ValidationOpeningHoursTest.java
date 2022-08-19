@@ -343,4 +343,82 @@ class ValidationOpeningHoursTest {
                 .build();
         Assertions.assertDoesNotThrow(() -> ValidationOpeningHours.validCustomOpeningHours(openingHours));
     }
+
+    @Test
+    void datesAreNotExist_DateIsExist_ThrowIllegalException() {
+        List<CustomOpeningHours> customOpeningHoursList = new ArrayList<>();
+        CustomOpeningHours customOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(2))
+                .dateEnd(LocalDate.now().plusDays(3))
+                .build();
+        customOpeningHoursList.add(customOpeningHours);
+        CustomOpeningHours newOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(3))
+                .dateEnd(LocalDate.now().plusDays(4))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> ValidationOpeningHours.datesAreNotExist(newOpeningHours, customOpeningHoursList));
+    }
+
+    @Test
+    void datesAreNotExist_DateIsExistNewBefore_ThrowIllegalException() {
+        List<CustomOpeningHours> customOpeningHoursList = new ArrayList<>();
+        CustomOpeningHours customOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(3))
+                .dateEnd(LocalDate.now().plusDays(4))
+                .build();
+        customOpeningHoursList.add(customOpeningHours);
+        CustomOpeningHours newOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(2))
+                .dateEnd(LocalDate.now().plusDays(3))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> ValidationOpeningHours.datesAreNotExist(newOpeningHours, customOpeningHoursList));
+    }
+
+    @Test
+    void datesAreNotExist_DateIsExistNewAbove_ThrowIllegalException() {
+        List<CustomOpeningHours> customOpeningHoursList = new ArrayList<>();
+        CustomOpeningHours customOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(3))
+                .dateEnd(LocalDate.now().plusDays(4))
+                .build();
+        customOpeningHoursList.add(customOpeningHours);
+        CustomOpeningHours newOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(2))
+                .dateEnd(LocalDate.now().plusDays(5))
+                .build();
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> ValidationOpeningHours.datesAreNotExist(newOpeningHours, customOpeningHoursList));
+    }
+
+    @Test
+    void datesAreNotExist_NewIsBefore_DoesNotThrowsException() {
+        List<CustomOpeningHours> customOpeningHoursList = new ArrayList<>();
+        CustomOpeningHours customOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(3))
+                .dateEnd(LocalDate.now().plusDays(4))
+                .build();
+        customOpeningHoursList.add(customOpeningHours);
+        CustomOpeningHours newOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(2))
+                .dateEnd(LocalDate.now().plusDays(2))
+                .build();
+        Assertions.assertDoesNotThrow(() -> ValidationOpeningHours.datesAreNotExist(newOpeningHours, customOpeningHoursList));
+    }
+
+    @Test
+    void datesAreNotExist_NewIsAfter_DoesNotThrowsException() {
+        List<CustomOpeningHours> customOpeningHoursList = new ArrayList<>();
+        CustomOpeningHours customOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(3))
+                .dateEnd(LocalDate.now().plusDays(4))
+                .build();
+        customOpeningHoursList.add(customOpeningHours);
+        CustomOpeningHours newOpeningHours = CustomOpeningHours.builder()
+                .dateStart(LocalDate.now().plusDays(5))
+                .dateEnd(LocalDate.now().plusDays(5))
+                .build();
+        Assertions.assertDoesNotThrow(() -> ValidationOpeningHours.datesAreNotExist(newOpeningHours, customOpeningHoursList));
+    }
 }
