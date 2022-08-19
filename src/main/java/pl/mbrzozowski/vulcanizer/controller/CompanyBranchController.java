@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.mbrzozowski.vulcanizer.dto.CompanyBranchResponse;
-import pl.mbrzozowski.vulcanizer.dto.CompanyRequest;
-import pl.mbrzozowski.vulcanizer.dto.CompanyResponse;
-import pl.mbrzozowski.vulcanizer.dto.OpeningHoursRequest;
+import pl.mbrzozowski.vulcanizer.dto.*;
 import pl.mbrzozowski.vulcanizer.entity.OpeningHours;
 import pl.mbrzozowski.vulcanizer.entity.Stand;
 import pl.mbrzozowski.vulcanizer.entity.User;
@@ -91,7 +88,7 @@ public class CompanyBranchController {
                                                 @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                 @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
-        List<Stand> stands = companyBranchService.standAdd(user, branchId, count);
+        List<Stand> stands = companyBranchService.addStand(user, branchId, count);
         return new ResponseEntity<>(stands, HttpStatus.OK);
     }
 
@@ -102,7 +99,7 @@ public class CompanyBranchController {
                                                    @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                    @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
-        List<Stand> stands = companyBranchService.standRemove(user, branchId, number);
+        List<Stand> stands = companyBranchService.removeStand(user, branchId, number);
         return new ResponseEntity<>(stands, HttpStatus.OK);
     }
 
@@ -125,5 +122,16 @@ public class CompanyBranchController {
         User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
         List<OpeningHours> openingHours = companyBranchService.findHoursOpening(user, branchId);
         return new ResponseEntity<>(openingHours, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/hours/custom")
+    public ResponseEntity<?> addCustomOpeningHours(@PathVariable("id") String branchId,
+                                                   @RequestBody CustomOpeningHoursRequest openingHoursRequest,
+                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                   @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                   @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
+        companyBranchService.addCustomOpeningHours(user, branchId, openingHoursRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

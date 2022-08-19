@@ -6,9 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.CompanyBranchResponse;
+import pl.mbrzozowski.vulcanizer.dto.CustomOpeningHoursRequest;
 import pl.mbrzozowski.vulcanizer.dto.OpeningHoursRequest;
 import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
 import pl.mbrzozowski.vulcanizer.dto.mapper.CompanyToCompanyResponse;
+import pl.mbrzozowski.vulcanizer.dto.mapper.CustomOpeningHoursReqToEntity;
 import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.enums.CompanyRole;
@@ -18,6 +20,7 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationCompanyBranch;
 import pl.mbrzozowski.vulcanizer.validation.ValidationOpeningHours;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -98,53 +101,42 @@ public class CompanyBranchService {
         return companyBranchRepository.findById(id);
     }
 
-    public List<Stand> standAdd(User user, String branchId, String count) {
+    public List<Stand> addStand(User user, String branchId, String count) {
         ValidationCompanyBranch.validStandAdd(branchId, count);
         long companyBranchId = getLongIdFromString(branchId);
         int countOfStands = getIntIdFromString(count);
-        Optional<CompanyBranch> branchOptional = findById(companyBranchId);
-        if (branchOptional.isPresent()) {
-            CompanyBranch companyBranch = branchOptional.get();
-            checkBranchIsUser(user, companyBranch);
-            if (companyBranch.getStands().size() > MAX_STANDS || companyBranch.getStands().size() + countOfStands > 10) {
-                throw new IllegalArgumentException("Max count of stands");
-            }
+        CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
+        checkBranchIsUser(user, companyBranch);
+        if (companyBranch.getStands().size() > MAX_STANDS || companyBranch.getStands().size() + countOfStands > 10) {
+            throw new IllegalArgumentException("Max count of stands");
+        }
+        List<Stand> stands = companyBranch.getStands();
+        for (int i = 0; i < countOfStands; i++) {
+            int minNumber = getNumber(stands);
+            Stand stand = new Stand(null, minNumber, companyBranch, null);
+            stands.add(stand);
+        }
+        companyBranch.setStands(stands);
+        companyBranchRepository.save(companyBranch);
+        return stands;
+    }
+
+    public List<Stand> removeStand(User user, String branchId, String number) {
+        ValidationCompanyBranch.validStandRemove(branchId, number);
+        long companyBranchId = getLongIdFromString(branchId);
+        int numberOfStand = getIntIdFromString(number);
+        CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
+        checkBranchIsUser(user, companyBranch);
+        if (companyBranch.getStands().size() > 0) {
             List<Stand> stands = companyBranch.getStands();
-            for (int i = 0; i < countOfStands; i++) {
-                int minNumber = getNumber(stands);
-                Stand stand = new Stand(null, minNumber, companyBranch,null);
-                stands.add(stand);
-            }
+            stands.sort(Comparator.comparing(Stand::getNumber));
+            int indexToRemove = getIndexToRemove(numberOfStand, stands);
+            removeStandAndUpdateNumbersOfAnotherStand(stands, indexToRemove);
             companyBranch.setStands(stands);
             companyBranchRepository.save(companyBranch);
             return stands;
         } else {
-            throw new IllegalArgumentException("Company branch not exist");
-        }
-
-    }
-
-    public List<Stand> standRemove(User user, String branchId, String number) {
-        ValidationCompanyBranch.validStandRemove(branchId, number);
-        long companyBranchId = getLongIdFromString(branchId);
-        int numberOfStand = getIntIdFromString(number);
-        Optional<CompanyBranch> branchOptional = findById(companyBranchId);
-        if (branchOptional.isPresent()) {
-            CompanyBranch companyBranch = branchOptional.get();
-            checkBranchIsUser(user, companyBranch);
-            if (companyBranch.getStands().size() > 0) {
-                List<Stand> stands = companyBranch.getStands();
-                stands.sort(Comparator.comparing(Stand::getNumber));
-                int indexToRemove = getIndexToRemove(numberOfStand, stands);
-                removeStandAndUpdateNumbersOfAnotherStand(stands, indexToRemove);
-                companyBranch.setStands(stands);
-                companyBranchRepository.save(companyBranch);
-                return stands;
-            } else {
-                throw new IllegalArgumentException("Stands are not exist");
-            }
-        } else {
-            throw new IllegalArgumentException("Company branch not exist");
+            throw new IllegalArgumentException("Stands are not exist");
         }
     }
 
@@ -164,46 +156,92 @@ public class CompanyBranchService {
 
     public void updateHoursOpening(User user, String branchId, List<OpeningHoursRequest> openingHoursRequestList) {
         long companyBranchId = getLongIdFromString(branchId);
-        Optional<CompanyBranch> branchOptional = findById(companyBranchId);
-        if (branchOptional.isPresent()) {
-            CompanyBranch companyBranch = branchOptional.get();
-            checkBranchIsUser(user, companyBranch);
-            ValidationOpeningHours.validRequest(openingHoursRequestList);
-            List<OpeningHours> openingHours = companyBranch.getOpeningHours();
-            if (openingHours.size() == 0) {
-                createNewListOpeningHours(openingHoursRequestList, companyBranch, openingHours);
-            } else if (openingHours.size() == 7) {
-                for (OpeningHours openingHour : openingHours) {
-                    for (OpeningHoursRequest openingHoursRequest : openingHoursRequestList) {
-                        if (openingHour.getDay().name().equalsIgnoreCase(openingHoursRequest.getDay())) {
-                            LocalTime open = getLocalTimeFromString(openingHoursRequest.getOpenTime());
-                            LocalTime close = getLocalTimeFromString(openingHoursRequest.getCloseTime());
-                            ValidationOpeningHours.isAnyNull(open,close);
-                            ValidationOpeningHours.isCloseTimeAfterOpenTime(open, close);
-                            openingHour.setOpenTime(open);
-                            openingHour.setCloseTime(close);
-                            break;
-                        }
+        CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
+        checkBranchIsUser(user, companyBranch);
+        ValidationOpeningHours.validRequest(openingHoursRequestList);
+        List<OpeningHours> openingHours = companyBranch.getOpeningHours();
+        if (openingHours.size() == 0) {
+            createNewListOpeningHours(openingHoursRequestList, companyBranch, openingHours);
+        } else if (openingHours.size() == 7) {
+            for (OpeningHours openingHour : openingHours) {
+                for (OpeningHoursRequest openingHoursRequest : openingHoursRequestList) {
+                    if (openingHour.getDay().name().equalsIgnoreCase(openingHoursRequest.getDay())) {
+                        LocalTime open = getLocalTimeFromString(openingHoursRequest.getOpenTime());
+                        LocalTime close = getLocalTimeFromString(openingHoursRequest.getCloseTime());
+                        ValidationOpeningHours.isAnyNull(open, close);
+                        ValidationOpeningHours.isCloseTimeAfterOpenTime(open, close);
+                        openingHour.setOpenTime(open);
+                        openingHour.setCloseTime(close);
+                        break;
                     }
                 }
-            } else {
-                openingHours.clear();
-                createNewListOpeningHours(openingHoursRequestList, companyBranch, openingHours);
             }
-            companyBranch.setOpeningHours(openingHours);
-            companyBranchRepository.save(companyBranch);
         } else {
-            throw new IllegalArgumentException("Company branch doesn't exist");
+            openingHours.clear();
+            createNewListOpeningHours(openingHoursRequestList, companyBranch, openingHours);
         }
+        companyBranch.setOpeningHours(openingHours);
+        companyBranchRepository.save(companyBranch);
     }
 
     public List<OpeningHours> findHoursOpening(User user, String branchId) {
         long companyBranchId = getLongIdFromString(branchId);
-        Optional<CompanyBranch> branchOptional = findById(companyBranchId);
+        CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
+        checkBranchIsUser(user, companyBranch);
+        return companyBranch.getOpeningHours();
+    }
+
+    public void addCustomOpeningHours(User user, String branchId, CustomOpeningHoursRequest openingHoursRequest) {
+        ValidationOpeningHours.validCustomRequest(openingHoursRequest);
+        Long companyBranchId = getLongIdFromString(branchId);
+        CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
+        checkBranchIsUser(user, companyBranch);
+        CustomOpeningHours newOpeningHours = new CustomOpeningHoursReqToEntity().convert(openingHoursRequest);
+        if (newOpeningHours.getDateStart().isAfter(LocalDate.now().plusMonths(2))
+                && newOpeningHours.getDateEnd().isAfter(LocalDate.now().plusMonths(2))) {
+            throw new IllegalArgumentException("Max in two months");
+        }
+        if (!newOpeningHours.getDateStart().equals(newOpeningHours.getDateEnd())) {
+            if (newOpeningHours.getDateStart().isAfter(newOpeningHours.getDateEnd())) {
+                throw new IllegalArgumentException("Date start is after date end");
+            }
+        }
+        List<CustomOpeningHours> customOpeningHours = companyBranch.getCustomOpeningHours();
+        for (CustomOpeningHours customOpeningHour : customOpeningHours) {
+            if (newOpeningHours.getDateStart().equals(customOpeningHour.getDateStart()) ||
+                    newOpeningHours.getDateStart().equals(customOpeningHour.getDateEnd()) ||
+                    newOpeningHours.getDateEnd().equals(customOpeningHour.getDateStart()) ||
+                    newOpeningHours.getDateEnd().equals(customOpeningHour.getDateEnd())) {
+                throw new IllegalArgumentException("Date not valid");
+            }
+            if (newOpeningHours.getDateStart().isAfter(customOpeningHour.getDateStart())) {
+                if (newOpeningHours.getDateStart().isBefore(customOpeningHour.getDateEnd()) ||
+                        newOpeningHours.getDateStart().equals(customOpeningHour.getDateEnd())) {
+                    throw new IllegalArgumentException("Date not valid.");
+                }
+            }
+            if (newOpeningHours.getDateStart().isBefore(customOpeningHour.getDateStart())) {
+                if (newOpeningHours.getDateEnd().isAfter(customOpeningHour.getDateStart()) ||
+                        newOpeningHours.getDateEnd().equals(customOpeningHour.getDateStart())) {
+                    throw new IllegalArgumentException("Date not valid");
+                }
+            }
+        }
+        ValidationOpeningHours.isAnyNull(newOpeningHours.getTimeStart(), newOpeningHours.getTimeEnd());
+        ValidationOpeningHours.isCloseTimeAfterOpenTime(newOpeningHours.getTimeStart(), newOpeningHours.getTimeEnd());
+        companyBranch.getCustomOpeningHours().add(newOpeningHours);
+        companyBranchRepository.save(companyBranch);
+    }
+
+    /**
+     * @param id of company branch which search
+     * @return {@link CompanyBranch} from DB
+     * @throws IllegalArgumentException when company branch doesn't exist in DB
+     */
+    private CompanyBranch getCompanyBranch(Long id) {
+        Optional<CompanyBranch> branchOptional = findById(id);
         if (branchOptional.isPresent()) {
-            CompanyBranch companyBranch = branchOptional.get();
-            checkBranchIsUser(user, companyBranch);
-            return companyBranch.getOpeningHours();
+            return branchOptional.get();
         } else {
             throw new IllegalArgumentException("Company branch doesn't exist");
         }
@@ -215,7 +253,7 @@ public class CompanyBranchService {
             DayOfWeek dayOfWeek = new StringDayToDayOfWeek().convert(day);
             LocalTime open = getLocalTimeFromString(openingHoursRequest.getOpenTime());
             LocalTime close = getLocalTimeFromString(openingHoursRequest.getCloseTime());
-            ValidationOpeningHours.isAnyNull(open,close);
+            ValidationOpeningHours.isAnyNull(open, close);
             ValidationOpeningHours.isCloseTimeAfterOpenTime(open, close);
             OpeningHours openingHour = new OpeningHours(null,
                     dayOfWeek,
