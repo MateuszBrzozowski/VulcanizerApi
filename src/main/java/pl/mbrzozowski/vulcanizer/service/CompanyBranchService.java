@@ -20,7 +20,6 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationCompanyBranch;
 import pl.mbrzozowski.vulcanizer.validation.ValidationOpeningHours;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -193,42 +192,12 @@ public class CompanyBranchService {
 
     public void addCustomOpeningHours(User user, String branchId, CustomOpeningHoursRequest openingHoursRequest) {
         ValidationOpeningHours.validCustomRequest(openingHoursRequest);
+        CustomOpeningHours newOpeningHours = new CustomOpeningHoursReqToEntity().convert(openingHoursRequest);
+        ValidationOpeningHours.validCustomOpeningHours(newOpeningHours);
         Long companyBranchId = getLongIdFromString(branchId);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
-        CustomOpeningHours newOpeningHours = new CustomOpeningHoursReqToEntity().convert(openingHoursRequest);
-        if (newOpeningHours.getDateStart().isAfter(LocalDate.now().plusMonths(2))
-                && newOpeningHours.getDateEnd().isAfter(LocalDate.now().plusMonths(2))) {
-            throw new IllegalArgumentException("Max in two months");
-        }
-        if (!newOpeningHours.getDateStart().equals(newOpeningHours.getDateEnd())) {
-            if (newOpeningHours.getDateStart().isAfter(newOpeningHours.getDateEnd())) {
-                throw new IllegalArgumentException("Date start is after date end");
-            }
-        }
-        List<CustomOpeningHours> customOpeningHours = companyBranch.getCustomOpeningHours();
-        for (CustomOpeningHours customOpeningHour : customOpeningHours) {
-            if (newOpeningHours.getDateStart().equals(customOpeningHour.getDateStart()) ||
-                    newOpeningHours.getDateStart().equals(customOpeningHour.getDateEnd()) ||
-                    newOpeningHours.getDateEnd().equals(customOpeningHour.getDateStart()) ||
-                    newOpeningHours.getDateEnd().equals(customOpeningHour.getDateEnd())) {
-                throw new IllegalArgumentException("Date not valid");
-            }
-            if (newOpeningHours.getDateStart().isAfter(customOpeningHour.getDateStart())) {
-                if (newOpeningHours.getDateStart().isBefore(customOpeningHour.getDateEnd()) ||
-                        newOpeningHours.getDateStart().equals(customOpeningHour.getDateEnd())) {
-                    throw new IllegalArgumentException("Date not valid.");
-                }
-            }
-            if (newOpeningHours.getDateStart().isBefore(customOpeningHour.getDateStart())) {
-                if (newOpeningHours.getDateEnd().isAfter(customOpeningHour.getDateStart()) ||
-                        newOpeningHours.getDateEnd().equals(customOpeningHour.getDateStart())) {
-                    throw new IllegalArgumentException("Date not valid");
-                }
-            }
-        }
-        ValidationOpeningHours.isAnyNull(newOpeningHours.getTimeStart(), newOpeningHours.getTimeEnd());
-        ValidationOpeningHours.isCloseTimeAfterOpenTime(newOpeningHours.getTimeStart(), newOpeningHours.getTimeEnd());
+        ValidationOpeningHours.datesAreNotExist(newOpeningHours, companyBranch.getCustomOpeningHours());
         companyBranch.getCustomOpeningHours().add(newOpeningHours);
         companyBranchRepository.save(companyBranch);
     }
