@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +21,9 @@ public class Stand {
     @ManyToOne
     @JoinColumn(name = "company_branch_id", nullable = false)
     private CompanyBranch companyBranch;
+    @JsonIgnore
+    @OneToMany(mappedBy = "stand", cascade = CascadeType.ALL)
+    private List<CustomOpeningHours> customOpeningHours;
 
     @Override
     public String toString() {

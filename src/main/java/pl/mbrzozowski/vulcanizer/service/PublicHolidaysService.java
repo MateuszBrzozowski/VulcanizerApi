@@ -19,6 +19,12 @@ import java.util.Optional;
 public class PublicHolidaysService {
     private final PublicHolidaysRepository publicHolidaysRepository;
 
+    /**
+     * Saving new public holiday
+     *
+     * @param publicHolidaysRequest {@link PublicHolidaysRequest}
+     * @throws IllegalArgumentException when date is blank or longer than 255 length, or name is blank
+     */
     public void save(PublicHolidaysRequest publicHolidaysRequest) {
         ValidationPublicHolidays.validRequest(publicHolidaysRequest);
         LocalDate date = LocalDate.parse(publicHolidaysRequest.getDate());
@@ -53,7 +59,7 @@ public class PublicHolidaysService {
         List<PublicHolidays> holidaysList = publicHolidaysRepository.findAllByDateBetweenDatesAndAllEveryYear(start, end);
         for (PublicHolidays publicHolidays : holidaysList) {
             LocalDate date = publicHolidays.getDate();
-            LocalDate newDate = LocalDate.of(LocalDate.now().getYear()+1, date.getMonth(), date.getDayOfMonth());
+            LocalDate newDate = LocalDate.of(LocalDate.now().getYear() + 1, date.getMonth(), date.getDayOfMonth());
             publicHolidays.setDate(newDate);
         }
         holidaysList.sort(Comparator.comparing(PublicHolidays::getDate));

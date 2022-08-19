@@ -112,7 +112,7 @@ public class CompanyBranchService {
             List<Stand> stands = companyBranch.getStands();
             for (int i = 0; i < countOfStands; i++) {
                 int minNumber = getNumber(stands);
-                Stand stand = new Stand(null, minNumber, companyBranch);
+                Stand stand = new Stand(null, minNumber, companyBranch,null);
                 stands.add(stand);
             }
             companyBranch.setStands(stands);
