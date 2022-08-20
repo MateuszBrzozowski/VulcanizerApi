@@ -217,6 +217,20 @@ public class CompanyBranchService {
         return companyBranch.getCustomOpeningHours();
     }
 
+    public List<CustomOpeningHours> deleteCustomOpeningHours(User user, String branchId, String hoursId) {
+        Long companyBranchId = getLongIdFromString(branchId);
+        Long customOpeningHoursId = getLongIdFromString(hoursId);
+        CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
+        checkBranchIsUser(user, companyBranch);
+        boolean isRemoved = companyBranch.getCustomOpeningHours().removeIf(coh -> coh.getId().equals(customOpeningHoursId));
+        if (!isRemoved) {
+            throw new IllegalArgumentException("Custom opening hours can not to be deleted");
+        } else {
+            companyBranchRepository.save(companyBranch);
+            return companyBranch.getCustomOpeningHours();
+        }
+    }
+
     private void removeOldCustomOpeningHours(List<CustomOpeningHours> customOpeningHoursList) {
         customOpeningHoursList.removeIf(customOpeningHours -> customOpeningHours.getDateStart().isBefore(LocalDate.now())
                 && customOpeningHours.getDateEnd().isBefore(LocalDate.now()));

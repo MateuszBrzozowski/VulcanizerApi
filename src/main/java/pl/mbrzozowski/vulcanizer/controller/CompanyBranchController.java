@@ -127,22 +127,33 @@ public class CompanyBranchController {
 
     @PostMapping("/{id}/hours/custom")
     public ResponseEntity<List<CustomOpeningHours>> addCustomOpeningHours(@PathVariable("id") String branchId,
-                                                   @RequestBody CustomOpeningHoursRequest openingHoursRequest,
-                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                   @RequestHeader(SUM_CONTROL_ID) String checkSumId,
-                                                   @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
-        User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
-        List<CustomOpeningHours> customOpeningHoursList = companyBranchService.addCustomOpeningHours(user, branchId, openingHoursRequest);
-        return new ResponseEntity<>(customOpeningHoursList,HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}/hours/custom")
-    public ResponseEntity<List<CustomOpeningHours>> findCustomOpeningHours(@PathVariable("id") String branchId,
+                                                                          @RequestBody CustomOpeningHoursRequest openingHoursRequest,
                                                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                                           @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                                           @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
+        List<CustomOpeningHours> customOpeningHoursList = companyBranchService.addCustomOpeningHours(user, branchId, openingHoursRequest);
+        return new ResponseEntity<>(customOpeningHoursList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/hours/custom")
+    public ResponseEntity<List<CustomOpeningHours>> findCustomOpeningHours(@PathVariable("id") String branchId,
+                                                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                                           @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                                           @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
         List<CustomOpeningHours> customOpeningHoursList = companyBranchService.findCustomOpeningHours(user, branchId);
-        return new ResponseEntity<>(customOpeningHoursList,HttpStatus.OK);
+        return new ResponseEntity<>(customOpeningHoursList, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/hours/custom/{id_hours}")
+    public ResponseEntity<List<CustomOpeningHours>> deleteCustomOpeningHours(@PathVariable("id") String branchId,
+                                                                             @PathVariable("id_hours") String customOpeningHoursId,
+                                                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                                             @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                                             @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
+        List<CustomOpeningHours> customOpeningHoursList = companyBranchService.deleteCustomOpeningHours(user, branchId, customOpeningHoursId);
+        return new ResponseEntity<>(customOpeningHoursList, HttpStatus.OK);
     }
 }
