@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.mbrzozowski.vulcanizer.dto.*;
+import pl.mbrzozowski.vulcanizer.entity.CustomOpeningHours;
 import pl.mbrzozowski.vulcanizer.entity.OpeningHours;
 import pl.mbrzozowski.vulcanizer.entity.Stand;
 import pl.mbrzozowski.vulcanizer.entity.User;
@@ -125,13 +126,13 @@ public class CompanyBranchController {
     }
 
     @PostMapping("/{id}/hours/custom")
-    public ResponseEntity<?> addCustomOpeningHours(@PathVariable("id") String branchId,
+    public ResponseEntity<List<CustomOpeningHours>> addCustomOpeningHours(@PathVariable("id") String branchId,
                                                    @RequestBody CustomOpeningHoursRequest openingHoursRequest,
                                                    @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                    @RequestHeader(SUM_CONTROL_ID) String checkSumId,
                                                    @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
         User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
-        companyBranchService.addCustomOpeningHours(user, branchId, openingHoursRequest);
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<CustomOpeningHours> customOpeningHoursList = companyBranchService.addCustomOpeningHours(user, branchId, openingHoursRequest);
+        return new ResponseEntity<>(customOpeningHoursList,HttpStatus.OK);
     }
 }

@@ -190,7 +190,7 @@ public class CompanyBranchService {
         return companyBranch.getOpeningHours();
     }
 
-    public void addCustomOpeningHours(User user, String branchId, CustomOpeningHoursRequest openingHoursRequest) {
+    public List<CustomOpeningHours> addCustomOpeningHours(User user, String branchId, CustomOpeningHoursRequest openingHoursRequest) {
         ValidationOpeningHours.validCustomRequest(openingHoursRequest);
         CustomOpeningHours newOpeningHours = new CustomOpeningHoursReqToEntity().convert(openingHoursRequest);
         ValidationOpeningHours.validCustomOpeningHours(newOpeningHours);
@@ -198,8 +198,10 @@ public class CompanyBranchService {
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         ValidationOpeningHours.datesAreNotExist(newOpeningHours, companyBranch.getCustomOpeningHours());
+        newOpeningHours.setCompanyBranch(companyBranch);
         companyBranch.getCustomOpeningHours().add(newOpeningHours);
-        companyBranchRepository.save(companyBranch);
+        CompanyBranch saved = companyBranchRepository.save(companyBranch);
+        return saved.getCustomOpeningHours();
     }
 
     /**

@@ -1,5 +1,6 @@
 package pl.mbrzozowski.vulcanizer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,10 +23,12 @@ public class CustomOpeningHours {
     private LocalDate dateEnd;
     private LocalTime timeStart;
     private LocalTime timeEnd;
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id_company_branch", nullable = false)
+    @JoinColumn(name = "company_branch_id", nullable = false)
     private CompanyBranch companyBranch;
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id_stand")
+    @JoinColumn(name = "stand_id")
     private Stand stand;
 }

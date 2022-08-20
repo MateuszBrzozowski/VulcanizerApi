@@ -43,7 +43,7 @@ public class CompanyBranch {
     @OneToMany(mappedBy = "companyBranch", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OpeningHours> openingHours;
     @JsonIgnore
-    @OneToMany(mappedBy = "companyBranch", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "companyBranch", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CustomOpeningHours> customOpeningHours;
     private boolean isActive;
     private boolean isLocked;
