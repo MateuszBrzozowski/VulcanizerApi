@@ -48,4 +48,21 @@ public class CompanyBranch {
     private boolean isActive;
     private boolean isLocked;
     private boolean isClosed;
+
+    @Override
+    public String toString() {
+        return "CompanyBranch{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", address=" + address +
+                ", createdDate=" + createdDate +
+                ", phone=" + phone +
+                ", photo=" + photo +
+                ", company=" + company +
+                ", isActive=" + isActive +
+                ", isLocked=" + isLocked +
+                ", isClosed=" + isClosed +
+                '}';
+    }
 }

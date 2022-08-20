@@ -20,6 +20,7 @@ import pl.mbrzozowski.vulcanizer.validation.ValidationCompanyBranch;
 import pl.mbrzozowski.vulcanizer.validation.ValidationOpeningHours;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -197,11 +198,19 @@ public class CompanyBranchService {
         Long companyBranchId = getLongIdFromString(branchId);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
-        ValidationOpeningHours.datesAreNotExist(newOpeningHours, companyBranch.getCustomOpeningHours());
+        List<CustomOpeningHours> customOpeningHoursList = companyBranch.getCustomOpeningHours();
+        removeOldCustomOpeningHours(customOpeningHoursList);
+        ValidationOpeningHours.datesAreNotExist(newOpeningHours, customOpeningHoursList);
         newOpeningHours.setCompanyBranch(companyBranch);
-        companyBranch.getCustomOpeningHours().add(newOpeningHours);
+        customOpeningHoursList.add(newOpeningHours);
+        companyBranch.setCustomOpeningHours(customOpeningHoursList);
         CompanyBranch saved = companyBranchRepository.save(companyBranch);
         return saved.getCustomOpeningHours();
+    }
+
+    private void removeOldCustomOpeningHours(List<CustomOpeningHours> customOpeningHoursList) {
+        customOpeningHoursList.removeIf(customOpeningHours -> customOpeningHours.getDateStart().isBefore(LocalDate.now())
+                && customOpeningHours.getDateEnd().isBefore(LocalDate.now()));
     }
 
     /**

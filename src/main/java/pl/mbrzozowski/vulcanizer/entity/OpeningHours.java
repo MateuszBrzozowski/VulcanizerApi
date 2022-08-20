@@ -28,4 +28,15 @@ public class OpeningHours {
     @ManyToOne
     @JoinColumn(name = "company_branch_id")
     private CompanyBranch companyBranch;
+
+    @Override
+    public String toString() {
+        return "OpeningHours{" +
+                "id=" + id +
+                ", day=" + day +
+                ", openTime=" + openTime +
+                ", closeTime=" + closeTime +
+                ", companyBranch=" + companyBranch.getId() +
+                '}';
+    }
 }
