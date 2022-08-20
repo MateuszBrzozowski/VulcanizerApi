@@ -208,6 +208,15 @@ public class CompanyBranchService {
         return saved.getCustomOpeningHours();
     }
 
+    public List<CustomOpeningHours> findCustomOpeningHours(User user, String branchId) {
+        Long companyBranchId = getLongIdFromString(branchId);
+        CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
+        checkBranchIsUser(user, companyBranch);
+        removeOldCustomOpeningHours(companyBranch.getCustomOpeningHours());
+        companyBranchRepository.save(companyBranch);
+        return companyBranch.getCustomOpeningHours();
+    }
+
     private void removeOldCustomOpeningHours(List<CustomOpeningHours> customOpeningHoursList) {
         customOpeningHoursList.removeIf(customOpeningHours -> customOpeningHours.getDateStart().isBefore(LocalDate.now())
                 && customOpeningHours.getDateEnd().isBefore(LocalDate.now()));

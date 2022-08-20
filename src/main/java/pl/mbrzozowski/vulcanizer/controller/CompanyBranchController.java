@@ -135,4 +135,14 @@ public class CompanyBranchController {
         List<CustomOpeningHours> customOpeningHoursList = companyBranchService.addCustomOpeningHours(user, branchId, openingHoursRequest);
         return new ResponseEntity<>(customOpeningHoursList,HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/hours/custom")
+    public ResponseEntity<List<CustomOpeningHours>> findCustomOpeningHours(@PathVariable("id") String branchId,
+                                                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                                          @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                                                          @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties) {
+        User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
+        List<CustomOpeningHours> customOpeningHoursList = companyBranchService.findCustomOpeningHours(user, branchId);
+        return new ResponseEntity<>(customOpeningHoursList,HttpStatus.OK);
+    }
 }
