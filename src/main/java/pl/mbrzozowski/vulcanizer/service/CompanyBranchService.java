@@ -205,6 +205,7 @@ public class CompanyBranchService {
         customOpeningHoursList.add(newOpeningHours);
         companyBranch.setCustomOpeningHours(customOpeningHoursList);
         CompanyBranch saved = companyBranchRepository.save(companyBranch);
+        saved.getCustomOpeningHours().sort(Comparator.comparing(CustomOpeningHours::getDateStart));
         return saved.getCustomOpeningHours();
     }
 
@@ -213,7 +214,8 @@ public class CompanyBranchService {
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         removeOldCustomOpeningHours(companyBranch.getCustomOpeningHours());
-        companyBranchRepository.save(companyBranch);
+        CompanyBranch saved = companyBranchRepository.save(companyBranch);
+        saved.getCustomOpeningHours().sort(Comparator.comparing(CustomOpeningHours::getDateStart));
         return companyBranch.getCustomOpeningHours();
     }
 
@@ -226,7 +228,8 @@ public class CompanyBranchService {
         if (!isRemoved) {
             throw new IllegalArgumentException("Custom opening hours can not to be deleted");
         } else {
-            companyBranchRepository.save(companyBranch);
+            CompanyBranch saved = companyBranchRepository.save(companyBranch);
+            saved.getCustomOpeningHours().sort(Comparator.comparing(CustomOpeningHours::getDateStart));
             return companyBranch.getCustomOpeningHours();
         }
     }
