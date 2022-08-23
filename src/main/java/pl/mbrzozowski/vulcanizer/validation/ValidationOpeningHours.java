@@ -86,7 +86,7 @@ public class ValidationOpeningHours {
 
     public static void datesAreNotExist(CustomOpeningHours newOpeningHours, List<CustomOpeningHours> customOpeningHours) {
         for (CustomOpeningHours customOpeningHour : customOpeningHours) {
-            String exceptionMessage = "Date not valid";
+            String exceptionMessage = "Date is exists";
             if (newOpeningHours.getDateStart().equals(customOpeningHour.getDateStart()) ||
                     newOpeningHours.getDateStart().equals(customOpeningHour.getDateEnd()) ||
                     newOpeningHours.getDateEnd().equals(customOpeningHour.getDateStart()) ||
