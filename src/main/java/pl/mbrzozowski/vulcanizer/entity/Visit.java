@@ -19,9 +19,6 @@ public class Visit {
     @ManyToOne
     @JoinColumn(name = "id_user")
     private User user;
-    @ManyToOne
-    @JoinColumn(name = "id_service")
-    private BusinessServices service;
     @Enumerated(EnumType.STRING)
     private VisitStatus status = VisitStatus.NEW_VISIT;
     @OneToOne
@@ -31,9 +28,8 @@ public class Visit {
     @Column(name = "time_start")
     private LocalDateTime startTime;
 
-    public Visit(User user, BusinessServices service, LocalDateTime startTime) {
+    public Visit(User user, LocalDateTime startTime) {
         this.user = user;
-        this.service = service;
         this.startTime = startTime;
     }
 }

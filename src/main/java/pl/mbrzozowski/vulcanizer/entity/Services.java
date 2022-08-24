@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import pl.mbrzozowski.vulcanizer.enums.TypOfServices;
 import pl.mbrzozowski.vulcanizer.enums.WheelType;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalTime;
 
 @Data
@@ -16,10 +16,14 @@ import java.time.LocalTime;
 @Builder
 @Entity(name = "services")
 public class Services {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private double price;
     private LocalTime time;
+    @Enumerated(EnumType.ORDINAL)
     private TypOfServices typOfServices;
+    @Enumerated(EnumType.ORDINAL)
     private WheelType wheelType;
     private int sizeFrom;
     private int sizeTo;

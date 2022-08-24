@@ -23,25 +23,11 @@ public class OpinionService {
     private final VisitService visitService;
 
     public Opinion save(OpinionRequest opinionRequest) {
-        ValidationOpinion.validBeforeCreated(opinionRequest);
-        User user = userService.findById(opinionRequest.getUser());
-        Company business = businessService.findById(opinionRequest.getBusiness());
-        Opinion opinion = new Opinion(user,
-                business,
-                opinionRequest.getStars(),
-                opinionRequest.getDescription());
-        Opinion savedOpinion = opinionRepository.save(opinion);
-        visitService.addOpinionToVisit(opinionRequest.getVisit(), savedOpinion);
-        return savedOpinion;
+        return null;
     }
 
     public OpinionResponse update(OpinionRequest opinionRequest) {
-        Opinion opinion = findById(opinionRequest.getId());
-        ValidationOpinion.validBeforeEdit(opinionRequest);
-        opinion.setDescription(opinionRequest.getDescription());
-        opinion.setStars(opinionRequest.getStars());
-        Opinion save = opinionRepository.save(opinion);
-        return new OpinionToOpinionResponse().convert(save);
+        return null;
     }
 
     public List<OpinionResponse> findAll() {
