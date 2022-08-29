@@ -156,4 +156,15 @@ public class CompanyBranchController {
         List<CustomOpeningHours> customOpeningHoursList = companyBranchService.deleteCustomOpeningHours(user, branchId, customOpeningHoursId);
         return new ResponseEntity<>(customOpeningHoursList, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/services")
+    public ResponseEntity<?> updateServices(@PathVariable("id") String branchId,
+                                            @RequestBody List<ServicesRequest> servicesRequestList,
+                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                            @RequestHeader(SUM_CONTROL_ID) String checkSumId,
+                                            @RequestHeader(SUM_CONTROL_PROPERTIES) String checkSumProperties){
+        User user = jwtTokenAuthenticate.authenticate(token, checkSumId, checkSumProperties);
+        companyBranchService.updateServices(user, branchId, servicesRequestList);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mbrzozowski.vulcanizer.enums.TypOfServices;
+import pl.mbrzozowski.vulcanizer.enums.TypeOfServices;
 import pl.mbrzozowski.vulcanizer.enums.WheelType;
 
 import javax.persistence.*;
@@ -19,10 +19,12 @@ public class Services {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(columnDefinition = "Decimal(6,2)")
     private double price;
+    private String name;
     private LocalTime time;
     @Enumerated(EnumType.ORDINAL)
-    private TypOfServices typOfServices;
+    private TypeOfServices typeOfServices;
     @Enumerated(EnumType.ORDINAL)
     private WheelType wheelType;
     private int sizeFrom;

@@ -8,14 +8,13 @@ import org.springframework.stereotype.Service;
 import pl.mbrzozowski.vulcanizer.dto.CompanyBranchResponse;
 import pl.mbrzozowski.vulcanizer.dto.CustomOpeningHoursRequest;
 import pl.mbrzozowski.vulcanizer.dto.OpeningHoursRequest;
-import pl.mbrzozowski.vulcanizer.dto.mapper.AddressToAddressResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.CompanyToCompanyResponse;
-import pl.mbrzozowski.vulcanizer.dto.mapper.CustomOpeningHoursReqToEntity;
-import pl.mbrzozowski.vulcanizer.dto.mapper.UserToUserResponse;
+import pl.mbrzozowski.vulcanizer.dto.ServicesRequest;
+import pl.mbrzozowski.vulcanizer.dto.mapper.*;
 import pl.mbrzozowski.vulcanizer.entity.*;
 import pl.mbrzozowski.vulcanizer.enums.CompanyRole;
 import pl.mbrzozowski.vulcanizer.enums.converter.StringDayToDayOfWeek;
 import pl.mbrzozowski.vulcanizer.repository.CompanyBranchRepository;
+import pl.mbrzozowski.vulcanizer.util.Converter;
 import pl.mbrzozowski.vulcanizer.validation.ValidationCompanyBranch;
 import pl.mbrzozowski.vulcanizer.validation.ValidationOpeningHours;
 
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -76,7 +76,7 @@ public class CompanyBranchService {
     }
 
     public void accept(String companyBranchId) {
-        Optional<CompanyBranch> branchOptional = findById(getLongIdFromString(companyBranchId));
+        Optional<CompanyBranch> branchOptional = findById(Converter.stringToLong(companyBranchId));
         if (branchOptional.isEmpty()) {
             throw new IllegalArgumentException("Company Branch is not exist");
         } else {
@@ -87,7 +87,7 @@ public class CompanyBranchService {
     }
 
     public void decline(String companyBranchId) {
-        Optional<CompanyBranch> branchOptional = findById(getLongIdFromString(companyBranchId));
+        Optional<CompanyBranch> branchOptional = findById(Converter.stringToLong(companyBranchId));
         if (branchOptional.isEmpty()) {
             throw new IllegalArgumentException("Company Branch is not exist");
         } else {
@@ -103,8 +103,8 @@ public class CompanyBranchService {
 
     public List<Stand> addStand(User user, String branchId, String count) {
         ValidationCompanyBranch.validStandAdd(branchId, count);
-        long companyBranchId = getLongIdFromString(branchId);
-        int countOfStands = getIntIdFromString(count);
+        long companyBranchId = Converter.stringToLong(branchId);
+        int countOfStands = Converter.stringToInt(count);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         if (companyBranch.getStands().size() > MAX_STANDS || companyBranch.getStands().size() + countOfStands > 10) {
@@ -123,8 +123,8 @@ public class CompanyBranchService {
 
     public List<Stand> removeStand(User user, String branchId, String number) {
         ValidationCompanyBranch.validStandRemove(branchId, number);
-        long companyBranchId = getLongIdFromString(branchId);
-        int numberOfStand = getIntIdFromString(number);
+        long companyBranchId = Converter.stringToLong(branchId);
+        int numberOfStand = Converter.stringToInt(number);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         if (companyBranch.getStands().size() > 0) {
@@ -142,7 +142,7 @@ public class CompanyBranchService {
 
     public List<Stand> findAllStandsForBranch(User user, String branchId) {
         ValidationCompanyBranch.validBranchId(branchId);
-        long companyBranchId = getLongIdFromString(branchId);
+        long companyBranchId = Converter.stringToLong(branchId);
         Optional<CompanyBranch> branchOptional = findById(companyBranchId);
         if (branchOptional.isPresent()) {
             CompanyBranch companyBranch = branchOptional.get();
@@ -155,7 +155,7 @@ public class CompanyBranchService {
     }
 
     public void updateHoursOpening(User user, String branchId, List<OpeningHoursRequest> openingHoursRequestList) {
-        long companyBranchId = getLongIdFromString(branchId);
+        long companyBranchId = Converter.stringToLong(branchId);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         ValidationOpeningHours.validRequest(openingHoursRequestList);
@@ -185,7 +185,7 @@ public class CompanyBranchService {
     }
 
     public List<OpeningHours> findHoursOpening(User user, String branchId) {
-        long companyBranchId = getLongIdFromString(branchId);
+        long companyBranchId = Converter.stringToLong(branchId);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         return companyBranch.getOpeningHours();
@@ -195,7 +195,7 @@ public class CompanyBranchService {
         ValidationOpeningHours.validCustomRequest(openingHoursRequest);
         CustomOpeningHours newOpeningHours = new CustomOpeningHoursReqToEntity().convert(openingHoursRequest);
         ValidationOpeningHours.validCustomOpeningHours(newOpeningHours);
-        Long companyBranchId = getLongIdFromString(branchId);
+        Long companyBranchId = Converter.stringToLong(branchId);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         List<CustomOpeningHours> customOpeningHoursList = companyBranch.getCustomOpeningHours();
@@ -210,7 +210,7 @@ public class CompanyBranchService {
     }
 
     public List<CustomOpeningHours> findCustomOpeningHours(User user, String branchId) {
-        Long companyBranchId = getLongIdFromString(branchId);
+        Long companyBranchId = Converter.stringToLong(branchId);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         removeOldCustomOpeningHours(companyBranch.getCustomOpeningHours());
@@ -220,8 +220,8 @@ public class CompanyBranchService {
     }
 
     public List<CustomOpeningHours> deleteCustomOpeningHours(User user, String branchId, String hoursId) {
-        Long companyBranchId = getLongIdFromString(branchId);
-        Long customOpeningHoursId = getLongIdFromString(hoursId);
+        Long companyBranchId = Converter.stringToLong(branchId);
+        Long customOpeningHoursId = Converter.stringToLong(hoursId);
         CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
         checkBranchIsUser(user, companyBranch);
         boolean isRemoved = companyBranch.getCustomOpeningHours().removeIf(coh -> coh.getId().equals(customOpeningHoursId));
@@ -232,6 +232,16 @@ public class CompanyBranchService {
             saved.getCustomOpeningHours().sort(Comparator.comparing(CustomOpeningHours::getDateStart));
             return companyBranch.getCustomOpeningHours();
         }
+    }
+
+    public void updateServices(User user, String branchId, List<ServicesRequest> servicesRequestList) {
+        Long companyBranchId = Converter.stringToLong(branchId);
+        CompanyBranch companyBranch = getCompanyBranch(companyBranchId);
+        checkBranchIsUser(user, companyBranch);
+        List<Services> servicesList = servicesRequestList
+                .stream()
+                .map(servicesRequest -> new ServicesRequestToServices().convert(servicesRequest))
+                .collect(Collectors.toList());
     }
 
     private void removeOldCustomOpeningHours(List<CustomOpeningHours> customOpeningHoursList) {
@@ -296,22 +306,13 @@ public class CompanyBranchService {
         return null;
     }
 
-    private @NotNull Long getLongIdFromString(String source) {
-        try {
-            return Long.parseLong(source);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(String.format("%s can not convert to Long", source));
-        }
-    }
-
-    private int getIntIdFromString(String source) {
-        try {
-            return Integer.parseInt(source);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(String.format("%s can not convert to Integer", source));
-        }
-    }
-
+    /**
+     * Checking user is owner company branch. If not throws exception
+     *
+     * @param user          {@link User} which checking
+     * @param companyBranch {@link CompanyBranch} which checking
+     * @throws BadCredentialsException if user is not OWNER in company branch
+     */
     private void checkBranchIsUser(User user, @NotNull CompanyBranch companyBranch) {
         Company company = companyBranch.getCompany();
         for (Employee employee : company.getEmployees()) {

@@ -1,6 +1,6 @@
 package pl.mbrzozowski.vulcanizer.enums;
 
-public enum TypOfServices {
+public enum TypeOfServices {
     TIRES_SWAP,
     WHEEL_SWAP,
     WHEEL_BALANCE,
