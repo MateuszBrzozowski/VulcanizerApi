@@ -1,11 +1,13 @@
 package pl.mbrzozowski.vulcanizer.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
 public class Converter {
 
-    public static Long stringToLong(String source) {
+    public static @NotNull Long stringToLong(String source) {
         try {
             return Long.parseLong(source);
         } catch (NumberFormatException e) {
@@ -29,7 +31,7 @@ public class Converter {
         }
     }
 
-    public static LocalTime stringToLocalTime(String source) {
+    public static LocalTime stringToLocalTime(@NotNull String source) {
         if (source.length() == 4) {
             source = "0" + source;
         }

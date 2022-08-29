@@ -17,6 +17,7 @@ import pl.mbrzozowski.vulcanizer.repository.CompanyBranchRepository;
 import pl.mbrzozowski.vulcanizer.util.Converter;
 import pl.mbrzozowski.vulcanizer.validation.ValidationCompanyBranch;
 import pl.mbrzozowski.vulcanizer.validation.ValidationOpeningHours;
+import pl.mbrzozowski.vulcanizer.validation.ValidationServices;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -27,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -240,8 +240,8 @@ public class CompanyBranchService {
         checkBranchIsUser(user, companyBranch);
         List<Services> servicesList = servicesRequestList
                 .stream()
-                .map(servicesRequest -> new ServicesRequestToServices().convert(servicesRequest))
-                .collect(Collectors.toList());
+                .map(servicesRequest -> new ServicesRequestToServices().convert(servicesRequest)).toList();
+        ValidationServices.validBeforeUpdate(servicesList);
     }
 
     private void removeOldCustomOpeningHours(List<CustomOpeningHours> customOpeningHoursList) {

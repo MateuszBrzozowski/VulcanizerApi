@@ -15,7 +15,7 @@ import static pl.mbrzozowski.vulcanizer.util.Converter.*;
 public class ServicesRequestToServices implements Converter<ServicesRequest, Services> {
 
     @Override
-    public Services convert(ServicesRequest source) {
+    public @NotNull Services convert(ServicesRequest source) {
         Services services = new Services();
         setId(source, services);
         setPrice(source, services);
@@ -23,9 +23,25 @@ public class ServicesRequestToServices implements Converter<ServicesRequest, Ser
         setTime(source, services);
         setTypeOfServices(source, services);
         setTypeOfWheel(source, services);
-        services.setSizeFrom(source.getSizeFrom());
-        services.setSizeTo(source.getSizeTo());
+        seSizeFrom(source, services);
+        setSizeTo(source, services);
         return services;
+    }
+
+    private void seSizeFrom(ServicesRequest source, Services services) {
+        if (StringUtils.isNotBlank(source.getSizeFrom())) {
+            services.setSizeFrom(stringToInt(source.getSizeFrom()));
+        } else {
+            services.setSizeFrom(null);
+        }
+    }
+
+    private void setSizeTo(ServicesRequest source, Services services) {
+        if (StringUtils.isNotBlank(source.getSizeTo())) {
+            services.setSizeTo(stringToInt(source.getSizeTo()));
+        } else {
+            services.setSizeTo(null);
+        }
     }
 
     private void setTypeOfWheel(@NotNull ServicesRequest source, Services services) {

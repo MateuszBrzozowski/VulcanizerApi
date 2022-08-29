@@ -16,6 +16,6 @@ public class ServicesRequest {
     private String time;
     private String typOfServices;
     private String wheelType;
-    private int sizeFrom;
-    private int sizeTo;
+    private String sizeFrom;
+    private String sizeTo;
 }

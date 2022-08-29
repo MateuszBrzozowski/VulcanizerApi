@@ -20,13 +20,13 @@ public class Services {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(columnDefinition = "Decimal(6,2)")
-    private double price;
+    private Double price;
     private String name;
     private LocalTime time;
     @Enumerated(EnumType.ORDINAL)
     private TypeOfServices typeOfServices;
     @Enumerated(EnumType.ORDINAL)
     private WheelType wheelType;
-    private int sizeFrom;
-    private int sizeTo;
+    private Integer sizeFrom;
+    private Integer sizeTo;
 }
