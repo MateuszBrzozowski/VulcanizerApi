@@ -27,6 +27,18 @@ class ValidationServicesTest {
     }
 
     @Test
+    void validBeforeUpdate_OneElementsTiresSwap_DoesNotThrowException() {
+        List<Services> servicesList = new ArrayList<>();
+        Services services = Services.builder()
+                .price(10.0)
+                .time(LocalTime.of(10, 0))
+                .typeOfServices(TypeOfServices.TIRES_SWAP)
+                .build();
+        servicesList.add(services);
+        Assertions.assertDoesNotThrow(() -> ValidationServices.validBeforeUpdate(servicesList));
+    }
+
+    @Test
     void validBeforeUpdate_TwoElementsWheelSwap_ThrowsIllegal() {
         List<Services> servicesList = new ArrayList<>();
         Services services = Services.builder()
@@ -39,6 +51,18 @@ class ValidationServicesTest {
         IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> ValidationServices.validBeforeUpdate(servicesList));
         Assertions.assertEquals("To much same elements", exception.getMessage());
+    }
+
+    @Test
+    void validBeforeUpdate_OneElementsWheelSwap_DoesNotThrowException() {
+        List<Services> servicesList = new ArrayList<>();
+        Services services = Services.builder()
+                .price(10.0)
+                .time(LocalTime.of(10, 0))
+                .typeOfServices(TypeOfServices.WHEEL_SWAP)
+                .build();
+        servicesList.add(services);
+        Assertions.assertDoesNotThrow(() -> ValidationServices.validBeforeUpdate(servicesList));
     }
 
     @Test
@@ -57,6 +81,18 @@ class ValidationServicesTest {
     }
 
     @Test
+    void validBeforeUpdate_OneElementsWheelBalance_DoesNotThrowException() {
+        List<Services> servicesList = new ArrayList<>();
+        Services services = Services.builder()
+                .price(10.0)
+                .time(LocalTime.of(10, 0))
+                .typeOfServices(TypeOfServices.WHEEL_BALANCE)
+                .build();
+        servicesList.add(services);
+        Assertions.assertDoesNotThrow(() -> ValidationServices.validBeforeUpdate(servicesList));
+    }
+
+    @Test
     void validBeforeUpdate_TwoElementsStraightRim_ThrowsIllegal() {
         List<Services> servicesList = new ArrayList<>();
         Services services = Services.builder()
@@ -69,6 +105,18 @@ class ValidationServicesTest {
         IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> ValidationServices.validBeforeUpdate(servicesList));
         Assertions.assertEquals("To much same elements", exception.getMessage());
+    }
+
+    @Test
+    void validBeforeUpdate_OneElementsStraightRim_DoesNotThrowException() {
+        List<Services> servicesList = new ArrayList<>();
+        Services services = Services.builder()
+                .price(10.0)
+                .time(LocalTime.of(10, 0))
+                .typeOfServices(TypeOfServices.STRAIGHTENING_RIMS)
+                .build();
+        servicesList.add(services);
+        Assertions.assertDoesNotThrow(() -> ValidationServices.validBeforeUpdate(servicesList));
     }
 
 }
